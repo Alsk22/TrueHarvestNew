@@ -1,32 +1,39 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { VerseData } from '../types';
 
+// Fix: Switched to using a responseSchema for more robust JSON generation.
+// This ensures the API returns a predictable structure and simplifies the prompt.
 export const getVerseOfTheDay = async (): Promise<VerseData> => {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+        const verseContentSchema = {
+            type: Type.OBJECT,
+            properties: {
+                verse: { type: Type.STRING, description: "The full text of the Bible verse." },
+                reference: { type: Type.STRING, description: "The book, chapter, and verse number." },
+                explanation: { type: Type.STRING, description: "A simple, 3-4 sentence explanation." },
+                application: { type: Type.STRING, description: "A practical, 3-4 sentence daily application." },
+                dos: { type: Type.ARRAY, items: { type: Type.STRING }, description: "An array of 2-3 very short, actionable 'Do's' (3-5 words each)." },
+                donts: { type: Type.ARRAY, items: { type: Type.STRING }, description: "An array of 2-3 very short, actionable 'Don'ts' (3-5 words each)." },
+            },
+            required: ["verse", "reference", "explanation", "application", "dos", "donts"]
+        };
+
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Provide a Bible verse of the day suitable for someone new to the Bible.
-Return the information in a single, minified JSON object with NO markdown formatting.
-
-The JSON object must have three top-level keys: "english", "telugu", and "tamil".
-Each of these keys should map to an object containing the following string or string array values:
-- "verse": The full text of the Bible verse.
-- "reference": The book, chapter, and verse number.
-- "explanation": A simple, 3-4 sentence explanation.
-- "application": A practical, 3-4 sentence daily application.
-- "dos": An array of 2-3 very short, actionable "Do's" (3-5 words each).
-- "donts": An array of 2-3 very short, actionable "Don'ts" (3-5 words each).
-
-Example structure:
-{
-  "english": {"verse": "...", "reference": "...", "explanation": "...", "application": "...", "dos": ["..."], "donts": ["..."]},
-  "telugu": {"verse": "...", "reference": "...", "explanation": "...", "application": "...", "dos": ["..."], "donts": ["..."]},
-  "tamil": {"verse": "...", "reference": "...", "explanation": "...", "application": "...", "dos": ["..."], "donts": ["..."]}
-}`,
+            contents: `Provide a Bible verse of the day suitable for someone new to the Bible, in English, Telugu, and Tamil.`,
             config: {
                 responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        english: verseContentSchema,
+                        telugu: verseContentSchema,
+                        tamil: verseContentSchema,
+                    },
+                    required: ["english", "telugu", "tamil"]
+                }
             },
         });
 

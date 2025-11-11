@@ -1,6 +1,30 @@
-// Fix: Removed a circular self-import of the 'Page' type that was causing a conflict with its local declaration.
+export type BibleLanguage = 'english' | 'telugu';
+export type EnglishVersion = 'KJV' | 'NKJV' | 'ESV';
 
-export type Page = 'home' | 'bible' | 'songs' | 'events' | 'verse' | 'about';
+export interface Verse {
+  [verseNumber: number]: string;
+}
+
+export interface Chapter {
+  [chapterNumber: number]: Verse;
+}
+
+export interface BibleBook {
+  [bookName: string]: Chapter;
+}
+
+export interface EnglishBible {
+  KJV: BibleBook;
+  NKJV: BibleBook;
+  ESV: BibleBook;
+}
+
+export interface BibleData {
+  english: EnglishBible;
+  telugu: BibleBook;
+}
+
+export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about';
 
 export interface VerseContent {
   verse: string;
@@ -20,53 +44,31 @@ export interface VerseData {
 export interface Song {
   title: string;
   artist: string;
-  youtubeUrl: string;
-  spotifyUrl: string;
-  summary: string;
-  lyricist: string;
   album: string;
-  year: string;
+  year: number;
+  language: 'English' | 'Telugu' | 'Tamil';
+  lyricist: string;
+  summary: string;
   background: string;
   theme: string;
   lyrics: string;
+  youtubeUrl: string;
+  spotifyUrl: string;
   imageUrl: string;
 }
 
-export interface SongsByLanguage {
+export interface SongCategory {
   [language: string]: Song[];
 }
 
-export interface SongCategory {
-  [category: string]: SongsByLanguage;
+export interface SongData {
+  [category: string]: SongCategory;
 }
 
 export interface Event {
   id: number;
   title: string;
-  date: string;
-  description: string;
+  date: string; // ISO format
   city: string;
-}
-
-export interface BibleVerse {
-  verse: number;
-  text: string;
-}
-
-export interface BibleChapter {
-  chapter: number;
-  verses: BibleVerse[];
-}
-
-export interface BibleBook {
-  [book: string]: BibleChapter[];
-}
-
-export interface BibleVersion {
-  [language:string]: BibleBook;
-}
-
-export interface BibleBookGroup {
-  group: string;
-  books: string[];
+  description: string;
 }
