@@ -62,11 +62,11 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <button onClick={() => handleNavClick('home')} className="focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-md">
+            <button onClick={() => handleNavClick('home')} className="group focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-md">
               <Logo />
             </button>
           </div>
-          <div className="hidden md:block">
+          <div className="hidden lg:block">
             <nav className="ml-10 flex items-baseline space-x-1">
               {navItems.map(item => (
                 <NavLink 
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
               ))}
             </nav>
           </div>
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-slate-300 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -104,7 +104,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
       </div>
       
       {isMenuOpen && (
-        <div className="md:hidden" id="mobile-menu">
+        <div className="lg:hidden" id="mobile-menu">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map(item => (
               <NavLink 

@@ -52,20 +52,17 @@ const NavCard: React.FC<{
 const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
   return (
     <div className="space-y-16">
-      <section className="text-center pt-8 pb-12 md:pt-12 md:pb-16">
+      <section className="text-center pt-10 pb-12 md:pt-16 md:pb-20">
         
-        {/* New Grand Logo Display */}
-        <div className="flex justify-center mb-10">
-          <div className="relative flex items-center justify-center w-40 h-40 bg-slate-900/60 rounded-full border-2 border-amber-400/30 shadow-2xl shadow-amber-500/10 backdrop-blur-sm">
-            <Logo showText={false} svgClassName="w-28 h-28 text-amber-300" />
-          </div>
+        <div className="flex justify-center mb-8">
+            <Logo showText={false} svgClassName="w-36 h-36 text-amber-300" />
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-bold font-serif text-white tracking-tight" style={{textShadow: '2px 2px 8px rgba(0,0,0,0.7)'}}>
-          Food for your <span className="text-amber-400">Spiritual Life</span>
+        <h1 className="text-6xl md:text-8xl font-bold font-serif text-white tracking-tight" style={{textShadow: '2px 2px 10px rgba(0,0,0,0.8)'}}>
+          True Harvest
         </h1>
-        <p className="mt-6 text-lg md:text-xl text-slate-200 max-w-3xl mx-auto drop-shadow-md leading-relaxed">
-          True Harvest is your daily bread, providing spiritual nourishment for a vibrant life in Christ. Here, you'll find resources designed to deepen your faith, enrich your worship, and connect you with a loving community of believers.
+        <p className="mt-6 text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto drop-shadow-lg leading-relaxed font-serif">
+          A digital sanctuary for spiritual growth, rooted in the Word and cultivated in community.
         </p>
       </section>
 

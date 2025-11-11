@@ -6,19 +6,21 @@ import ShareIcon from './icons/ShareIcon';
 import HeartIcon from './icons/HeartIcon';
 import SongSharePopover from './SongSharePopover';
 import CopyIcon from './icons/CopyIcon';
+import DownloadIcon from './icons/DownloadIcon';
 
 interface SongCardProps {
   song: Song;
+  isLiked: boolean;
+  onToggleLike: () => void;
 }
 
-const SongCard: React.FC<SongCardProps> = ({ song }) => {
+const SongCard: React.FC<SongCardProps> = ({ song, isLiked, onToggleLike }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [showSharePopover, setShowSharePopover] = useState(false);
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+  const handleToggleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorited(!isFavorited);
+    onToggleLike();
   };
 
   const handleShareClick = (e: React.MouseEvent) => {
@@ -47,6 +49,32 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
         console.error('Failed to copy lyrics:', err);
         alert('Failed to copy lyrics.');
       });
+  };
+
+  const handleDownloadLyrics = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Format the content for the text file
+    const fileContent = `Title: ${song.title}\nArtist: ${song.artist}\n\n---\n\n${song.lyrics}`;
+    
+    // Create a Blob from the content
+    const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
+    
+    // Create a temporary link element to trigger the download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    
+    // Sanitize the title to create a valid filename
+    const fileName = `${song.title} - Lyrics.txt`.replace(/[/\\?%*:|"<>]/g, '-');
+    link.download = fileName;
+    
+    // Append to the DOM, click, and then remove
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up the URL object
+    URL.revokeObjectURL(link.href);
   };
 
   return (
@@ -85,8 +113,8 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
                   </button>
                   {showSharePopover && <SongSharePopover song={song} onClose={() => setShowSharePopover(false)} />}
               </div>
-              <button onClick={toggleFavorite} className={`p-2 rounded-full hover:bg-slate-700 transition-colors ${isFavorited ? 'text-pink-500' : 'text-slate-400'}`} title="Favorite">
-                  <HeartIcon filled={isFavorited} className="h-6 w-6" />
+              <button onClick={handleToggleLike} className={`p-2 rounded-full hover:bg-slate-700 transition-colors ${isLiked ? 'text-pink-500' : 'text-slate-400'}`} title="Like">
+                  <HeartIcon filled={isLiked} className="h-6 w-6" />
               </button>
           </div>
         </div>
@@ -125,14 +153,24 @@ const SongCard: React.FC<SongCardProps> = ({ song }) => {
             <div>
               <div className="flex justify-between items-center mb-2">
                 <h4 className="font-bold text-lg text-amber-300 font-serif">Lyrics</h4>
-                <button
-                  onClick={handleCopyLyrics}
-                  className="flex items-center space-x-2 px-3 py-1 text-sm text-slate-400 rounded-lg hover:bg-slate-700 hover:text-white transition-colors"
-                  title="Copy Lyrics"
-                >
-                  <CopyIcon className="h-4 w-4" />
-                  <span className="font-semibold">Copy</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleCopyLyrics}
+                    className="flex items-center space-x-2 px-3 py-1 text-sm text-slate-400 rounded-lg hover:bg-slate-700 hover:text-white transition-colors"
+                    title="Copy Lyrics"
+                  >
+                    <CopyIcon className="h-4 w-4" />
+                    <span className="font-semibold">Copy</span>
+                  </button>
+                   <button
+                    onClick={handleDownloadLyrics}
+                    className="flex items-center space-x-2 px-3 py-1 text-sm text-slate-400 rounded-lg hover:bg-slate-700 hover:text-white transition-colors"
+                    title="Download Lyrics as .txt"
+                  >
+                    <DownloadIcon className="h-4 w-4" />
+                    <span className="font-semibold">Download</span>
+                  </button>
+                </div>
               </div>
               <pre className="text-slate-200 text-sm whitespace-pre-wrap font-sans leading-relaxed bg-slate-900/50 p-4 rounded-lg max-h-60 overflow-y-auto">{song.lyrics}</pre>
             </div>

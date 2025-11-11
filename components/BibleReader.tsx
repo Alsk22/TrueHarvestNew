@@ -1,28 +1,56 @@
 import React, { useState, useMemo } from 'react';
-import { BIBLE_BOOK_GROUPS, BIBLE_DATA } from '../constants';
-import type { BibleChapter, BibleVerse } from '../types';
+import { BIBLE_BOOK_GROUPS, BIBLE_DATA_EN, BIBLE_DATA_TE } from '../services/constants';
+import type { BibleChapter, BibleVerse, Page, BibleVersion } from '../types';
 import SearchIcon from './icons/SearchIcon';
 import ShareIcon from './icons/ShareIcon';
 import BookmarkIcon from './icons/BookmarkIcon';
 import HighlightIcon from './icons/HighlightIcon';
 import NoteIcon from './icons/NoteIcon';
 import SharePopover from './SharePopover';
+import HomeIcon from './icons/HomeIcon';
+
+const BIBLE_DATA: BibleVersion = {
+    'English': BIBLE_DATA_EN,
+    'Telugu': BIBLE_DATA_TE,
+};
 
 type Language = 'English' | 'Telugu';
 
-const BibleReader: React.FC = () => {
+// Mapping from English book names to Telugu book names
+const BOOK_NAME_MAP: { [key: string]: string } = {
+    'Genesis': 'ఆదికాండము',
+    'Exodus': 'నిర్గమకాండము',
+    'Psalms': 'కీర్తనలు',
+    'John': 'యోహాను',
+};
+
+const getLocalizedBookName = (book: string, lang: Language): string => {
+    if (lang === 'Telugu' && BOOK_NAME_MAP[book]) {
+        return BOOK_NAME_MAP[book];
+    }
+    return book;
+};
+
+
+interface BibleReaderProps {
+    setCurrentPage: (page: Page) => void;
+}
+
+const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const [selectedLanguage, setSelectedLanguage] = useState<Language>('English');
-    const [selectedBook, setSelectedBook] = useState('Psalms');
+    const [selectedBook, setSelectedBook] = useState('Genesis'); // Default to Genesis
     const [selectedChapter, setSelectedChapter] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedVerse, setSelectedVerse] = useState<BibleVerse | null>(null);
     const [showSharePopover, setShowSharePopover] = useState(false);
 
     const bibleForLanguage = BIBLE_DATA[selectedLanguage];
+    
+    const localizedBook = useMemo(() => getLocalizedBookName(selectedBook, selectedLanguage), [selectedBook, selectedLanguage]);
 
     const chaptersForBook: BibleChapter[] = useMemo(() => {
-        return bibleForLanguage[selectedBook] || [];
-    }, [bibleForLanguage, selectedBook]);
+        return bibleForLanguage[localizedBook] || [];
+    }, [bibleForLanguage, localizedBook]);
 
     const currentChapterContent = useMemo(() => {
         return chaptersForBook.find(c => c.chapter === selectedChapter);
@@ -30,10 +58,19 @@ const BibleReader: React.FC = () => {
 
     const handleLanguageChange = (lang: Language) => {
         setSelectedLanguage(lang);
-        const newBook = 'Genesis';
-        setSelectedBook(newBook);
-        const firstChapter = BIBLE_DATA[lang][newBook]?.[0]?.chapter;
+
+        // Check if current book exists in new language, otherwise default to Genesis
+        let bookToSet = selectedBook;
+        const localizedCurrentBook = getLocalizedBookName(selectedBook, lang);
+        if (!BIBLE_DATA[lang][localizedCurrentBook]) {
+            bookToSet = 'Genesis';
+        }
+        setSelectedBook(bookToSet);
+        
+        const localizedBookToSet = getLocalizedBookName(bookToSet, lang);
+        const firstChapter = BIBLE_DATA[lang][localizedBookToSet]?.[0]?.chapter;
         setSelectedChapter(firstChapter || 1);
+        
         setSearchTerm('');
         setSelectedVerse(null);
     };
@@ -41,7 +78,8 @@ const BibleReader: React.FC = () => {
     const handleBookChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const book = e.target.value;
         setSelectedBook(book);
-        const firstChapter = bibleForLanguage[book]?.[0]?.chapter;
+        const localizedBookName = getLocalizedBookName(book, selectedLanguage);
+        const firstChapter = BIBLE_DATA[selectedLanguage][localizedBookName]?.[0]?.chapter;
         setSelectedChapter(firstChapter || 1);
         setSearchTerm('');
         setSelectedVerse(null);
@@ -79,7 +117,18 @@ const BibleReader: React.FC = () => {
 
     return (
         <div className="bg-slate-900/70 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 max-w-5xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mb-8 tracking-tight">Bible Reader</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-4xl md:text-5xl font-serif font-bold text-white tracking-tight">Bible Reader</h1>
+                <button
+                    onClick={() => setCurrentPage('home')}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300"
+                    aria-label="Back to Home"
+                >
+                    <HomeIcon className="h-5 w-5" />
+                    <span className="font-semibold text-sm hidden md:block">Home</span>
+                </button>
+            </div>
+
 
             {/* Controls Panel */}
             <div className="sticky top-24 z-40 bg-slate-800/80 backdrop-blur-lg p-4 rounded-lg border border-slate-700 mb-8 shadow-lg">

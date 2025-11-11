@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { EVENTS } from '../constants';
-import type { Event } from '../types';
+import { EVENTS } from '../services/constants';
+import type { Event, Page } from '../types';
 import CalendarIcon from './icons/CalendarIcon';
 import ShareIcon from './icons/ShareIcon';
+import HomeIcon from './icons/HomeIcon';
 
 const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   const eventDate = new Date(event.date);
@@ -58,7 +59,11 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   );
 };
 
-const EventsCalendar: React.FC = () => {
+interface EventsCalendarProps {
+    setCurrentPage: (page: Page) => void;
+}
+
+const EventsCalendar: React.FC<EventsCalendarProps> = ({ setCurrentPage }) => {
     const [selectedCity, setSelectedCity] = useState('All');
 
     const indianMetroCities = ['All', 'Delhi', 'Mumbai', 'Chennai', 'Hyderabad', 'Kolkata'];
@@ -81,9 +86,19 @@ const EventsCalendar: React.FC = () => {
 
     return (
         <div className="bg-slate-900/70 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 max-w-5xl mx-auto">
-            <div className="flex items-center mb-8">
-                <div className="text-amber-400"><CalendarIcon /></div>
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-white ml-4 tracking-tight">Upcoming Events</h1>
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center">
+                    <div className="text-amber-400"><CalendarIcon /></div>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-white ml-4 tracking-tight">Upcoming Events</h1>
+                </div>
+                <button
+                    onClick={() => setCurrentPage('home')}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300"
+                    aria-label="Back to Home"
+                >
+                    <HomeIcon className="h-5 w-5" />
+                    <span className="font-semibold text-sm hidden md:block">Home</span>
+                </button>
             </div>
 
             <div className="mb-8">

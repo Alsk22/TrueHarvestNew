@@ -17,15 +17,15 @@ const App: React.FC = () => {
       case 'home':
         return <HomePage setCurrentPage={setCurrentPage} />;
       case 'verse':
-        return <VerseOfTheDayPage />;
+        return <VerseOfTheDayPage setCurrentPage={setCurrentPage} />;
       case 'bible':
-        return <BibleReader />;
+        return <BibleReader setCurrentPage={setCurrentPage} />;
       case 'songs':
-        return <SongLibrary />;
+        return <SongLibrary setCurrentPage={setCurrentPage} />;
       case 'events':
-        return <EventsCalendar />;
+        return <EventsCalendar setCurrentPage={setCurrentPage} />;
       case 'about':
-        return <AboutPage />;
+        return <AboutPage setCurrentPage={setCurrentPage} />;
       default:
         return <HomePage setCurrentPage={setCurrentPage} />;
     }
@@ -35,9 +35,9 @@ const App: React.FC = () => {
     <div className="relative min-h-screen flex flex-col">
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506240291319-e583c7438253?q=80&w=2670&auto=format&fit=crop')" }}
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2671&auto=format&fit=crop')" }}
       >
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-950/70 to-slate-950/90"></div>
       </div>
       
       <Header currentPage={currentPage} setCurrentPage={setCurrentPage} />

@@ -1,10 +1,25 @@
 import React from 'react';
 import Logo from './Logo';
 import CheckIcon from './icons/CheckIcon';
+import HomeIcon from './icons/HomeIcon';
+import type { Page } from '../types';
 
-const AboutPage: React.FC = () => {
+interface AboutPageProps {
+    setCurrentPage: (page: Page) => void;
+}
+
+const AboutPage: React.FC<AboutPageProps> = ({ setCurrentPage }) => {
   return (
-    <div className="bg-slate-900/70 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl p-6 md:p-10 max-w-4xl mx-auto">
+    <div className="relative bg-slate-900/70 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl p-6 md:p-10 max-w-4xl mx-auto">
+      <button
+        onClick={() => setCurrentPage('home')}
+        className="absolute top-6 right-6 flex items-center space-x-2 px-4 py-2 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300 z-10"
+        aria-label="Back to Home"
+      >
+        <HomeIcon className="h-5 w-5" />
+        <span className="font-semibold text-sm hidden md:block">Home</span>
+      </button>
+
       <div className="text-center mb-10">
          <div className="inline-block">
             <Logo />

@@ -7,62 +7,26 @@ export const getVerseOfTheDay = async (): Promise<VerseData> => {
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Provide a Bible verse of the day. The target audience is someone new to the Bible.
-For the verse, provide the following information in three languages: English, Telugu, and Tamil.
+            contents: `Provide a Bible verse of the day suitable for someone new to the Bible.
+Return the information in a single, minified JSON object with NO markdown formatting.
 
-For each language, include:
-1.  The full text of the bible verse.
-2.  The reference (e.g., John 3:16).
-3.  A profound yet easy-to-understand explanation (3-4 sentences).
-4.  A practical daily application (3-4 sentences).
-5.  A list of 2-3 very short, actionable "Do's" (3-5 words each).
-6.  A list of 2-3 very short, actionable "Don'ts" (3-5 words each).
+The JSON object must have three top-level keys: "english", "telugu", and "tamil".
+Each of these keys should map to an object containing the following string or string array values:
+- "verse": The full text of the Bible verse.
+- "reference": The book, chapter, and verse number.
+- "explanation": A simple, 3-4 sentence explanation.
+- "application": A practical, 3-4 sentence daily application.
+- "dos": An array of 2-3 very short, actionable "Do's" (3-5 words each).
+- "donts": An array of 2-3 very short, actionable "Don'ts" (3-5 words each).
 
-Format the entire output as a single JSON object.`,
+Example structure:
+{
+  "english": {"verse": "...", "reference": "...", "explanation": "...", "application": "...", "dos": ["..."], "donts": ["..."]},
+  "telugu": {"verse": "...", "reference": "...", "explanation": "...", "application": "...", "dos": ["..."], "donts": ["..."]},
+  "tamil": {"verse": "...", "reference": "...", "explanation": "...", "application": "...", "dos": ["..."], "donts": ["..."]}
+}`,
             config: {
                 responseMimeType: "application/json",
-                responseSchema: {
-                    type: Type.OBJECT,
-                    properties: {
-                        english: {
-                            type: Type.OBJECT,
-                            properties: {
-                                verse: { type: Type.STRING, description: "The full text of the bible verse in English." },
-                                reference: { type: Type.STRING, description: "The book, chapter, and verse number in English." },
-                                explanation: { type: Type.STRING, description: "An explanation of the verse in English." },
-                                application: { type: Type.STRING, description: "A practical application of the verse in English." },
-                                dos: { type: Type.ARRAY, description: "A list of 'Do's' in English.", items: { type: Type.STRING } },
-                                donts: { type: Type.ARRAY, description: "A list of 'Don'ts' in English.", items: { type: Type.STRING } },
-                            },
-                            required: ["verse", "reference", "explanation", "application", "dos", "donts"],
-                        },
-                        telugu: {
-                            type: Type.OBJECT,
-                            properties: {
-                                verse: { type: Type.STRING, description: "The full text of the bible verse in Telugu." },
-                                reference: { type: Type.STRING, description: "The book, chapter, and verse number in Telugu." },
-                                explanation: { type: Type.STRING, description: "An explanation of the verse in Telugu." },
-                                application: { type: Type.STRING, description: "A practical application of the verse in Telugu." },
-                                dos: { type: Type.ARRAY, description: "A list of 'Do's' in Telugu.", items: { type: Type.STRING } },
-                                donts: { type: Type.ARRAY, description: "A list of 'Don'ts' in Telugu.", items: { type: Type.STRING } },
-                            },
-                             required: ["verse", "reference", "explanation", "application", "dos", "donts"],
-                        },
-                        tamil: {
-                            type: Type.OBJECT,
-                            properties: {
-                                verse: { type: Type.STRING, description: "The full text of the bible verse in Tamil." },
-                                reference: { type: Type.STRING, description: "The book, chapter, and verse number in Tamil." },
-                                explanation: { type: Type.STRING, description: "An explanation of the verse in Tamil." },
-                                application: { type: Type.STRING, description: "A practical application of the verse in Tamil." },
-                                dos: { type: Type.ARRAY, description: "A list of 'Do's' in Tamil.", items: { type: Type.STRING } },
-                                donts: { type: Type.ARRAY, description: "A list of 'Don'ts' in Tamil.", items: { type: Type.STRING } },
-                            },
-                             required: ["verse", "reference", "explanation", "application", "dos", "donts"],
-                        }
-                    },
-                    required: ["english", "telugu", "tamil"],
-                },
             },
         });
 
