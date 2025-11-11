@@ -1,4 +1,3 @@
-
 import type { SongData, Event, BibleData, EnglishBible, BibleBook } from '../types';
 
 export const SONG_DATA: SongData = {
@@ -12,7 +11,7 @@ export const SONG_DATA: SongData = {
         language: "English",
         lyricist: "Ben Fielding & Brooke Ligertwood",
         summary: "A song declaring the power and beauty of the name of Jesus.",
-        background: "Written for the Hillsong Conference, it quickly became a global anthem.",
+        background: "Written for the Hillsong Conference, it quickly became a global anthem and won a Grammy for Best Contemporary Christian Music Performance/Song.",
         theme: "The Name of Jesus, Power, Majesty",
         lyrics: `You were the Word at the beginning
 One With God the Lord Most High
@@ -21,6 +20,73 @@ Now revealed in You our Christ...`,
         youtubeUrl: "https://www.youtube.com/watch?v=nQWFzMvCfLE",
         spotifyUrl: "https://open.spotify.com/track/4e8pdVEeE1dvyK3t9925d2",
         imageUrl: "https://images.unsplash.com/photo-1516442524009-4c0135381a6c?q=80&w=2574&auto=format&fit=crop"
+      },
+      {
+        title: "10,000 Reasons (Bless the Lord)",
+        artist: "Matt Redman",
+        album: "10,000 Reasons",
+        year: 2011,
+        language: "English",
+        lyricist: "Matt Redman, Jonas Myrin",
+        summary: "A song of praise for God's endless goodness and mercy, encouraging believers to bless the Lord at all times.",
+        background: "Inspired by Psalm 103, this song became a global anthem and won two Grammy Awards.",
+        theme: "Praise, Blessings, God's Faithfulness",
+        lyrics: `Bless the Lord, O my soul
+O my soul
+Worship His holy name
+Sing like never before
+O my soul
+I'll worship Your holy name...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=XtwIT8JjddM",
+        spotifyUrl: "https://open.spotify.com/track/0fVxa2i3kK2FzR0K6d252b",
+        imageUrl: "https://images.unsplash.com/photo-1456488683533-3a5a5d21a50a?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "This Is Amazing Grace",
+        artist: "Phil Wickham",
+        album: "The Ascension",
+        year: 2013,
+        language: "English",
+        lyricist: "Phil Wickham, Josh Farro, Jeremy Riddle",
+        summary: "A powerful declaration of the grace of God, celebrating the King of Glory who conquered the grave.",
+        background: "Originally written for a Bethel Music album, Phil Wickham's version became a chart-topping hit known for its energetic and joyful praise.",
+        theme: "Grace, Victory, Praise, Resurrection",
+        lyrics: `This is amazing grace
+This is unfailing love
+That You would take my place
+That You would bear my cross...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=cgsbaBIao-c",
+        spotifyUrl: "https://open.spotify.com/track/7fO2M76t55nqq0sPVRrY1c",
+        imageUrl: "https://images.unsplash.com/photo-1508609840453-647410642114?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Give Thanks",
+        artist: "Don Moen",
+        album: "Eternal God",
+        year: 1978,
+        language: "English",
+        lyricist: "Henry Smith",
+        summary: "A simple yet powerful song of gratitude to God for the gift of His Son, Jesus Christ.",
+        background: "Henry Smith wrote this song while struggling with a degenerative eye condition that eventually left him legally blind. It became a global praise chorus, famously recorded by Don Moen.",
+        theme: "Thanksgiving, Gratitude, Strength in Weakness, Jesus",
+        lyrics: `Give thanks with a grateful heart
+Give thanks to the Holy One
+Give thanks because He's given Jesus Christ, His Son.
+Give thanks with a grateful heart
+Give thanks to the Holy One
+Give thanks because He's given Jesus Christ, His Son.
+
+And now let the weak say, "I am strong"
+Let the poor say, "I am rich
+Because of what the Lord has done for us"
+And now let the weak say, "I am strong"
+Let the poor say, "I am rich
+Because of what the Lord has done for us"
+
+Give thanks!`,
+        youtubeUrl: "https://www.youtube.com/watch?v=BqBgoa2A2cI",
+        spotifyUrl: "https://open.spotify.com/track/6225iG6f2IEXf0DMrYog3C",
+        imageUrl: "https://images.unsplash.com/photo-1508739607823-3b1f3938ba08?q=80&w=2670&auto=format&fit=crop"
       }
     ],
     "Telugu": [
@@ -41,6 +107,24 @@ Nīvē naa Dēvā...`,
         youtubeUrl: "https://www.youtube.com/watch?v=9_7fQY7k2wA",
         spotifyUrl: "https://open.spotify.com/track/3n7z5zAyX3fsBQN7xn2D5x",
         imageUrl: "https://images.unsplash.com/photo-1595998188234-115f78a7f1d8?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Nee Maata Naa Paathalaku",
+        artist: "John Nissi",
+        album: "Single",
+        year: 2018,
+        language: "Telugu",
+        lyricist: "John Nissi",
+        summary: "A song that declares God's word as a lamp to our feet and a light to our path, inspired by Psalm 119:105.",
+        background: "A contemporary Telugu worship song that gained widespread popularity for its catchy melody and profound biblical message.",
+        theme: "God's Word, Guidance, Light",
+        lyrics: `Nee maata naa paathalaku velugai
+Naa throvaku deepamai unnadi
+Nee maata naa oopiriga
+Naa praanamai nannu nadipunnadi...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=iM2h5C5a4sA",
+        spotifyUrl: "https://open.spotify.com/track/3T6l7Z1y2s3X3q6C6j4B8d",
+        imageUrl: "https://images.unsplash.com/photo-1532152983-2169614352E4?q=80&w=2670&auto=format&fit=crop"
       }
     ]
   },
@@ -65,7 +149,173 @@ Oh, I will sing of the goodness of God...`,
         youtubeUrl: "https://www.youtube.com/watch?v=n0FBb6hnwTo",
         spotifyUrl: "https://open.spotify.com/track/1gj9poZGP1gQ5qWJ4e15g4",
         imageUrl: "https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Oceans (Where Feet May Fail)",
+        artist: "Hillsong UNITED",
+        album: "Zion",
+        year: 2013,
+        language: "English",
+        lyricist: "Joel Houston, Matt Crocker, Salomon Ligthelm",
+        summary: "A song about stepping out in faith and trusting God, even when it means going into the unknown.",
+        background: "One of Hillsong's most famous songs, it topped charts for a record-breaking number of weeks and resonates with people facing challenges.",
+        theme: "Faith, Trust, Stepping Out",
+        lyrics: `You call me out upon the waters
+The great unknown where feet may fail
+And there I find You in the mystery
+In oceans deep my faith will stand...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=dy9nwe9_xzw",
+        spotifyUrl: "https://open.spotify.com/track/5S5c0sT3y5ggkUPc53xfee",
+        imageUrl: "https://images.unsplash.com/photo-1470240731273-7821a6e23582?q=80&w=2574&auto=format&fit=crop"
+      },
+      {
+        title: "Reckless Love",
+        artist: "Cory Asbury",
+        album: "Reckless Love",
+        year: 2017,
+        language: "English",
+        lyricist: "Cory Asbury, Caleb Culver, Ran Jackson",
+        summary: "A song about the overwhelming, never-ending, and 'reckless' love of God that pursues humanity.",
+        background: "This song sparked conversations about the nature of God's love. It became a massive hit, earning a Grammy nomination and topping Christian charts.",
+        theme: "God's Love, Pursuit, Grace",
+        lyrics: `Oh, the overwhelming, never-ending, reckless love of God
+Oh, it chases me down, fights 'til I'm found, leaves the ninety-nine...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=Sc6SSHuZvQE",
+        spotifyUrl: "https://open.spotify.com/track/0YhM8PLCdSp4jp3IgpupgE",
+        imageUrl: "https://images.unsplash.com/photo-1560703650-7c152def470c?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Above All",
+        artist: "Michael W. Smith",
+        album: "Worship",
+        year: 2001,
+        language: "English",
+        lyricist: "Lenny LeBlanc, Paul Baloche",
+        summary: "A song that exalts Christ above all earthly and created things, focusing on His sacrifice and love.",
+        background: "Written in 1999, it became a worldwide hit, famously covered by Michael W. Smith. It contrasts the cosmic power of Christ with His humble sacrifice on the cross.",
+        theme: "Supremacy of Christ, Sacrifice, Love, Humility",
+        lyrics: `Above all powers, above all kings
+Above all nature and all created things
+Above all wisdom and all the ways of man
+You were here before the world began
+
+Above all kingdoms, above all thrones
+Above all wonders the world has ever known
+Above all wealth and treasures of the earth
+There's no way to measure what You're worth
+
+Crucified, laid behind a stone
+You lived to die, rejected and alone
+Like a rose, trampled on the ground
+You took the fall and thought of me
+Above all`,
+        youtubeUrl: "https://www.youtube.com/watch?v=aGk_E2PAoQA",
+        spotifyUrl: "https://open.spotify.com/track/6IV42n8p1v2a32Rve2b1s0",
+        imageUrl: "https://images.unsplash.com/photo-1593979852233-a04e5a953401?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Father God I Wonder",
+        artist: "Ian Smale",
+        album: "Songs of Fellowship",
+        year: 1981,
+        language: "English",
+        lyricist: "Ian Smale",
+        summary: "A simple, heartfelt song expressing wonder and gratitude for being adopted into God's family as a child.",
+        background: "A classic chorus from the Charismatic Renewal movement, this song captures the intimate relationship a believer can have with God as a loving Father.",
+        theme: "Fatherhood of God, Adoption, Praise, Relationship",
+        lyrics: `Father God, I wonder
+How I managed to exist
+Without the knowledge of Your parenthood
+And Your loving care
+
+Now I am Your son
+And I am adopted in Your family
+And I can never be alone
+'Cause Father God, You're there beside me
+
+I will sing your praises
+I will sing your praises
+I will sing your praises
+Forever more
+
+I will sing your praises
+I will sing your praises
+I will sing your praises
+Forever more`,
+        youtubeUrl: "https://www.youtube.com/watch?v=2f354p20bow",
+        spotifyUrl: "https://open.spotify.com/track/4jE5s4K5q5B1t1e5e5d5B5",
+        imageUrl: "https://images.unsplash.com/photo-1558985250-27a41a414168?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Still",
+        artist: "Hillsong Worship",
+        album: "Hope",
+        year: 2003,
+        language: "English",
+        lyricist: "Reuben Morgan",
+        summary: "A song of trust and peace in God's sovereignty, even amidst life's storms and chaos.",
+        background: "Inspired by Psalm 46:10 ('Be still, and know that I am God'), Reuben Morgan wrote this song to express finding refuge and strength in God's presence during turbulent times.",
+        theme: "Trust, Peace, God's Sovereignty, Refuge",
+        lyrics: `Hide me now
+Under Your wings
+Cover me
+Within Your mighty hand
+
+When the oceans rise and thunders roar
+I will soar with You above the storm
+Father, You are King over the flood
+I will be still and know You are God
+
+Find rest my soul
+In Christ alone
+Know His power
+In quietness and trust
+
+When the oceans rise and thunders roar
+I will soar with You above the storm
+Father, You are King over the flood
+I will be still and know You are God`,
+        youtubeUrl: "https://www.youtube.com/watch?v=O73-3iLgTmo",
+        spotifyUrl: "https://open.spotify.com/track/6CMSomT5PjMSnwRTi7gV1D",
+        imageUrl: "https://images.unsplash.com/photo-1440557653082-e8e186733eeb?q=80&w=2670&auto=format&fit=crop"
       }
+    ],
+    "Telugu": [
+        {
+            title: "Aaradhadhaam",
+            artist: "JK Christopher",
+            album: "Yahova Shalom",
+            year: 2015,
+            language: "Telugu",
+            lyricist: "JK Christopher",
+            summary: "A call to worship God with all heart, soul, and mind, inviting His presence.",
+            background: "A highly popular contemporary Telugu worship song that has become a staple in many church services.",
+            theme: "Worship, Invitation, God's Presence",
+            lyrics: `Aaradhidhaam Parisuddhuni
+Yesu Raajuni
+Aathmatho Sathymatho
+Aaradhidhaam Parisuddhuni...`,
+            youtubeUrl: "https://www.youtube.com/watch?v=N_8M-J0sW3k",
+            spotifyUrl: "https://open.spotify.com/search/Aaradhadhaam",
+            imageUrl: "https://images.unsplash.com/photo-1528459142940-427c4a30a7d0?q=80&w=2670&auto=format&fit=crop"
+        },
+        {
+            title: "Naa Hrudayam",
+            artist: "Bridge Music, Sam Alex",
+            album: "Naa Hrudayam",
+            year: 2020,
+            language: "Telugu",
+            lyricist: "Sam Alex",
+            summary: "A song of personal devotion, offering one's heart as a dwelling place for God.",
+            background: "A modern worship song from the collaborative Bridge Music project, connecting artists across India. It resonated deeply with younger congregations.",
+            theme: "Devotion, Surrender, Personal Worship",
+            lyrics: `Naa Hrudayam, Nee Aalayam
+Naa Jeevitham, Neekankitham
+Yesayya... Yesayya...`,
+            youtubeUrl: "https://www.youtube.com/watch?v=jW01ePZ2n0s",
+            spotifyUrl: "https://open.spotify.com/search/Naa%20Hrudayam%20Bridge%20Music",
+            imageUrl: "https://images.unsplash.com/photo-1499922249875-d1f05335a938?q=80&w=2670&auto=format&fit=crop"
+        }
     ]
   },
    "Hymns": {
@@ -87,6 +337,163 @@ Was blind, but now I see...`,
         youtubeUrl: "https://www.youtube.com/watch?v=g2wmL95s22A",
         spotifyUrl: "https://open.spotify.com/track/1MTyV3zIer2zV6smI81CoC",
         imageUrl: "https://images.unsplash.com/photo-1533144131336-7517a123924f?q=80&w=2574&auto=format&fit=crop"
+      },
+      {
+        title: "How Great Thou Art",
+        artist: "Stuart K. Hine",
+        album: "Classic Hymns",
+        year: 1885,
+        language: "English",
+        lyricist: "Stuart K. Hine",
+        summary: "A majestic hymn reflecting on the greatness of God as seen in creation, the cross, and Christ's return.",
+        background: "Based on a Swedish poem, the English version by Stuart K. Hine became globally famous, especially after being popularized by the Billy Graham crusades.",
+        theme: "God's Majesty, Creation, Awe, Worship",
+        lyrics: `Then sings my soul, my Savior God, to Thee
+How great Thou art, how great Thou art
+Then sings my soul, my Savior God, to Thee
+How great Thou art, how great Thou art!`,
+        youtubeUrl: "https://www.youtube.com/watch?v=ccMCi7a_1qQ",
+        spotifyUrl: "https://open.spotify.com/track/6bL2zQ2eEnp2eJ1jGzJADf",
+        imageUrl: "https://images.unsplash.com/photo-1444703686981-a3abbc4d42e2?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "It Is Well With My Soul",
+        artist: "Horatio Spafford",
+        album: "Classic Hymns",
+        year: 1873,
+        language: "English",
+        lyricist: "Horatio Spafford",
+        summary: "A hymn of profound peace and trust in God, even in the midst of immense personal tragedy.",
+        background: "Written by Horatio Spafford after his four daughters were lost at sea. It's a powerful testimony to finding peace in God despite devastating circumstances.",
+        theme: "Peace, Trust, Sovereignty, Hope",
+        lyrics: `When peace like a river, attendeth my way
+When sorrows like sea billows roll
+Whatever my lot, Thou hast taught me to say
+It is well, it is well, with my soul...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=AHe_q_3_I_A",
+        spotifyUrl: "https://open.spotify.com/track/6M7aI5uI5A26a7e5s5yq9i",
+        imageUrl: "https://images.unsplash.com/photo-1507525428034-b723a9ce6890?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Blessed Assurance",
+        artist: "Fanny Crosby",
+        album: "Classic Hymns",
+        year: 1873,
+        language: "English",
+        lyricist: "Fanny Crosby",
+        summary: "A joyful declaration of faith and security in Jesus, celebrating the assurance of salvation.",
+        background: "Fanny Crosby, a prolific blind hymn writer, wrote the lyrics after her friend Phoebe Knapp played her a new melody and asked what it sounded like. Crosby immediately replied, 'Blessed assurance, Jesus is mine!'",
+        theme: "Salvation, Assurance, Praise, Faith",
+        lyrics: `Blessed assurance, Jesus is mine!
+Oh, what a foretaste of glory divine!
+Heir of salvation, purchase of God,
+Born of His Spirit, washed in His blood.
+
+Refrain:
+This is my story, this is my song,
+Praising my Savior all the day long;
+This is my story, this is my song,
+Praising my Savior all the day long.
+
+Perfect submission, perfect delight,
+Visions of rapture now burst on my sight;
+Angels descending bring from above,
+Echoes of mercy, whispers of love.
+
+(Refrain)
+
+Perfect submission, all is at rest,
+I in my Savior am happy and blest;
+Watching and waiting, looking above,
+Filled with His goodness lost in His love.
+
+(Refrain)`,
+        youtubeUrl: "https://www.youtube.com/watch?v=r26HFaww_Ew",
+        spotifyUrl: "https://open.spotify.com/track/3S833n1fV7wWhs4yQL90g5",
+        imageUrl: "https://images.unsplash.com/photo-1438986212102-358cc2a2e438?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Count Your Blessings",
+        artist: "Johnson Oatman, Jr.",
+        album: "Classic Hymns",
+        year: 1897,
+        language: "English",
+        lyricist: "Johnson Oatman, Jr.",
+        summary: "A hymn that encourages believers to overcome discouragement by remembering and counting God's many blessings.",
+        background: "Written by Johnson Oatman, Jr., a Methodist Episcopal minister who wrote over 5,000 hymn texts. This song was intended to lift the spirits of those facing trials and tribulations.",
+        theme: "Gratitude, Encouragement, Trust in God, Blessings",
+        lyrics: `When upon life’s billows you are tempest tossed,
+When you are discouraged, thinking all is lost,
+Count your many blessings, name them one by one,
+And it will surprise you what the Lord hath done.
+
+Refrain:
+Count your blessings, name them one by one,
+Count your blessings, see what God hath done!
+Count your blessings, name them one by one,
+And it will surprise you what the Lord hath done.
+
+Are you ever burdened with a load of care?
+Does the cross seem heavy you are called to bear?
+Count your many blessings, every doubt will fly,
+And you will keep singing as the days go by.
+
+(Refrain)
+
+When you look at others with their lands and gold,
+Think that Christ has promised you His wealth untold;
+Count your many blessings. Wealth can never buy
+Your reward in heaven, nor your home on high.
+
+(Refrain)
+
+So, amid the conflict whether great or small,
+Do not be disheartened, God is over all;
+Count your many blessings, angels will attend,
+Help and comfort give you to your journey’s end.
+
+(Refrain)`,
+        youtubeUrl: "https://www.youtube.com/watch?v=APg-s_yKEeE",
+        spotifyUrl: "https://open.spotify.com/track/3eA5gYjQsb3T0zAS0z2N2I",
+        imageUrl: "https://images.unsplash.com/photo-1542990253-a7814532a72c?q=80&w=2670&auto=format&fit=crop"
+      }
+    ],
+    "Telugu": [
+      {
+        title: "Deva Samstuthi Cheyave Manasa",
+        artist: "Purushottam Chaudhary",
+        album: "Classic Telugu Hymns",
+        year: 1900,
+        language: "Telugu",
+        lyricist: "Purushottam Chaudhary",
+        summary: "A classic Telugu hymn that calls the soul to praise God, mirroring the sentiment of Psalm 103.",
+        background: "One of the most foundational and widely sung hymns in Telugu churches, known for its rich theological lyrics and timeless melody.",
+        theme: "Praise, Adoration, God's Attributes",
+        lyrics: `Deva Samstuthi Cheyave Manasa
+Naa Antharangamulona nelakoni unna
+Parishudda Naamamunu keerthinchu...
+Naa Manasa...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=F2D1_gX_c4M",
+        spotifyUrl: "https://open.spotify.com/search/Deva%20Samstuthi",
+        imageUrl: "https://images.unsplash.com/photo-1524220371394-a1a7a85c704f?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "Nannenthaga Preminchithivi",
+        artist: "Various",
+        album: "Classic Telugu Hymns",
+        year: 1950,
+        language: "Telugu",
+        lyricist: "Unknown",
+        summary: "A hymn reflecting on the depth of God's love, asking 'How much have you loved me?' and marveling at the sacrifice of Christ.",
+        background: "A deeply moving and personal hymn of gratitude that is often sung during communion or times of reflection in Telugu congregations.",
+        theme: "God's Love, Sacrifice, Cross, Gratitude",
+        lyrics: `Nannenthaga preminchithivi Deva
+Naakai nee praanamichithivi
+Siluvalo raktham chindhithivi
+Naa rakshana kaaranabhuthuda...`,
+        youtubeUrl: "https://www.youtube.com/watch?v=q6t0n4S_X0Q",
+        spotifyUrl: "https://open.spotify.com/search/Nannenthaga%20Preminchithivi",
+        imageUrl: "https://images.unsplash.com/photo-1505692069772-9080d6b5e6a6?q=80&w=2670&auto=format&fit=crop"
       }
     ]
   }
@@ -152,7 +559,7 @@ const BIBLE_DATA_TE: BibleBook = {
         "5": { "1": "ఆదాము వంశావళి గ్రంథము ఇదే. దేవుడు ఆదామును సృజించిన దినమున దేవుని పోలికెగా అతని చేసెను;", "2": "మగవానిగాను ఆడుదానిగాను వారిని సృజించి వారు సృజించబడిన దినమున వారిని ఆశీర్వదించి వారికి నరులని పేరు పెట్టెను.", "3": "ఆదాము నూట ముప్పది యేండ్లు బ్రదికి తన పోలికెగా తన స్వరూపమున కుమారుని కని అతనికి షేతు అను పేరు పెట్టెను.", "4": "షేతును కనిన తరువాత ఆదాము బ్రదికిన దినములు ఎనిమిదివందల ఏండ్లు; అతడు కుమారులను కుమార్తెలను కనెను.", "5": "ఆదాము బ్రదికిన దిన ములన్నియు తొమి్మదివందల ముప్పది యేండ్లు; అప్పుడతడు మృతిబొందెను.", "6": "షేతు నూట అయిదేండ్లు బ్రదికి ఎనోషును కనెను.", "7": "ఎనోషును కనిన తరువాత షేతు ఎనిమిదివందల ఏడేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "8": "షేతు బ్రదికిన దిన ములన్నియు తొమి్మదివందల పండ్రెండేండ్లు; అప్పుడతడు మృతిబొందెను.", "9": "ఎనోషు తొంబది సంవత్సరములు బ్రదికి, కేయినానును కనెను.", "10": "కేయినానును కనిన తరువాత ఎనోషు ఎనిమిది వందల పదునైదేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "11": "ఎనోషు దినములన్నియు తొమి్మదివందల అయి దేండ్లు; అప్పుడతడు మృతిబొందెను.", "12": "కేయినాను డెబ్బది యేండ్లు బ్రదికి మహలలేలును కనెను.", "13": "మహలలేలును కనినతరువాత కేయినాను ఎనిమిది వందల నలువది యేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "14": "కేయినాను దినములన్నియు తొమి్మదివందల పది యేండ్లు; అప్పుడతడు మృతిబొందెను.", "15": "మహలలేలు అరువది యైదేండ్లు బ్రదికి యెరెదును కనెను.", "16": "యెరెదును కనినతరువాత మహలలేలు ఎనిమిది వందల ముప్పదియేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "17": "మహలలేలు దినములన్నియు ఎనిమిదివందల తొంబదియైదేండ్లు; అప్పుడతడు మృతిబొందెను.", "18": "యెరెదు నూట అరువది రెండేండ్లు బ్రదికి హనోకును కనెను.", "19": "హనోకును కనిన తరువాత యెరెదు ఎనిమిది వందలయేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "20": "యెరెదు దినములన్నియు తొమి్మదివందల అరువదిరెండేండ్లు; అప్పుడతడు మృతిబొందెను.", "21": "హనోకు అరువది యైదేండ్లు బ్రదికి మెతూషెలను కనెను.", "22": "హనోకు మెతూషెలను కనిన తరువాత మూడు వందలయేండ్లు దేవునితో నడుచుచు కుమారులను కుమార్తె లను కనెను.", "23": "హనోకు దినములన్నియు మూడువందల అరువదియైదేండ్లు.", "24": "హనోకు దేవునితో నడిచిన తరువాత దేవుడతని తీసికొనిపోయెను గనుక అతడు లేకపోయెను.", "25": "మెతూషెల నూట ఎనుబదియేడేండ్లు బ్రదికి లెమెకును కనెను.", "26": "మెతూషెల లెమెకును కనిన తరువాత ఏడు వందల ఎనుబది రెండేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "27": "మెతూషెల దినములన్నియు తొమి్మదివందల అరువది తొమి్మదియేండ్లు; అప్పుడతడు మృతిబొందెను.", "28": "లెమెకు నూట ఎనుబది రెండేండ్లు బ్రదికి ఒక కుమా రుని కని", "29": "భూమిని యెహోవా శపించినందువలన కలిగిన మన చేతుల కష్టము విషయములోను మన పని విషయము లోను ఇతడు మనకు నెమ్మది కలుగజేయుననుకొని అతనికి నోవహు అని పేరు", "30": "లెమెకు నోవహును కనిన తరువాత ఏనూట తొంబదియైదేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "31": "లెమెకు దినములన్నియు ఏడువందల డెబ్బది యేడేండ్లు; అప్పుడతడు మృతిబొందెను.", "32": "నోవహు ఐదువందల యేండ్లు గలవాడై షేమును హామును యాపెతును కనెను." },
         "6": { "1": "నరులు భూమిమీద విస్తరింప నారంభించిన తరువాత కుమార్తెలు వారికి పుట్టినప్పుడు", "2": "దేవుని కుమారులు నరుల కుమార్తెలు చక్కనివారని చూచి వారందరిలో తమకు మనస్సువచ్చిన స్త్రీలను వివాహము చేసికొనిరి.", "3": "అప్పుడు యెహోవానా ఆత్మ నరులతో ఎల్లప్పుడును వాదించదు; వారు తమ అక్రమ విషయములో నరమాత్రులై యున్నారు; అయినను వారి దినములు నూట ఇరువది యేండ్లగుననెను.", "4": "ఆ దినములలో నెఫీలులను వారు భూమి మీదనుండిరి; తరువాతను ఉండిరి. దేవుని కుమారులు నరుల కుమార్తెలతో పోయినప్పుడు వారికి పిల్లలను కనిరి. పూర్వ కాలమందు పేరు పొందిన శూరులు వీరే.", "5": "నరుల చెడు తనము భూమిమీద గొప్పదనియు, వారి హృదయము యొక్క తలంపులలోని ఊహ అంతయు ఎల్లప్పుడు కేవలము చెడ్డదనియు యెహోవా చూచి", "6": "తాను భూమిమీద నరులను చేసినందుకు యెహోవా సంతాపము నొంది తన హృదయ యములో నొచ్చుకొనెను.", "7": "అప్పుడు యెహోవా నేను సృజించిన నరులును నరులతోకూడ జంతువులును పురుగులును ఆకాశ పక్ష్యాదులును భూమిమీద నుండకుండ తుడిచివేయుదును; ఏలయనగా నేను వారిని సృష్టించి", "8": "అయితే నోవహు యెహోవా దృష్టియందు కృప పొందినవాడాయెను.", "9": "నోవహు వంశావళి యిదే. నోవహు నీతిపరుడును తన తరములో నిందారహితుడునై యుండెను. నోవహు దేవునితో కూడ నడచినవాడు.", "10": "షేము, హాము, యాపెతను ముగ్గురు కుమారులను నోవహు కనెను.", "11": "భూలోకము దేవుని సన్నిధిని చెడిపోయియుండెను; భూలోకము బలాత్కారముతో నిండియుండెను.", "12": "దేవుడు భూలోకమును చూచినప్పుడు అది చెడిపోయి యుండెను; భూమిమీద సమస్త శరీరులు తమ మార్గమును చెరిపివేసుకొని యుండిరి.", "13": "దేవుడు నోవహుఱోసమస్త శరీరుల మూలముగా భూమి బలాత్కారముతో నిండియున్నది గనుక నా సన్నిధిని వారి అంతము వచ్చియున్నది; ఇదిగో వారిని భూమితోకూడ నాశనము చేయుదును.", "14": "చితిసారకపు మ్రానుతో నీకొరకు ఓడను చేసికొనుము. అరలు పెట్టి ఆ ఓడను చేసి లోపటను వెలుపటను దానికి కీలు పూయ వలెను.", "15": "నీవు దాని చేయవలసిన విధమిది; ఆ ఓడ మూడువందల మూరల పొడుగును ఏబది మూరల వెడల్పును ముప్పది మూరల యెత్తును గలదై యుండ వలెను.", "16": "ఆ ఓడకు కిటికీ చేసి పైనుండి మూరెడు క్రిందికి దాని ముగించవలెను; ఓడ తలుపు దాని ప్రక్కను ఉంచవలెను; క్రింది అంతస్థు రెండవ అంతస్థు మూడవ అంతస్థు గలదిగా దాని చేయవలెను.", "17": "ఇదిగో నేనే జీవ వాయువుగల సమస్త శరీరులను ఆకాశము క్రింద నుండ కుండ నాశము చేయుటకు భూమిమీదికి జలప్రవాహము రప్పించుచున్నాను. లోకమందున్న సమస్తమును చని పోవును;", "18": "అయితే నీతో నా నిబంధన స్థిరపరచుదును; నీవును నీతోకూడ నీ కుమారులును నీ భార్యయు నీ కోడండ్రును ఆ ఓడలో ప్రవేశింపవలెను.", "19": "మరియు నీతోకూడ వాటిని బ్రదికించి యుంచుకొనుటకు సమస్త జీవులలో, అనగా సమస్త శరీరులయొక్క ప్రతి జాతిలో నివి రెండేసి చొప్పున నీవు ఓడలోనికి తేవలెను; వాటిలో మగదియు ఆడుదియు నుండవలెను.", "20": "నీవు వాటిని బ్రది కించి యుంచుకొనుటకై వాటి వాటి జాతుల ప్రకారము పక్షులలోను, వాటి వాటి జాతుల ప్రకారము జంతువుల లోను, వాటి వాటి జాతుల ప్రకారము నేలను ప్రాకు వాటన్నిటిలోను, ప్రతి జాతిలో రెండేసి చొప్పున నీ యొద్దకు అవి వచ్చును.", "21": "మరియు తినుటకు నానావిధములైన ఆహారపదార్థములను కూర్చుకొని నీదగ్గర ఉంచు కొనుము; అవి నీకును వాటికిని ఆహారమగునని చెప్పెను.", "22": "నోవహు అట్లు చేసెను; దేవుడు అతని కాజ్ఞాపించిన ప్రకారము యావత్తు చేసెను." },
         "7": { "1": "యెహోవాఈ తరమువారిలో నీవే నా యెదుట నీతి మంతుడవై యుండుట చూచితిని గనుక నీవును నీ యింటి వారును ఓడలో ప్రవేశించుడి.", "2": "పవిత్ర జంతువులలో ప్రతి జాతి పోతులు ఏడును పెంటులు ఏడును, పవిత్రములు కాని జంతువులలో ప్రతి జాతి పోతును పెంటియు రెండును", "3": "ఆకాశ పక్షులలో ప్రతి జాతి మగవి యేడును ఆడువి యేడును, నీవు భూమి అంతటిమీద సంతతిని జీవ ముతో కాపాడునట్లు నీయొద్ద ఉంచుకొనుము;", "4": "ఎందుకనగా ఇంకను ఏడు దినములకు నేను నలుబది పగళ్లును నలుబది రాత్రులును భూమిమీద వర్షము కురిపించి, నేను చేసిన సమస్త జీవరాసులను భూమిమీద ఉండకుండ తుడిచివేయుదునని నోవహుతో చెప్పెను.", "5": "తనకు యెహోవా ఆజ్ఞాపించిన ప్రకారము నోవహు యావత్తు చేసెను.", "6": "ఆ జలప్రవాహము భూమిమీదికి వచ్చినప్పుడు నోవహు ఆరువందల యేండ్లవాడు.", "7": "అప్పుడు నోవహును అతనితోకూడ అతని కుమారులును అతని భార్యయు అతని కోడండ్రును ఆ ప్రవాహజలములను తప్పించుకొనుటకై ఆ ఓడలో ప్రవేశించిరి.", "8": "దేవుడు నోవహు నకు ఆజ్ఞాపించిన ప్రకారము పవిత్ర జంతువులలోను అపవిత్ర జంతువులలోను, పక్షులలోను నేలను ప్రాకు వాటన్నిటిలోను,", "9": "మగది ఆడుది జతజతలుగా ఓడలోనున్న నోవహు నొద్దకు చేరెను.", "10": "ఏడు దినములైన తరువాత ఆ ప్రవాహజలములు భూమిమీదికి వచ్చెను.", "11": "నోవహు వయసుయొక్క ఆరువందల సంవత్సరము రెండవ నెల పదియేడవ దినమున మహాగాధజలముల ఊటలన్నియు ఆ దినమందే విడబడెను, ఆకాశపు తూములు విప్పబడెను.", "12": "నలుబది పగళ్లును నలుబది రాత్రులును ప్రచండ వర్షము భూమిమీద కురిసెను.", "13": "ఆ దినమందే నోవహును నోవహు కుమారులగు షేమును హామును యాపెతును నోవహు భార్యయు వారితోకూడ అతని ముగ్గురు కోడండ్రును ఆ ఓడలో ప్రవేశించిరి.", "14": "వీరే కాదు; ఆ యా జాతుల ప్రకారము ప్రతి మృగమును, ఆ యా జాతుల ప్రకారము ప్రతి పశువును, ఆ యా జాతుల ప్రకారము నేలమీద ప్రాకు ప్రతి పురుగును, ఆ యా జాతుల ప్రకారము ప్రతి పక్షియు, నానావిధములైన రెక్కలుగల ప్రతి పిట్టయు ప్రవేశించెను.", "15": "జీవాత్మగల సమస్త శరీరులలో రెండేసి రెండేసి ఓడలోనున్న నోవహు నొద్ద ప్రవేశించెను.", "16": "ప్రవేశించినవన్నియు దేవుడు అతని కాజ్ఞాపించిన ప్రకారము సమస్త శరీరులలో మగదియు ఆడుదియు ప్రవేశించెను; అప్పుడు యెహోవా ఓడలో అతని మూసివేసెను.", "17": "ఆ జలప్రవాహము నలుబది దినములు భూమిమీద నుండగా, జలములు విస్తరించి ఓడను తేలచేసినందున అది భూమిమీదనుండి పైకి లేచెను.", "18": "జలములు భూమిమీద ప్రచండముగా ప్రబలి మిక్కిలి విస్తరించినప్పుడు ఓడ నీళ్లమీద నడిచెను.", "19": "ఆ ప్రచండ జలములు భూమిమీద అత్యధికముగా ప్రబలినందున ఆకాశమంతటి క్రిందనున్న గొప్ప పర్వతములన్నియు మునిగిపోయెను.", "20": "పదిహేను మూరల యెత్తున నీళ్లు ప్రచండముగా ప్రబలెను గనుక పర్వతములును మునిగి పోయెను.", "21": "అప్పుడు పక్షులేమి పశువులేమి మృగములేమి భూమిమీద ప్రాకు పురుగులేమి భూమిమీద సంచరించు సమస్త శరీరులేమి సమస్త నరులేమి చచ్చిపోయిరి.", "22": "పొడి నేలమీదనున్న వాటన్నిటిలోను నాసికారంధ్రములలో జీవాత్మ సంబంధమైన ఊపిరిగలవన్నియు చని పోయెను.", "23": "నరులతో కూడ పశువులును పురుగులును ఆకాశపక్షులును నేలమీదనున్న జీవరాసులన్నియు తుడిచివేయబడెను. అవి భూమిమీద నుండకుండ తుడిచివేయబడెను. నోవహును అతనితో కూడ ఆ ఓడలో నున్నవియు మాత్రము మిగిలియుండెను.", "24": "నూట ఏబది దినముల వరకు నీళ్లు భూమిమీద ప్రచండముగా ప్రబలెను." },
-        "8": { "1": "దేవుడు నోవహును అతనితోకూడ ఓడలోనున్న సమస్త జంతువులను సమస్త పశువులను జ్ఞాపకము చేసికొనెను. దేవుడు భూమిమీద వాయువు విసరునట్లు చేయుటవలన నీళ్లు తగ్గిపోయెను.", "2": "అగాధ జలముల ఊటలును ఆకాశపు తూములును మూయబడెను; ఆకా శమునుండి కురియుచున్న ప్రచండ వర్షము నిలిచి పోయెను.", "3": "అప్పుడు నీళ్లు భూమిమీదనుండి క్రమ క్రమ ముగా తీసి పోవుచుండెను; నూట ఏబది దినము లైనతరు వాత నీళ్లు తగ్గిపోగా", "4": "ఏడవ నెల పదియేడవ దినమున ఓడ అరారాతు కొండలమీద నిలిచెను.", "5": "నీళ్లు పదియవ నెలవరకు క్రమముగా తగ్గుచువచ్చెను. పదియవ నెల మొదటి దినమున కొండల శిఖరములు కనబడెను.", "6": "నలుబది దినములైన తరువాత నోవహు తాను చేసిన ఓడకిటికీ తీసి", "7": "ఒక కాకిని వెలుపలికి పోవిడిచెను. అది బయటికి వెళ్లి భూమిమీదనుండి నీళ్లు ఇంకిపోవువరకు ఇటు అటు తిరుగుచుండెను.", "8": "మరియు నీళ్లు నేలమీదనుండి తగ్గినవో లేదో చూచుటకు అతడు తన యొద్దనుండి నల్లపావుర మొకటి వెలుపలికి పోవిడిచెను.", "9": "నీళ్లు భూమి అంతటి మీద నున్నందున తన అరకాలు నిలుపుటకు దానికి స్థలము దొరకలేదు గనుక ఓడలోనున్న అతనియొద్దకు తిరిగి వచ్చెను. అప్పుడతడు చెయ్యి చాపి దాని పట్టుకొని ఓడలోనికి తీసికొనెను.", "10": "అతడు మరి యేడుదినములు తాళి మరల ఆ నల్ల పావురమును ఓడలోనుండి వెలుపలికి విడిచెను.", "11": "సాయంకాలమున అది అతనియొద్దకు వచ్చి నప్పుడు త్రుంచబడిన ఓలీవచెట్టు ఆకు దాని నోటనుండెను గనుక నీళ్లు భూమిమీదనుండి తగ్గిపోయెనని నోవహునకు తెలిసెను.", "12": "అతడింక మరి యేడు దినములు తాళి ఆ పావురమును వెలుపలికి విడిచెను. ఆ తరువాత అది అతని యొద్దకు తిరిగి రాలేదు.", "13": "మరియు ఆరువందల ఒకటవ సంవత్సరము మొదటినెల తొలిదినమున నీళ్లు భూమిమీదనుండి యింకిపోయెను. నోవహు ఓడ కప్పు తీసి చూచినప్పుడు నేల ఆరియుండెను.", "14": "రెండవ నెల యిరువది యేడవ దినమున భూమియెండి యుండెను.", "15": "అప్పుడు దేవుడు", "16": "నీవును నీతోకూడ నీ భార్యయు నీ కుమారులును నీ కోడండ్రును ఓడలోనుండి బయటికి రండి.", "17": "పక్షులు పశువులు భూమిమీద ప్రాకు ప్రతి జాతి పురుగులు మొదలైన సమస్తశరీరులలో నీతోకూడ నున్న ప్రతిజంతువును వెంటబెట్టుకొని వెలుపలికి రావలెను. అవి భూమిమీద బహుగా విస్తరించి భూమిమీద ఫలించి అభివృద్ధి పొందవలెనని నోవహుతో చెప్పెను.", "18": "కాబట్టి నోవహును అతనితో కూడ అతని కుమారులును అతని భార్యయు అతని కోడండ్రును బయటికి వచ్చిరి.", "19": "ప్రతి జంతువును ప్రాకు ప్రతి పురుగును ప్రతి పిట్టయు భూమిమీద సంచరించునవన్నియు వాటి వాటి జాతుల చొప్పున ఆ ఓడలోనుండి బయటికి వచ్చెను.", "20": "అప్పుడు నోవహు యెహోవాకు బలిపీఠము కట్టి, పవిత్ర పశువు లన్నిటిలోను పవిత్ర పక్షులన్నిటిలోను కొన్ని తీసికొని ఆ పీఠముమీద దహనబలి అర్పించెను.", "21": "అప్పుడు యెహోవా ఇంపయిన సువాసన నాఘ్రాణించిఇక మీదట నరులనుబట్టి భూమిని మరల శపించను. ఎందు కనగా నరుల హృదయాలోచన వారి బాల్యమునుండి చెడ్డది. నేనిప్పుడు చేసిన", "22": "భూమి నిలిచియున్నంతవరకు వెదకాలమును కోతకాలమును శీతోష్ణములును వేసవి శీత కాలములును రాత్రింబగళ్లును ఉండక మానవని తన హృద యములో అనుకొనెను." },
+        "8": { "1": "దేవుడు నోవహును అతనితోకూడ ఓడలోనున్న సమస్త జంతువులను సమస్త పశువులను జ్ఞాపకము చేసికొనెను. దేవుడు భూమిమీద వాయువు విసరునట్లు చేయుటవలన నీళ్లు తగ్గిపోయెను.", "2": "అగాధ జలముల ఊటలును ఆకాశపు తూములును మూయబడెను; ఆకా శమునుండి కురియుచున్న ప్రచండ వర్షము నిలిచి పోయెను.", "3": "అప్పుడు నీళ్లు భూమిమీదనుండి క్రమ క్రమ ముగా తీసి పోవుచుండెను; నూట ఏబది దినము లైనతరు వాత నీళ్లు తగ్గిపోగా", "4": "ఏడవ నెల పదియేడవ దినమున ఓడ అరారాతు కొండలమీద నిలిచెను.", "5": "నీళ్లు పదియవ నెలవరకు క్రమముగా తగ్గుచువచ్చెను. పదియవ నెల మొదటి దినమున కొండల శిఖరములు కనబడెను.", "6": "నలుబది దినములైన తరువాత నోవహు తాను చేసిన ఓడకిటికీ తీసి", "7": "ఒక కాకిని వెలుపలికి పోవిడిచెను. అది బయటికి వెళ్లి భూమిమీదనుండి నీళ్లు ఇంకిపోవువరకు ఇటు అటు తిరుగుచుండెను.", "8": "మరియు నీళ్లు నేలమీదనుండి తగ్గినవో లేదో చూచుటకు అతడు తన యొద్దనుండి నల్లపావుర మొకటి వెలుపలికి పోవిడిచెను.", "9": "నీళ్లు భూమి అంతటి మీద నున్నందున తన అరకాలు నిలుపుటకు దానికి స్థలము దొరకలేదు గనుక ఓడలోనున్న అతనియొద్దకు తిరిగి వచ్చెను. అప్పుడతడు చెయ్యి చాపి దాని పట్టుకొని ఓడలోనికి తీసికొనెను.", "10": "అతడు మరి యేడుదినములు తాళి మరల ఆ నల్ల పావురమును ఓడలోనుండి వెలుపలికి విడిచెను.", "11": "సాయంకాలమున అది అతనియొద్దకు వచ్చి నప్పుడు త్రుంచబడిన ఓలీవచెట్టు ఆకు దాని నోటనుండెను గనుక నీళ్లు భూమిమీదనుండి తగ్గిపోయెనని నోవహునకు తెలిసెను.", "12": "అతడింక మరి యేడు దినములు తాళి ఆ పావురమును వెలుపలికి విడిచెను. ఆ తరువాత అది అతని యొద్దకు తిరిగి రాలేదు.", "13": "మరియు ఆరువందల ఒకటవ సంవత్సరము మొదటినెల తొలిదినమున నీళ్లు భూమిమీదనుండి యింకిపోయెను. నోవహు ఓడ కప్పు తీసి చూచినప్పుడు నేల ఆరియుండెను.", "14": "రెండవ నెల యిరువది యేడవ దినమున భూమియెండి యుండెను.", "15": "అప్పుడు దేవుడు", "16": "నీవును నీతోకూడ నీ భార్యయు నీ కుమారులును నీ కోడండ్రును ఓడలోనుండి బయటికి రండి.", "17": "పక్షులు పశువులు భూమిమీద ప్రాకు ప్రతి జాతి పురుగులు మొదలైన సమస్తశరీరులలో నీతోకూడ నున్న ప్రతిజంతువును వెంటబెట్టుకొని వెలుపలికి రావలెను. అవి భూమిమీద బహుగా విస్తరించి భూమిమీద ఫలించి అభివృద్ధి పొందవలెనని నోవహుతో చెప్పెను.", "18": "కాబట్టి నోవహును అతనితో కూడ అతని కుమారులును అతని భార్యయు అతని కోడండ్రును బయటికి వచ్చిరి.", "19": "ప్రతి జంతువును ప్రాకు ప్రతి పురుగును ప్రతి పిట్టయు భూమిమీద సంచరించునవన్నియు వాటి వాటి జాతుల చొప్పున ఆ ఓడలోనుండి బయటికి వచ్చెను.", "20": "అప్పుడు నోవహు యెహోవాకు బలిపీఠము కట్టి, పవిత్ర పశువు లన్నిటిలోను పవిత్ర పక్షులన్నిటిలోను కొన్ని తీసికొని ఆ పీఠముమీద దహనబలి అర్పించెను.", "21": "అప్పుడు యెహోవా ఇంపయిన సువాసన నాఘ్రాణించిఇక మీదట నరులనుబట్టి భూమిని మరల శపించను. ఎందు కనగా నరుల హృదయాలోచన వారి బాల్యమునుండి చెడ్డది. నేనిప్పుడు చేసిన", "22": "భూమి నిలిచియున్నంతవరకు వెదకాలమును కోతకాలమును శీతోష్ణములును వేసవి శీత కాలములును రాత్రింబగళ్లును ఉండక మానవని తన హృదయ యములో అనుకొనెను." },
         "9": { "1": "మరియు దేవుడు నోవహును అతని కుమారులను ఆశీర్వదించిమీరు ఫలించి అభివృద్ధి పొంది భూమిని నింపుడి.", "2": "మీ భయమును మీ బెదురును అడవి జంతువు లన్నిటికిని ఆకాశపక్షులన్నిటికిని నేలమీద ప్రాకు ప్రతి పురుగుకును సముద్రపు చేపలన్నిటికిని కలుగును; అవి మీ చేతి కప్పగింపబడి యున్నవి.", "3": "ప్రాణముగల సమస్త చరములు మీకు ఆహారమగును; పచ్చని కూర మొక్కల నిచ్చినట్లు వాటిని మీకిచ్చియున్నాను.", "4": "అయినను మాంస మును దాని రక్తముతో మీరు తినకూడదు; రక్తమే దాని ప్రాణము.", "5": "మరియు మీకు ప్రాణమైన మీ రక్తమును గూర్చి విచారణ చేయుదును; దానిగూర్చి ప్రతిజంతువును నరులను విచారణ చేయుదును; ప్రతి నరుని ప్రాణమును గూర్చి వాని సహోదరుని విచారణ చేయుదును.", "6": "నరుని రక్తమును చిందించు వాని రక్తము నరునివలననే చిందింప బడును; ఏలయనగా దేవుడు తన స్వరూపమందు నరుని చేసెను.", "7": "మీరు ఫలించి అభివృద్ధి నొందుడి; మీరు భూమిమీద సమృద్ధిగా సంతానము కని విస్తరించుడని వారితో చెప్పెను.", "8": "మరియు దేవుడు నోవహు అతని కుమారులతో", "9": "ఇదిగో నేను మీతోను మీ తదనంతరము మీ సంతాన ముతోను మీతోకూడనున్న ప్రతి జీవితోను,", "10": "పక్షులేమి పశువులేమి మీతోకూడ సమస్తమైన భూజంతువులేమి ఓడలోనుండి బయటికి వచ్చిన సమస్త భూజంతువులతోను నా నిబంధన స్థిరపరచుచున్నాను.", "11": "నేను మీతో నా నిబంధన స్థిరపరచుదును; సమస్త శరీరులు ప్రవాహ జలములవలన ఇకను లయపరచబడరు; భూమిని నాశనము చేయుటకు ఇకను జలప్రవాహము కలుగదని పలికెను.", "12": "మరియు దేవుడునాకును మీకును మీతోకూడనున్న సమస్త జీవరాసులకును మధ్య నేను తరతరములకు ఏర్ప రచుచున్న నిబంధనకు గురుతు ఇదే.", "13": "మేఘములో నా ధనుస్సును ఉంచితిని; అది నాకును భూమికిని మధ్య నిబంధ నకు గురుతుగా నుండును.", "14": "భూమిపైకి నేను మేఘమును రప్పించునప్పుడు ఆ ధనుస్సు మేఘములో కనబడును.", "15": "అప్పుడు నాకును మీకును సమస్త జీవరాసులకును మధ్యనున్న నా నిబంధనను జ్ఞాపకము చేసికొందును గనుక సమస్త శరీరులను నాశనము చేయుటకు ఆలాగు ప్రవాహముగా నీళ్లు రావు", "16": "ఆ ధనుస్సు మేఘములో నుండును. నేను దాని చూచి దేవునికిని భూమిమీదనున్న సమస్త శరీరులలో ప్రాణముగల ప్రతి దానికిని మధ్యనున్న నిత్య నిబంధనను జ్ఞాపకము చేసికొందుననెను.", "17": "మరియు దేవుడు నాకును భూమిమీదనున్న సమస్తశరీరులకును మధ్య నేను స్థిరపరచిన నిబంధనకు గురుతు ఇదే అని నోవహుతో చెప్పెను.", "18": "ఓడలోనుండి వచ్చిన నోవహు కుమారులు షేము హాము యాపెతనువారు; హాము కనానుకు తండ్రి.", "19": "ఈ ముగ్గురు నోవహు కుమారులు; వీరి సంతానము భూమియందంతట వ్యాపించెను.", "20": "నోవహు వ్యవసాయము చేయనారంభించి, ద్రాక్షతోట వేసెను.", "21": "పిమ్మట ద్రాక్షారసము త్రాగి మత్తుడై తన గుడారములో వస్త్రహీనుడుగా నుండెను.", "22": "అప్పుడు కనానుకు తండ్రియైన హాము తన తండ్రి వస్త్రహీనుడై యుండుట చూచి బయటనున్న తన యిద్దరు సహోదరులకు ఆ సంగతి తెలిపెను.", "23": "అప్పుడు షేమును యాపెతును వస్త్రమొకటి తీసికొని తమ యిద్దరి భుజములమీద వేసికొని వెనుకకు నడిచి వెళ్లి తమ తండ్రి దిసమొలను కప్పిరి; వారి ముఖములు వెనుకతట్టు ఉండుట", "24": "అప్పుడు నోవహు మత్తునుండి మేలుకొని తన చిన్నకుమారుడు చేసినదానిని తెలిసికొని", "25": "కనాను శపింపబడినవాడై తన సహోదరులకు దాసాను దాసుడగును అనెను.", "26": "మరియు అతడు షేము దేవుడైన యెహోవా స్తుతింపబడునుగాక కనాను అతనికి దాసుడగును.", "27": "దేవుడు యాపెతును విశాలపరచును అతడు షేము గుడారములలో నివసించును అతనికి కనాను దాసుడగును అనెను.", "28": "ఆ జలప్రవాహము గతించిన తరువాత నోవహు మూడువందల ఏబది యేండ్లు బ్రదికెను.", "29": "నోవహు బ్రదికిన దినములన్నియు తొమి్మదివందల ఏబది యేండ్లు; అప్పు డతడు మృతిబొందెను." },
         "10": { "1": "ఇది నోవహు కుమారుడగు షేము హాము యాపె తను వారి వంశావళి. జలప్రళయము తరువాత వారికి కుమారులు పుట్టిరి.", "2": "యాపెతు కుమారులు గోమెరు మాగోగు మాదయి యావాను తుబాలు మెషెకు తీరసు అనువారు.", "3": "గోమెరు కుమారులు అష్కనజు రీఫతు తోగర్మా అనువారు.", "4": "యావాను కుమారులు ఏలీషా తర్షీషు కిత్తీము దాదోనీము అనువారు.", "5": "వీరినుండి సముద్ర తీరమందుండిన జనములు వ్యాపించెను. వారివారి జాతుల ప్రకారము, వారివారి భాషలప్రకారము, వారివారి వంశముల ప్రకారము, ఆ యా దేశములలో వారు వేరైపోయిరి.", "6": "హాము కుమారులు కూషు మిస్రాయిము పూతు కనాను అనువారు.", "7": "కూషు కుమారులు సెబా హవీలా సబ్తా రాయమా సబ్తకా అనువారు. రాయమా కుమారులు షేబ దదాను అనువారు.", "8": "కూషు నిమ్రోదును కనెను. అతడు భూమిమీద పరాక్రమశాలియై యుండుటకు ఆరంభించెను.", "9": "అతడు యెహోవాయెదుట పరాక్రమముగల వేటగాడు. కాబట్టియెహోవా యెదుట పరా క్రమముగల వేటగాడైన నిమ్రోదువలె అను లోకోక్తికలదు.", "10": "షీనారు దేశములోని బాబెలు ఎరెకు అక్కదు కల్నే అను పట్టణములు అతని రాజ్యమునకు మొదలు.", "11": "ఆ దేశములోనుండి అష్షూరుకు బయలుదేరి వెళ్లి నీనెవెను రహోబోతీరును కాలహును", "12": "నీనెవెకును కాలహుకును మధ్యనున్న రెసెనును కట్టించెను; ఇదే ఆ మహా పట్ట ణము.", "13": "మిస్రాయిము లూదీయులను అనామీయులను లెహాబీయులను నప్తుహీయులను", "14": "పత్రుసీయులను కస్లూ హీయులను కఫ్తోరీయులను కనెను. ఫిలిష్తీయులు కస్లూ హీయులలోనుండి వచ్చిన వారు.", "15": "కనాను తన ప్రథమ కుమారుడగు సీదోనును హేతును యెబూసీయులను అమోరీయులను గిర్గాషీయులను", "16": "హివ్వీయులను అర్కీయులను సినీయులను", "17": "అర్వాదీయు లను సెమారీయులను హమాతీయులను కనెను.", "18": "తరువాత కనానీయుల వంశములు వ్యాపించెను.", "19": "కనానీయుల సరిహద్దు సీదోనుండి గెరారుకు వెళ్లు మార్గములో గాజా వరకును, సొదొమ గొమొఱ్ఱా అద్మా సెబోయిము లకు వెళ్లు మార్గములో లాషావరకును ఉన్నది.", "20": "వీరు తమతమ వంశముల ప్రకారము తమతమ భాషల ప్రకారము తమతమ దేశములనుబట్టియు జాతులను బట్టియు హాము కుమారులు.", "21": "మరియు ఏబెరుయొక్క కుమారులందరికి పితరుడును, పెద్దవాడయిన యాపెతు సహోదరుడునగు షేముకు కూడ సంతానము పుట్టెను.", "22": "షేము కుమారులు ఏలాము అష్షూరు అర్పక్షదు లూదు అరామను వారు.", "23": "అరాము కుమారులు ఊజు హూలు గెతెరు మాషనువారు.", "24": "అర్పక్షదు షేలహును కనెను. షేలహు ఏబెరును కనెను.", "25": "ఏబెరుకు ఇద్దరు కుమారులు పుట్టిరి. వారిలో ఒకనిపేరు పెలెగు, ఏలయనగా అతని దినములలో భూమి దేశములుగా విభాగింపబడెను. అతని సహోదరుని పేరు యొక్తాను.", "26": "యొక్తాను అల్మోదాదును షెలపును హసర్మా వెతును యెరహును", "27": "హదోరమును ఊజాలును దిక్లాను", "28": "ఓబాలును అబీమాయెలును షేబను", "29": "ఓఫీరును హవీలాను యోబాబును కనెను. వీరందరు యొక్తాను కుమారులు.", "30": "మేషానుండి సపారాకు వెళ్లు మార్గములోని తూర్పు కొండలు వారి నివాసస్థలము.", "31": "వీరు తమతమ వంశముల ప్రకారము తమతమ భాషలప్రకారము తమతమ దేశ ములనుబట్టియు తమతమ జాతులనుబట్టియు షేము కుమారులు.", "32": "వారివారి జనములలో వారివారి సంతతుల ప్రకారము, నోవహు కుమారుల వంశములు ఇవే. జలప్రవాహము గతించిన తరువాత వీరిలోనుండి జనములు భూమిమీద వ్యాపించెను.." },
         "11": { "1": "భూమియందంతట ఒక్క భాషయు ఒక్క పలుకును ఉండెను.", "2": "వారు తూర్పున ప్రయాణమై పోవుచుండగా షీనారు దేశమందొక మైదానము వారికి కనబడెను. అక్కడ వారు నివసించి", "3": "మనము ఇటికలు చేసి బాగుగా కాల్చుదము రండని ఒకనితో ఒకడు మాటలాడుకొనిరి. రాళ్లకు ప్రతిగా ఇటికలును, అడుసునకు ప్రతిగా మట్టికీలును వారికుండెను.", "4": "మరియు వారుమనము భూమియందంతట చెదిరిపోకుండ ఒక పట్టణమును ఆకాశమునంటు శిఖరము గల ఒక గోపురమును కట్టుకొని, పేరు సంపాదించుకొందము రండని మాటలాడుకొనగా", "5": "యెహోవా నరుల కుమారులు కట్టిన పట్టణమును గోపురమును చూడ దిగి వచ్చెను.", "6": "అప్పుడు యెహోవాఇదిగో జనము ఒక్కటే; వారికందరికి భాష ఒక్కటే; వారు ఈ పని ఆరంభించి యున్నారు. ఇకమీదట వారు చేయ దలచు ఏపని యైనను చేయకుండ వారికి ఆటంకమేమియు నుండద", "7": "గనుక మనము దిగిపోయి వారిలో ఒకని మాట ఒకనికి తెలియకుండ అక్కడ వారి భాషను తారుమారు చేయుదము రండని అనుకొనెను.", "8": "ఆలాగు యెహోవా అక్కడ నుండి భూమియందంతట వారిని చెదరగొట్టెను గనుక వారు ఆ పట్టణమును కట్టుట మానిరి.", "9": "దానికి బాబెలు అను పేరు పెట్టిరి; ఎందు కనగా అక్కడ యెహోవా భూజనులందరి భాషను తారుమారుచేసెను. అక్కడ నుండి యెహోవా భూమియందంతట వారిని చెదరగొట్టెను.", "10": "షేము వంశావళి ఇది. షేము నూరేండ్లుగలవాడై జలప్రవాహము గతించిన రెండేండ్లకు అర్పక్షదును కనెను.", "11": "షేము అర్పక్షదును కనినతరువాత ఐదువందలయేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "12": "అర్పక్షదు ముప్పది యైదేండ్లు బ్రదికి షేలహును కనెను.", "13": "అర్పక్షదు షేలహును కనినతరువాత నాలుగు వందలమూడేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "14": "షేలహు ముప్పది యేండ్లు బ్రదికి ఏబెరును కనెను.", "15": "షేలహు ఏబెరును కనినతరువాత నాలుగు వందల మూడేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "16": "ఏబెరు ముప్పది నాలుగేండ్లు బ్రదికి పెలెగును కనెను.", "17": "ఏబెరు పెలెగును కనినతరువాత నాలుగువందల ముప్పది యేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "18": "పెలెగు ముప్పది యేండ్లు బ్రదికి రయూను కనెను.", "19": "పెలెగు రయూను కనినతరువాత రెండువందల తొమి్మది యేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "20": "రయూ ముప్పది రెండేండ్లు బ్రదికి సెరూగును కనెను.", "21": "రయూ సెరూగును కనినతరువాత రెండు వందల ఏడేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "22": "సెరూగు ముప్పది యేండ్లు బ్రదికి నాహోరును కనెను.", "23": "సెరూగు నాహోరును కనినతరువాత రెండువందల యేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "24": "నాహోరు ఇరువది తొమి్మది యేండ్లు బ్రదికి తెరహును కనెను.", "25": "నాహోరు తెరహును కనినతరు వాత నూటపం దొమి్మది యేండ్లు బ్రదికి కుమారులను కుమార్తెలను కనెను.", "26": "తెరహు డెబ్బది యేండ్లు బ్రదికి అబ్రామును నాహో రును హారానును కనెను.", "27": "తెరహు వంశావళి ఇది; తెరహు అబ్రామును నాహో రును హారానును కనెను. హారాను లోతును కనెను.", "28": "హారాను తాను పుట్టిన దేశమందలి కల్దీయుల ఊరను పట్టణ ములో తన తండ్రియైన తెరహు కంటె ముందుగా మృతి బొందెను.", "29": "అబ్రామును నాహోరును వివాహము చేసి కొనిరి. అబ్రాము భార్య పేరు శారయి; నాహోరు భార్య పేరు మిల్కా, ఆమె మిల్కాకును ఇస్కాకును తండ్రియైన హారాను కుమార్తె.", "30": "శారయి గొడ్రాలై యుండెను. ఆమెకు సంతానములేదు.", "31": "తెరహు తన కుమారుడగు అబ్రామును, తన కుమారుని కుమారుడు, అనగా హారాను కుమారుడగు లోతును, తన కుమారుడగు అబ్రాము భార్యయయిన శారయి అను తన కోడలిని తీసికొని కనానుకు వెళ్ళుటకు కల్దీయుల ఊరను పట్టణములో నుండి వారితోకూడ బయలుదేరి హారాను మట్టుకు వచ్చి అక్కడ నివసించిరి.", "32": "తెరహు బ్రదికిన దినములు రెండువందల యైదేండ్లు. తెరహు హారానులో మృతి బొందెను." },
