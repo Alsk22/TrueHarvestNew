@@ -1,3 +1,5 @@
+// Fix: Removed self-import which caused conflicts with local type declarations.
+
 export type BibleLanguage = 'english' | 'telugu';
 export type EnglishVersion = 'KJV' | 'NKJV' | 'ESV';
 
@@ -46,7 +48,7 @@ export interface Song {
   artist: string;
   album: string;
   year: number;
-  language: 'English' | 'Telugu' | 'Tamil';
+  language: 'English' | 'Telugu' | 'Tamil' | 'Hindi';
   lyricist: string;
   summary: string;
   background: string;

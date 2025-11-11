@@ -31,12 +31,40 @@ Now revealed in You our Christ...`,
         summary: "A song of praise for God's endless goodness and mercy, encouraging believers to bless the Lord at all times.",
         background: "Inspired by Psalm 103, this song became a global anthem and won two Grammy Awards.",
         theme: "Praise, Blessings, God's Faithfulness",
-        lyrics: `Bless the Lord, O my soul
-O my soul
+        lyrics: `Bless the Lord, O my soul O my soul
 Worship His holy name
-Sing like never before
-O my soul
-I'll worship Your holy name...`,
+Sing like never before O my soul
+I’ll worship Your holy name
+
+The sun comes up, it’s a new day dawning
+It’s time to sing Your song again
+Whatever may pass, and whatever lies before me
+Let me be singing when the evening comes
+
+Bless the Lord, O my soul O my soul
+Worship His holy name
+Sing like never before O my soul
+I’ll worship Your holy name
+
+You’re rich in love, and You’re slow to anger
+Your name is great, and Your heart is kind
+For all Your goodness I will keep on singing
+Ten thousand reasons for my heart to find
+
+Bless the Lord, O my soul O my soul
+Worship His holy name
+Sing like never before O my soul
+I’ll worship Your holy name
+
+And on that day when my strength is failing
+The end draws near and my time has come
+Still my soul will sing Your praise unending
+Ten thousand years and then forevermore
+
+Bless the Lord, O my soul O my soul
+Worship His holy name
+Sing like never before O my soul
+I’ll worship Your holy name`,
         youtubeUrl: "https://www.youtube.com/watch?v=XtwIT8JjddM",
         spotifyUrl: "https://open.spotify.com/track/0fVxa2i3kK2FzR0K6d252b",
         imageUrl: "https://images.unsplash.com/photo-1456488683533-3a5a5d21a50a?q=80&w=2670&auto=format&fit=crop"
@@ -84,9 +112,41 @@ Let the poor say, "I am rich
 Because of what the Lord has done for us"
 
 Give thanks!`,
-        youtubeUrl: "https://www.youtube.com/watch?v=BqBgoa2A2cI",
+        youtubeUrl: "https://www.youtube.com/watch?v=blbslHDgceY",
         spotifyUrl: "https://open.spotify.com/track/6225iG6f2IEXf0DMrYog3C",
         imageUrl: "https://images.unsplash.com/photo-1508739607823-3b1f3938ba08?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "How Great Is Our God",
+        artist: "Chris Tomlin",
+        album: "Arriving",
+        year: 2004,
+        language: "English",
+        lyricist: "Chris Tomlin, Jesse Reeves, Ed Cash",
+        summary: "A powerful, modern worship anthem that declares the majesty, splendor, and greatness of God.",
+        background: "One of the most popular worship songs of the 21st century, it won numerous awards and has been translated into many languages.",
+        theme: "God's Majesty, Trinity, Praise",
+        lyrics: `The splendor of a King, clothed in majesty
+Let all the Earth rejoice, all the Earth rejoice
+He wraps himself in light, and darkness tries to hide
+And trembles at His voice, and trembles at His voice
+
+How great is our God, sing with me
+How great is our God, and all will see
+How great, how great is our God
+
+Age to age He stands, and time is in His hands
+Beginning and the end, beginning and the end
+The Godhead three in one: Father, Spirit, Son
+The Lion and the Lamb, the Lion and the Lamb
+
+Name above all names
+Worthy of all praise
+My heart will sing
+How great is our God`,
+        youtubeUrl: "https://www.youtube.com/watch?v=XV4nOVmWW2A",
+        spotifyUrl: "https://open.spotify.com/track/0j3kL2wVfFkS2mJadJjCg3",
+        imageUrl: "https://images.unsplash.com/photo-1468276311594-df7cb65d8df6?q=80&w=2670&auto=format&fit=crop"
       }
     ],
     "Telugu": [
@@ -125,6 +185,75 @@ Naa praanamai nannu nadipunnadi...`,
         youtubeUrl: "https://www.youtube.com/watch?v=iM2h5C5a4sA",
         spotifyUrl: "https://open.spotify.com/track/3T6l7Z1y2s3X3q6C6j4B8d",
         imageUrl: "https://images.unsplash.com/photo-1532152983-2169614352E4?q=80&w=2670&auto=format&fit=crop"
+      },
+       {
+        title: "అత్యున్నత సింహాసనముపై",
+        artist: "Bro. Yesanna",
+        album: "Hosanna Ministries",
+        year: 2005,
+        language: "Telugu",
+        lyricist: "Bro. Yesanna",
+        summary: "A song of adoration exalting God on His highest throne, describing His attributes like love, wonder, and might.",
+        background: "A timeless Telugu worship song that is sung in congregations across the world, celebrating the majesty and names of God.",
+        theme: "Adoration, God's Sovereignty, Praise, Names of God",
+        lyrics: `అత్యున్నత సింహాసనముపై – ఆసీనుడవైన దేవా
+అత్యంత ప్రేమా స్వరూపివి నీవే
+ఆరాధింతును నిన్నే (2)
+ఆహాహా.. హల్లెలూయా – ఆహాహా.. హల్లెలూయా (3)
+ఆహాహా.. హల్లెలూయా – ఆహాహా.. ఆమెన్
+ఆశ్చర్యకరుడా స్తోత్రం
+ఆలోచనకర్త స్తోత్రం
+బలమైన దేవా నిత్యుడవగు తండ్రి
+సమాధాన అధిపతి స్తోత్రం (2) ||ఆహాహా||
+కృపా సత్య సంపూర్ణుడా స్తోత్రం
+కృపతో రక్షించితివే స్తోత్రం
+నీ రక్తమిచ్చి విమోచించినావు
+నా రక్షణకర్త స్తోత్రం (2) ||ఆహాహా||
+స్తుతులపై ఆసీనుడా స్తోత్రం
+సంపూర్ణుడా నీకు స్తోత్రం
+మా ప్రార్థనలు ఆలకించువాడా
+మా ప్రధాన యాజకుడా స్తోత్రం (2) ||ఆహాహా||
+మృత్యుంజయుడా స్తోత్రం
+మహాఘనుడా స్తోత్రం
+మమ్మును కొనిపోవ త్వరలో రానున్న
+మేఘ వాహనుడా స్తోత్రం (2) ||ఆహాహా||
+ఆమెన్ అనువాడా స్తోత్రం
+అల్ఫా ఒమేగా స్తోత్రం
+అగ్ని జ్వాలలవంటి కన్నులు గలవాడా
+అత్యున్నతుడా స్తోత్రం (2) ||ఆహాహా||`,
+        youtubeUrl: "https://www.youtube.com/watch?v=s-7S8p0p2gA",
+        spotifyUrl: "https://open.spotify.com/search/Athyunnatha%20Simhasanamupai",
+        imageUrl: "https://images.unsplash.com/photo-1596701127110-310b830853a8?q=80&w=2670&auto=format&fit=crop"
+      }
+    ],
+    "Hindi": [
+      {
+        title: "आज का दिन",
+        artist: "Various Artists",
+        album: "Classic Hindi Worship",
+        year: 1980,
+        language: "Hindi",
+        lyricist: "Traditional",
+        summary: "A joyful song based on Psalm 118:24, declaring that 'This is the day the Lord has made, we will rejoice and be glad in it.'",
+        background: "A classic Hindi chorus that has been sung in churches for decades, expressing simple joy and thankfulness for each new day God provides.",
+        theme: "Joy, Rejoicing, Thanksgiving, Praise",
+        lyrics: `आज का दिन यहोवा ने बनाया है
+हम उसमें आनंदित हो आनंदित हों (2)
+प्रभु को महिमा मिले
+चाहे हो मेरा अपमान (2)
+वो बढ़े मैं घटूँ
+रहे उसी का ध्यान (2) ||आज का||
+स्तुति प्रशंसा करें
+क्यों ना कुछ होता रहे (2)
+उसको हम भाते रहें
+चाहे जहाँ भी रहें (2) ||आज का||
+आता हूँ तेरे पास
+मुझको है तुझसे आस (2)
+मुझको कबूल कर ले
+पापों से शुद्ध कर दे (2) ||आज का||`,
+        youtubeUrl: "https://www.youtube.com/watch?v=0W5yIZf_n4A",
+        spotifyUrl: "https://open.spotify.com/search/aaj%20ka%20din%20yahowa%20ne",
+        imageUrl: "https://images.unsplash.com/photo-1543362906-acfc16c67564?q=80&w=2565&auto=format&fit=crop"
       }
     ]
   },
@@ -315,6 +444,128 @@ Yesayya... Yesayya...`,
             youtubeUrl: "https://www.youtube.com/watch?v=jW01ePZ2n0s",
             spotifyUrl: "https://open.spotify.com/search/Naa%20Hrudayam%20Bridge%20Music",
             imageUrl: "https://images.unsplash.com/photo-1499922249875-d1f05335a938?q=80&w=2670&auto=format&fit=crop"
+        },
+        {
+          title: "ఇదిగో దేవా నా జీవితం",
+          artist: "Various Artists",
+          album: "Classic Telugu Worship",
+          year: 1995,
+          language: "Telugu",
+          lyricist: "Unknown",
+          summary: "A song of dedication, surrendering one's life completely to God and asking to be used for His purpose and as a witness.",
+          background: "A heartfelt song of consecration, often sung during times of personal reflection or altar calls in Telugu churches.",
+          theme: "Surrender, Consecration, Service, Witnessing",
+          lyrics: `ఇదిగో దేవా నా జీవితం
+ఆపాదమస్తకం నీకంకితం (2)
+శరణం నీ చరణం (4) ||ఇదిగో||
+పలుమార్లు వైదొలగినాను
+పరలోక దర్శనమునుండి
+విలువైన నీ దివ్య పిలుపుకు
+నే తగినట్లు జీవించనైతి (2)
+అయినా నీ ప్రేమతో
+నన్ను దరిచేర్చినావు
+అందుకే గైకొనుము దేవా
+ఈ నా శేష జీవితం ||ఇదిగో||
+నీ పాదముల చెంత చేరి
+నీ చిత్తంబు నేనెరుగ నేర్పు
+నీ హృదయ భారంబు నొసగి
+ప్రార్థించి పనిచేయనిమ్ము (2)
+ఆగిపోక సాగిపోవు
+ప్రియసుతునిగా పనిచేయనిమ్ము
+ప్రతి చోట నీ సాక్షిగా
+ప్రభువా నన్నుండనిమ్ము ||ఇదిగో||
+విస్తార పంట పొలము నుండి
+కష్టించి పని చేయ నేర్పు
+కన్నీటితో విత్తు మనసు
+కలకాలం మరి నాకు నొసగు (2)
+క్షేమ క్షామ కాలమైనా
+నిన్ను ఘనపరచు బతుకునిమ్మయ్యా
+నశియించే ఆత్మలన్
+నీ దరి చేర్చు కృపనిమ్మయ్యా ||ఇదిగో||`,
+          youtubeUrl: "https://www.youtube.com/watch?v=x9q8wzVp1k0",
+          spotifyUrl: "https://open.spotify.com/search/idigo%20deva%20naa%20jeevitham",
+          imageUrl: "https://images.unsplash.com/photo-1588510222064-6d16f8638b9e?q=80&w=2670&auto=format&fit=crop"
+        }
+    ],
+    "Hindi": [
+        {
+          title: "इबादत करो",
+          artist: "Anil Kant & Shreya Kant",
+          album: "Ibadat Karo",
+          year: 2005,
+          language: "Hindi",
+          lyricist: "Anil Kant",
+          summary: "A call to worship God with a loud voice and songs of joy, acknowledging Him as the creator and shepherd.",
+          background: "A popular worship song in Hindi/Urdu congregations that encourages exuberant praise based on Psalm 100.",
+          theme: "Call to Worship, Praise, Thanksgiving",
+          lyrics: `है दुनिया के लोगों
+ऊंची आवाज करो
+गावों ख़ुशी के गीत
+उसका गुणगान करो
+इबादत करो उसकी इबादत करो
+इबादत करो उसकी इबादत करो (2)
+याद रखो की वही एक खुदा हैं
+हम को ये जीवन उसीने दिया हैं
+उस चारागाह से हम सब हैं आये
+हम्दो सना के हम गीत गाये
+रब का तुम शुक्र करो
+ऊंची आवाज करो
+गावों ख़ुशी के गीत
+उसका गुणगान करो ||ఇबादत||
+नामी खुदावंद कितना मुबारक
+मेरा खुदावंद कितना भला हैं
+रेहमत है उसकी सदियों पुरानी
+वफ़ा का अज़र से यही सिलसिला हैं
+उसपर इमान धरो
+उसके घर आओ चलो
+गावों ख़ुशी के गीत
+उसका गुणगान करो ||ఇबादत|| ||है दुनिया||`,
+          youtubeUrl: "https://www.youtube.com/watch?v=13b8WHSd0-k",
+          spotifyUrl: "https://open.spotify.com/search/ibadat%20karo%20anil%20kant",
+          imageUrl: "https://images.unsplash.com/photo-1542662024148-9311342a9b40?q=80&w=2670&auto=format&fit=crop"
+        },
+        {
+          title: "तेरी स्तुति में करूँ",
+          artist: "Sheldon Bangera",
+          album: "Raaja Hai Mahaan",
+          year: 2011,
+          language: "Hindi",
+          lyricist: "Sheldon Bangera",
+          summary: "A song of heartfelt worship and praise from the soul, declaring a desire for God's name to be in every breath.",
+          background: "A widely sung contemporary Hindi worship song that captures a deep sense of personal devotion and adoration for Jesus.",
+          theme: "Worship, Praise, Devotion, Adoration",
+          lyrics: `तेरी स्तुति में करूँ
+आराधना करूँ, दिल से दिल से
+से दिल से
+तेरी स्तुति में करूँ
+आराधना करूँ, दिल से दिल से
+से दिल से
+मेरी सांसों तेरा नाम रहे
+मेरी सांसों तेरा नाम रहे
+हे प्रभु तू ही तू
+तेरी स्तुति में करूँ
+आराधना करूँ, दिल से दिल से
+से दिल से
+जहाँ मेरी नजर जाए
+वहाँ तेरी स्तुति हो
+जहाँ मेरी नजर जाए
+वहाँ तेरी स्तुति हो
+सारी दुनिया का रखवाला तू
+सारी दुनिया का रखवाला तू
+ये यीशु तू ही तू प्रभु
+खुशी और ग़म में साथ हो तेरा
+प्रारंभ और अंत में नाम हो तेरा
+खुशी और ग़म में साथ हो तेरा
+प्रारंभ और अंत में नाम हो तेरा
+मेरे जीवन का सहारा तू
+मेरे जीवन का सहारा तू
+हे प्रभु तू ही तू प्रभु
+तेरी स्तुति में करूँ
+आराधना करूँ, दिल से दिल से
+से दिल से`,
+          youtubeUrl: "https://www.youtube.com/watch?v=Mfne5MgZ6FE",
+          spotifyUrl: "https://open.spotify.com/search/teri%20stuti%20main%20karoon",
+          imageUrl: "https://images.unsplash.com/photo-1519069542384-3674ba35da19?q=80&w=2670&auto=format=fit&crop"
         }
     ]
   },
@@ -494,8 +745,40 @@ Naa rakshana kaaranabhuthuda...`,
         youtubeUrl: "https://www.youtube.com/watch?v=q6t0n4S_X0Q",
         spotifyUrl: "https://open.spotify.com/search/Nannenthaga%20Preminchithivi",
         imageUrl: "https://images.unsplash.com/photo-1505692069772-9080d6b5e6a6?q=80&w=2670&auto=format&fit=crop"
+      },
+      {
+        title: "ఈ జీవితం విలువైనది",
+        artist: "Bro. Yesanna",
+        album: "Hosanna Ministries",
+        year: 2000,
+        language: "Telugu",
+        lyricist: "Bro. Yesanna",
+        summary: "A reflective song about the value of life and the transient nature of worldly possessions, urging people to prepare for eternity through faith in Jesus.",
+        background: "A popular and thought-provoking Telugu song that serves as an evangelistic call to consider life's purpose and the reality of death and judgment.",
+        theme: "Life, Eternity, Salvation, Repentance, Evangelism",
+        lyrics: `ఈ జీవితం విలువైనది
+నరులారా రండని సెలవైనది (2)
+సిద్ధపడినావా చివరి యాత్రకు
+యుగయుగాలు దేవునితో ఉండుటకు
+నీవుండుటకు ||ఈ జీవితం||
+సంపాదన కోసమే పుట్టలేదు నీవు
+పోయేటప్పుడు ఏదీ పట్టుకొని పోవు (2)
+పోతున్నవారిని నువు చుచుటలేదా (2)
+బ్రతికి ఉన్న నీకు వారు పాఠమే కాదా (2) ||ఈ జీవితం||
+మరణము రుచి చూడక బ్రతికే నరుడెవడు
+కలకాలమీ లోకంలో ఉండే స్థిరుడెవడు (2)
+చిన్న పెద్ద తేడా లేదు మరణానికి (2)
+కులమతాలు అడ్డం కాదు స్మశానానికి (2) ||ఈ జీవితం||
+పాపులకు చోటు లేదు పరలోకమునందు
+అందుకే మార్పుచెందు మరణానికి ముందు (2)
+యేసు రక్తమే నీ పాపానికి మందు (2)
+కడగబడిన వారికే గొర్రెపిల్ల విందు (2) ||ఈ జీవితం||`,
+        youtubeUrl: "https://www.youtube.com/watch?v=8KZKBqu4eqA",
+        spotifyUrl: "https://open.spotify.com/search/Ee%20Jeevitham%20Viluvainadhi",
+        imageUrl: "https://images.unsplash.com/photo-1475113548554-5a36f1f523d6?q=80&w=2670&auto=format&fit=crop"
       }
-    ]
+    ],
+    "Hindi": []
   }
 };
 
