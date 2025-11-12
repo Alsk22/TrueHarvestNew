@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Page } from '../types';
 import BibleIcon from './icons/BibleIcon';
 import MusicIcon from './icons/MusicIcon';
@@ -19,11 +19,13 @@ const NavCard: React.FC<{
   icon: React.ReactElement<{ className?: string }>; 
   onClick: () => void;
   imageUrl: string;
-}> = ({ title, description, icon, onClick, imageUrl }) => (
+  style: React.CSSProperties;
+}> = ({ title, description, icon, onClick, imageUrl, style }) => (
   <button
     onClick={onClick}
-    className="relative group w-full h-48 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 text-left border-2 border-slate-700/50 hover:border-amber-400 hover:shadow-amber-400/20"
+    className="relative group w-full h-48 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 text-left border hover:border-amber-400 hover:shadow-amber-400/20"
     aria-label={`Navigate to ${title}`}
+    style={style}
   >
     {/* Background Image */}
     <div
@@ -50,6 +52,18 @@ const NavCard: React.FC<{
 
 
 const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
+  const [borderStyle, setBorderStyle] = useState('solid');
+  const [borderWidth, setBorderWidth] = useState(2);
+  const [borderColor, setBorderColor] = useState('#334155'); // slate-700
+
+  const selectClasses = "w-full pl-3 pr-10 py-2.5 text-base bg-slate-900 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition";
+
+  const customCardStyle: React.CSSProperties = {
+    borderStyle: borderStyle as React.CSSProperties['borderStyle'],
+    borderWidth: `${borderWidth}px`,
+    borderColor: borderColor
+  };
+
   return (
     <div className="space-y-16">
       <section className="text-center pt-10 pb-12 md:pt-16 md:pb-20">
@@ -66,6 +80,30 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
         </p>
       </section>
 
+      <section className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-700 max-w-4xl mx-auto mb-12">
+          <h3 className="text-2xl font-serif text-amber-300 mb-4 text-center">Customize Card Borders</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              <div>
+                  <label htmlFor="border-style" className="block text-sm font-medium text-slate-300 mb-2">Style</label>
+                  <select id="border-style" value={borderStyle} onChange={(e) => setBorderStyle(e.target.value)} className={selectClasses}>
+                      <option value="solid">Solid</option>
+                      <option value="dashed">Dashed</option>
+                      <option value="dotted">Dotted</option>
+                      <option value="double">Double</option>
+                      <option value="none">None</option>
+                  </select>
+              </div>
+              <div>
+                  <label htmlFor="border-width" className="block text-sm font-medium text-slate-300 mb-2">Width: {borderWidth}px</label>
+                  <input id="border-width" type="range" min="0" max="10" value={borderWidth} onChange={(e) => setBorderWidth(Number(e.target.value))} className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500" />
+              </div>
+              <div>
+                  <label htmlFor="border-color" className="block text-sm font-medium text-slate-300 mb-2">Color</label>
+                  <input id="border-color" type="color" value={borderColor} onChange={(e) => setBorderColor(e.target.value)} className="w-full h-11 p-1 bg-slate-700 border border-slate-600 rounded-md cursor-pointer" />
+              </div>
+          </div>
+      </section>
+
       <section>
         <h2 className="text-center text-3xl font-serif text-slate-300 mb-10 tracking-wider">Explore Our Sanctuary</h2>
         <div className="flex flex-col items-center max-w-4xl mx-auto space-y-6">
@@ -75,6 +113,7 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
             icon={<InspirationIcon />}
             onClick={() => setCurrentPage('verse')}
             imageUrl="https://images.unsplash.com/photo-1489549132488-d00b7d80e422?q=80&w=2574&auto=format&fit=crop"
+            style={customCardStyle}
           />
            <NavCard 
             title="Read the Bible"
@@ -82,6 +121,7 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
             icon={<BibleIcon />}
             onClick={() => setCurrentPage('bible')}
             imageUrl="https://images.unsplash.com/photo-1506462945848-ac8ea624570a?q=80&w=2670&auto=format&fit=crop"
+            style={customCardStyle}
           />
           <NavCard 
             title="Worship Songs"
@@ -89,6 +129,7 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
             icon={<MusicIcon />}
             onClick={() => setCurrentPage('songs')}
             imageUrl="https://images.unsplash.com/photo-1517230878791-4d28214057c2?q=80&w=2670&auto=format&fit=crop"
+            style={customCardStyle}
           />
           <NavCard 
             title="Community Events"
@@ -96,6 +137,7 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
             icon={<CalendarIcon />}
             onClick={() => setCurrentPage('events')}
             imageUrl="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2669&auto=format&fit=crop"
+            style={customCardStyle}
           />
            <NavCard 
             title="About Us"
@@ -103,6 +145,7 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
             icon={<InfoIcon />}
             onClick={() => setCurrentPage('about')}
             imageUrl="https://images.unsplash.com/photo-1563004943-579545585144?q=80&w=2574&auto=format&fit=crop"
+            style={customCardStyle}
           />
         </div>
       </section>
