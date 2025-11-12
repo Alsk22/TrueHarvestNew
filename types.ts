@@ -26,7 +26,7 @@ export interface BibleData {
   telugu: BibleBook;
 }
 
-export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about';
+export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin';
 
 export interface VerseContent {
   verse: string;
@@ -73,4 +73,11 @@ export interface Event {
   date: string; // ISO format
   city: string;
   description: string;
+}
+
+export type UserRole = 'admin' | 'user';
+
+export interface User {
+  email: string;
+  role: UserRole;
 }

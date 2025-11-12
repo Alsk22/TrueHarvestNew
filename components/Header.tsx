@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
-import type { Page } from '../types';
+import type { Page, User } from '../types';
 import HomeIcon from './icons/HomeIcon';
 import BibleIcon from './icons/BibleIcon';
 import MusicIcon from './icons/MusicIcon';
 import CalendarIcon from './icons/CalendarIcon';
 import InspirationIcon from './icons/InspirationIcon';
 import InfoIcon from './icons/InfoIcon';
+import UserIcon from './icons/UserIcon';
+import LogoutIcon from './icons/LogoutIcon';
 import Logo from './Logo';
 
 interface HeaderProps {
   currentPage: Page;
   setCurrentPage: (page: Page) => void;
+  currentUser: User | null;
+  onLogout: () => void;
 }
 
 const NavLink: React.FC<{
   page: Page;
   currentPage: Page;
   onClick: () => void;
-  // Fix: The icon prop type is now more specific to allow passing a className, resolving the cloneElement type error.
   icon: React.ReactElement<{ className?: string }>;
   children: React.ReactNode;
   isMobile?: boolean;
@@ -40,7 +43,7 @@ const NavLink: React.FC<{
 };
 
 
-const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
+const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUser, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNavClick = (page: Page) => {
@@ -56,6 +59,10 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
     { page: 'events' as Page, icon: <CalendarIcon />, label: 'Events' },
     { page: 'about' as Page, icon: <InfoIcon />, label: 'About' },
   ];
+  
+  if (currentUser?.role === 'admin') {
+    navItems.push({ page: 'admin' as Page, icon: <UserIcon />, label: 'User Management' });
+  }
 
   return (
     <header className="bg-slate-900/80 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-slate-700/50">
@@ -66,7 +73,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
               <Logo />
             </button>
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex items-center">
             <nav className="ml-10 flex items-baseline space-x-1">
               {navItems.map(item => (
                 <NavLink 
@@ -80,6 +87,17 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
                 </NavLink>
               ))}
             </nav>
+            {currentUser && (
+               <div className="ml-6 pl-6 border-l border-slate-700 flex items-center space-x-4">
+                  <div className="text-right">
+                    <span className="text-sm text-slate-300 font-semibold">{currentUser.email}</span>
+                    <span className="block text-xs text-amber-400 uppercase tracking-wider">{currentUser.role}</span>
+                  </div>
+                   <button onClick={onLogout} title="Logout" className="p-2 rounded-full text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">
+                       <LogoutIcon className="h-6 w-6" />
+                   </button>
+               </div>
+            )}
           </div>
           <div className="lg:hidden">
             <button
@@ -118,6 +136,20 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage }) => {
                 {item.label}
               </NavLink>
             ))}
+             {currentUser && (
+               <div className="px-4 pt-4 mt-2 border-t border-slate-700">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <p className="text-base font-medium text-white">{currentUser.email}</p>
+                       <p className="text-sm text-amber-400">{currentUser.role}</p>
+                     </div>
+                      <button onClick={onLogout} title="Logout" className="flex items-center space-x-2 p-2 text-slate-300 rounded-md hover:bg-slate-700">
+                          <LogoutIcon className="h-5 w-5" />
+                          <span>Logout</span>
+                      </button>
+                   </div>
+               </div>
+            )}
           </div>
         </div>
       )}

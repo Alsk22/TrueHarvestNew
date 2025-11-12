@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { BIBLE_DATA, BIBLE_BOOK_GROUPS_EN, BIBLE_BOOK_GROUPS_TE } from '../services/constants';
 import type { Page, BibleLanguage, EnglishVersion, Verse, BibleBook } from '../types';
 import HomeIcon from './icons/HomeIcon';
@@ -7,6 +7,9 @@ import HighlightIcon from './icons/HighlightIcon';
 import NoteIcon from './icons/NoteIcon';
 import ShareIcon from './icons/ShareIcon';
 import ChevronDownIcon from './icons/ChevronDownIcon';
+import SoundIcon from './icons/SoundIcon';
+import PauseIcon from './icons/PauseIcon';
+import PlayIcon from './icons/PlayIcon';
 import BibleSharePopover from './BibleSharePopover';
 import NoteModal from './NoteModal';
 
@@ -35,6 +38,14 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const [showSharePopover, setShowSharePopover] = useState(false);
     const [noteModalVerseRef, setNoteModalVerseRef] = useState<string | null>(null);
 
+    // State for Read Aloud feature
+    const [isReading, setIsReading] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const [currentVerseSpeaking, setCurrentVerseSpeaking] = useState<number | null>(null);
+    const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+    const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+    const isSpeechSupported = 'speechSynthesis' in window;
+
     // Load preferences and user data from localStorage on mount
     useEffect(() => {
         try {
@@ -58,7 +69,32 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         } catch (error) {
             console.error("Error loading user data from localStorage:", error);
         }
-    }, []);
+         // Cancel speech synthesis on unmount
+        return () => {
+            if (isSpeechSupported) {
+                speechSynthesis.cancel();
+            }
+        };
+    }, [isSpeechSupported]);
+    
+    // Effect to load speech synthesis voices
+    useEffect(() => {
+        if (!isSpeechSupported) return;
+
+        const loadVoices = () => {
+            const availableVoices = speechSynthesis.getVoices();
+            setVoices(availableVoices);
+        };
+
+        // Load voices initially and on change
+        loadVoices();
+        speechSynthesis.onvoiceschanged = loadVoices;
+
+        return () => {
+            speechSynthesis.onvoiceschanged = null;
+        };
+    }, [isSpeechSupported]);
+
 
     // Save preferences and user data to localStorage when they change
     useEffect(() => {
@@ -72,6 +108,16 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             console.error("Error saving user data to localStorage:", error);
         }
     }, [language, version, book, chapter, bookmarks, highlights, notes]);
+
+    // Cleanup speech synthesis on navigation
+    useEffect(() => {
+        if (isSpeechSupported) {
+            speechSynthesis.cancel();
+        }
+        setIsReading(false);
+        setIsPaused(false);
+        setCurrentVerseSpeaking(null);
+    }, [language, version, book, chapter, isSpeechSupported]);
     
     // Memoized values for current Bible data based on selections
     const currentBookData: BibleBook | undefined = useMemo(() => {
@@ -170,10 +216,95 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         setNoteModalVerseRef(null);
     };
 
+    const handleReadAloudToggle = () => {
+        if (!isSpeechSupported || !currentChapterContent) return;
+
+        if (isReading && !isPaused) { // Reading -> Pause
+            speechSynthesis.pause();
+            setIsPaused(true);
+        } else if (isReading && isPaused) { // Paused -> Resume
+            speechSynthesis.resume();
+            setIsPaused(false);
+        } else { // Not reading -> Start
+            const verseStartIndices: { verse: number; index: number }[] = [];
+            let currentIndex = 0;
+
+            const fullText = Object.entries(currentChapterContent)
+                .map(([vNum, vText]) => {
+                    const textToSpeak = `${vText} `;
+                    verseStartIndices.push({ verse: Number(vNum), index: currentIndex });
+                    currentIndex += textToSpeak.length;
+                    return textToSpeak;
+                })
+                .join(' ');
+
+            const utterance = new SpeechSynthesisUtterance(fullText);
+            utterance.lang = language === 'telugu' ? 'te-IN' : 'en-US';
+            utteranceRef.current = utterance;
+
+            if (language === 'telugu') {
+                const teluguVoice = voices.find(voice => voice.lang === 'te-IN');
+                if (teluguVoice) {
+                    utterance.voice = teluguVoice;
+                } else {
+                    console.warn("Telugu (te-IN) voice not available. The browser will use a default voice which may not be accurate.");
+                }
+            }
+
+            utterance.onboundary = (event) => {
+                if (event.name === 'word') {
+                    // Fix: Replaced findLast with a compatible alternative for broader browser/environment support.
+                    const currentVerse = [...verseStartIndices].reverse().find(v => event.charIndex >= v.index);
+                    if (currentVerse) {
+                        setCurrentVerseSpeaking(currentVerse.verse);
+                    }
+                }
+            };
+
+            utterance.onend = () => {
+                setIsReading(false);
+                setIsPaused(false);
+                setCurrentVerseSpeaking(null);
+                utteranceRef.current = null;
+            };
+
+            utterance.onerror = (event) => {
+                // The 'interrupted' error is expected when we manually cancel speech,
+                // for example, when changing chapters or starting a new read-aloud.
+                // We can safely ignore it to prevent incorrect state changes.
+                if (event.error === 'interrupted') {
+                    return;
+                }
+                console.error("Speech synthesis error:", event.error);
+                setIsReading(false);
+                setIsPaused(false);
+                setCurrentVerseSpeaking(null);
+                utteranceRef.current = null;
+            };
+
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+            setIsReading(true);
+            setIsPaused(false);
+        }
+    };
+
+
     // UI Styles
     const selectClasses = "w-full pl-3 pr-8 py-2 text-sm bg-slate-800 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition appearance-none";
-
     const bookGroups = language === 'english' ? BIBLE_BOOK_GROUPS_EN : BIBLE_BOOK_GROUPS_TE;
+
+    const getReadAloudButtonContent = () => {
+        if (isReading && !isPaused) {
+            return { icon: <PauseIcon className="h-4 w-4" />, text: 'Pause' };
+        }
+        if (isReading && isPaused) {
+            return { icon: <PlayIcon className="h-4 w-4" />, text: 'Resume' };
+        }
+        return { icon: <SoundIcon className="h-4 w-4" />, text: 'Read Aloud' };
+    };
+    
+    const { icon: readAloudIcon, text: readAloudText } = getReadAloudButtonContent();
 
     return (
         <div className="bg-slate-900/70 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl max-w-5xl mx-auto">
@@ -183,14 +314,26 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                     <div className="flex items-center">
                         <h1 className="text-3xl font-serif font-bold text-white tracking-tight">Bible Reader</h1>
                     </div>
-                    <button
-                        onClick={() => setCurrentPage('home')}
-                        className="flex items-center space-x-2 px-3 py-1.5 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300"
-                        aria-label="Back to Home"
-                    >
-                        <HomeIcon className="h-4 w-4" />
-                        <span className="font-semibold text-xs">Home</span>
-                    </button>
+                    <div className="flex items-center space-x-2">
+                        <button
+                            onClick={handleReadAloudToggle}
+                            disabled={!isSpeechSupported}
+                            className="flex items-center space-x-2 px-3 py-1.5 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            aria-label={readAloudText}
+                            title={isSpeechSupported ? readAloudText : "Speech synthesis not supported by your browser"}
+                        >
+                            {readAloudIcon}
+                            <span className="font-semibold text-xs">{readAloudText}</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage('home')}
+                            className="flex items-center space-x-2 px-3 py-1.5 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300"
+                            aria-label="Back to Home"
+                        >
+                            <HomeIcon className="h-4 w-4" />
+                            <span className="font-semibold text-xs">Home</span>
+                        </button>
+                    </div>
                 </header>
 
                 {/* Navigation Controls */}
@@ -241,11 +384,18 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         const isBookmarked = bookmarks.has(ref);
                         const isHighlighted = highlights.has(ref);
                         const hasNote = !!notes[ref];
+                        const isSpeaking = currentVerseSpeaking === verseNumber;
 
-                        let verseClasses = "flex items-start mb-4 cursor-pointer rounded-md p-2 -ml-2 transition-colors duration-200";
-                        if (isSelected) verseClasses += " bg-amber-500/20";
-                        else if (isHighlighted) verseClasses += " bg-yellow-500/20";
-                        else verseClasses += " hover:bg-slate-800/50";
+                        let verseClasses = "flex items-start mb-4 cursor-pointer rounded-md p-2 -ml-2 transition-all duration-200";
+                        if(isSpeaking) {
+                            verseClasses += " bg-sky-500/20 ring-2 ring-sky-400";
+                        } else if (isSelected) {
+                            verseClasses += " bg-amber-500/20";
+                        } else if (isHighlighted) {
+                            verseClasses += " bg-yellow-500/20";
+                        } else {
+                            verseClasses += " hover:bg-slate-800/50";
+                        }
                         
                         return (
                             <div key={verseNumber} className={verseClasses} onClick={() => handleVerseClick(verseNumber)}>

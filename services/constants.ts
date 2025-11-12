@@ -1,5 +1,11 @@
+import type { BibleData, SongData, Event, User } from '../types';
 
-import type { BibleData, SongData, Event } from '../types';
+export const USERS: User[] = [
+  { email: 'admin@trueharvest.app', role: 'admin' },
+  { email: 'user1@gmail.com', role: 'user' },
+  { email: 'user2@gmail.com', role: 'user' },
+];
+
 
 export const BIBLE_BOOK_GROUPS_EN: { [group: string]: string[] } = {
   'Pentateuch': ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'],
@@ -112,130 +118,88 @@ export const BIBLE_DATA: BibleData = {
   }
 };
 
-// Fix: Add missing SONG_DATA constant to be exported for use in the SongLibrary component.
+// Fix: Add missing SONG_DATA constant to resolve import errors.
 export const SONG_DATA: SongData = {
-  'Worship': {
-    'English': [
-      {
-        title: "What A Beautiful Name",
-        artist: "Hillsong Worship",
-        album: "Let There Be Light",
-        year: 2016,
-        language: 'English',
-        lyricist: "Brooke Ligertwood & Ben Fielding",
-        summary: "A song declaring the power and beauty of the name of Jesus.",
-        background: "Written for the Hillsong Conference in 2016, it quickly became a global anthem.",
-        theme: "Name of Jesus, Power, Majesty",
-        lyrics: `You were the Word at the beginning
-One with God the Lord Most High
+    'Praise & Worship': {
+        'English': [
+            {
+                title: "What A Beautiful Name",
+                artist: "Hillsong Worship",
+                album: "Let There Be Light",
+                year: 2016,
+                language: 'English',
+                lyricist: "Brooke Ligertwood & Ben Fielding",
+                summary: "A powerful anthem celebrating the name of Jesus and His victory over sin and death.",
+                background: "Written for the 2016 Hillsong Conference, it won the 2018 Grammy Award for Best Contemporary Christian Music Performance/Song.",
+                theme: "Name of Jesus, Power, Majesty, Salvation",
+                lyrics: `You were the Word at the beginning
+One With God the Lord Most High
 Your hidden glory in creation
 Now revealed in You our Christ
 
 What a beautiful Name it is
 What a beautiful Name it is
-The Name of Jesus Christ my King`,
-        youtubeUrl: "https://www.youtube.com/watch?v=nQWFzMvCfLE",
-        spotifyUrl: "https://open.spotify.com/track/4KLj9QjEhJl2WU50mxmJeA",
-        imageUrl: "https://images.unsplash.com/photo-1517230878791-4d28214057c2?q=80&w=2670&auto=format&fit=crop",
-      },
-       {
-        title: "Reckless Love",
-        artist: "Cory Asbury",
-        album: "Reckless Love",
-        year: 2018,
-        language: 'English',
-        lyricist: "Cory Asbury, Caleb Culver, Ran Jackson",
-        summary: "A song about the overwhelming, never-ending, reckless love of God.",
-        background: "Inspired by the parable of the lost sheep, it became a massive hit in contemporary Christian music.",
-        theme: "God's Love, Grace, Pursuit",
-        lyrics: `Oh, the overwhelming, never-ending, reckless love of God
-Oh, it chases me down, fights 'til I'm found, leaves the ninety-nine
-I couldn't earn it, and I don't deserve it, still, You give Yourself away`,
-        youtubeUrl: "https://www.youtube.com/watch?v=Sc6SSHuZvQE",
-        spotifyUrl: "https://open.spotify.com/track/0rH0mprtecH3grD9HFM5AD",
-        imageUrl: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2669&auto=format&fit=crop",
-      }
-    ],
-    'Telugu': [
-       {
-        title: "Nee Maata Naa Paathalaku",
-        artist: "Bro. Yesanna",
-        album: "Yesanna Ministries",
-        year: 1995,
-        language: 'Telugu',
-        lyricist: "Bro. Yesanna",
-        summary: "A classic Telugu Christian song about the Word of God being a lamp to our feet.",
-        background: "One of the most well-known songs from Bro. Yesanna's ministry.",
-        theme: "God's Word, Guidance, Light",
-        lyrics: `నీ మాట నా పాదాలకు దీపం
-నా త్రోవకు వెలుగు
-నీ వాక్యం నన్ను బ్రతికించెను
-బాధలో నెమ్మదినిచ్చెను`,
-        youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        spotifyUrl: "https://open.spotify.com/track/4cOdK2wGLETOMs3k9yP1Q",
-        imageUrl: "https://images.unsplash.com/photo-1489549132488-d00b7d80e422?q=80&w=2574&auto=format&fit=crop",
-      }
-    ]
-  },
-  'Hymns': {
-    'English': [
-       {
-        title: "Amazing Grace",
-        artist: "John Newton",
-        album: "Olney Hymns",
-        year: 1779,
-        language: 'English',
-        lyricist: "John Newton",
-        summary: "A timeless hymn about God's redeeming grace.",
-        background: "Written by John Newton, a former slave trader who converted to Christianity.",
-        theme: "Grace, Redemption, Salvation",
-        lyrics: `Amazing grace! How sweet the sound
+The Name of Jesus Christ my King
+What a beautiful Name it is
+Nothing compares to this
+What a beautiful Name it is
+The Name of Jesus`,
+                youtubeUrl: "https://www.youtube.com/watch?v=nQWFzMvCfLE",
+                spotifyUrl: "https://open.spotify.com/track/4KLj9QjEhJl2WU50mxaxhE",
+                imageUrl: "https://images.unsplash.com/photo-1487180144351-b8472da7d491?q=80&w=2672&auto=format&fit=crop"
+            },
+        ],
+        'Telugu': [
+            {
+                title: "Nee Maata Naa Paathalaku",
+                artist: "John Nissy",
+                album: "Single",
+                year: 2020,
+                language: 'Telugu',
+                lyricist: "John Nissy",
+                summary: "A song declaring that God's word is a lamp to our feet and a light to our path, based on Psalm 119:105.",
+                background: "A popular contemporary Telugu Christian song that encourages believers to rely on the guidance of Scripture.",
+                theme: "God's Word, Guidance, Light, Trust",
+                lyrics: `నీ మాట నా పాదాలకు దీపము
+నా త్రోవకు వెలుగును
+నీ వాక్యమే నన్ను బ్రతికించెను
+బాధలలో నెమ్మదినిచ్చెను`,
+                youtubeUrl: "https://www.youtube.com/watch?v=k6t_Pn9sH6k",
+                spotifyUrl: "https://open.spotify.com/track/4V2M4Z2jV1X5B0b5t8T7qY",
+                imageUrl: "https://images.unsplash.com/photo-1593011378399-22a40b9d99f3?q=80&w=2670&auto=format&fit=crop"
+            }
+        ]
+    },
+    'Classic Hymns': {
+        'English': [
+            {
+                title: "Amazing Grace",
+                artist: "John Newton",
+                album: "Olney Hymns",
+                year: 1779,
+                language: 'English',
+                lyricist: "John Newton",
+                summary: "One of the most recognizable Christian hymns, it speaks of profound gratitude for God's saving grace.",
+                background: "Written by the Anglican clergyman and former slave trader John Newton, it was his personal testimony of spiritual conversion.",
+                theme: "Grace, Salvation, Redemption, Testimony",
+                lyrics: `Amazing grace! How sweet the sound
 That saved a wretch like me!
 I once was lost, but now am found;
 Was blind, but now I see.`,
-        youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-        spotifyUrl: "https://open.spotify.com/track/4cOdK2wGLETOMs3k9yP1Q",
-        imageUrl: "https://images.unsplash.com/photo-1506462945848-ac8ea624570a?q=80&w=2670&auto=format&fit=crop",
-      }
-    ]
-  }
+                youtubeUrl: "https://www.youtube.com/watch?v=h3h035Ew5xI",
+                spotifyUrl: "https://open.spotify.com/track/3Yp1AlQk06l4w2Teno8p3S",
+                imageUrl: "https://images.unsplash.com/photo-1594979222473-0504d7c54133?q=80&w=2670&auto=format&fit=crop"
+            }
+        ]
+    }
 };
 
-// Fix: Add missing EVENTS constant to be exported for use in the EventsCalendar component.
+// Fix: Add missing EVENTS constant to resolve import errors.
 export const EVENTS: Event[] = [
-  {
-    id: 1,
-    title: "Youth Fellowship Night",
-    date: new Date(new Date().setDate(new Date().getDate() + 7)).toISOString(), // One week from now
-    city: "Hyderabad",
-    description: "Join us for a night of worship, games, and a powerful message. Dinner will be provided.",
-  },
-  {
-    id: 2,
-    title: "Sunday Morning Service",
-    date: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(), // 3 days from now
-    city: "Chennai",
-    description: "Our weekly worship service. All are welcome to join us in praise and learning.",
-  },
-  {
-    id: 3,
-    title: "Bible Study: Book of Romans",
-    date: new Date(new Date().setDate(new Date().getDate() + 10)).toISOString(), // 10 days from now
-    city: "Mumbai",
-    description: "A deep dive into the book of Romans. Open to all levels of Bible knowledge.",
-  },
-   {
-    id: 4,
-    title: "Community Outreach Program",
-    date: new Date(new Date().setDate(new Date().getDate() + 14)).toISOString(), // 2 weeks from now
-    city: "Delhi",
-    description: "Join us as we serve our local community. Volunteers needed!",
-  },
-  {
-    id: 5,
-    title: "Online Prayer Meeting",
-    date: new Date(new Date().setDate(new Date().getDate() + 5)).toISOString(),
-    city: "Kolkata",
-    description: "Join our virtual prayer meeting via Zoom. Link will be shared via email.",
-  }
+    { id: 1, title: 'Youth Fellowship Friday', date: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString(), city: 'Hyderabad', description: 'A special evening for youth with live music, a powerful message, and fun games. Dinner will be provided.' },
+    { id: 2, title: 'Sunday Morning Worship Service', date: new Date(new Date().setDate(new Date().getDate() + 4)).toISOString(), city: 'Mumbai', description: 'Join us for our weekly worship service for the whole family, featuring a sermon from Pastor John.' },
+    { id: 3, title: 'Mid-Week Bible Study', date: new Date(new Date().setDate(new Date().getDate() + 6)).toISOString(), city: 'Delhi', description: 'An in-depth study of the book of Romans. All are welcome, regardless of your Bible knowledge.' },
+    { id: 4, title: 'Community Outreach & Food Drive', date: new Date(new Date().setDate(new Date().getDate() + 11)).toISOString(), city: 'Chennai', description: 'Help us serve the local community by distributing food and supplies. Volunteers needed.' },
+    { id: 5, title: 'Worship Night', date: new Date(new Date().setDate(new Date().getDate() + 16)).toISOString(), city: 'Hyderabad', description: 'An extended evening of praise and worship. Come ready to lift your voice and encounter God.' },
+    { id: 6, title: 'Men\'s Breakfast', date: new Date(new Date().setDate(new Date().getDate() + 9)).toISOString(), city: 'Kolkata', description: 'A time for men to connect, share, and grow together over breakfast. Guest speaker on "Faithful Leadership".' }
 ];
