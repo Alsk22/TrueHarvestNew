@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import type { VerseData } from '../types';
+import type { VerseData, Verse } from '../types';
 
 // Fix: Switched to using a responseSchema for more robust JSON generation.
 // This ensures the API returns a predictable structure and simplifies the prompt.
@@ -72,3 +72,58 @@ export const getVerseOfTheDay = async (): Promise<VerseData> => {
         };
     }
 };
+
+export const getBibleChapter = async (language: string, book: string, chapter: number, version: string = 'KJV'): Promise<Verse | null> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        
+        // Use a more specific prompt to ensure quality, especially for Telugu.
+        const prompt = `Provide the full text of the Bible chapter: ${book} Chapter ${chapter} in ${language} language.
+        ${language === 'telugu' ? 'Please use the standard spoken/written Telugu version (similar to Bible Society of India OV).' : ''}
+        ${language === 'english' ? 'Use ' + version + ' version.' : ''}
+        Ensure you provide EVERY verse in the chapter accurately. Do not summarize or omit any verses.`;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                         verses: {
+                             type: Type.ARRAY,
+                             items: {
+                                 type: Type.OBJECT,
+                                 properties: {
+                                     verse_number: { type: Type.NUMBER },
+                                     text: { type: Type.STRING }
+                                 },
+                                 required: ["verse_number", "text"]
+                             }
+                         }
+                    },
+                    required: ["verses"]
+                }
+            },
+        });
+
+        const jsonText = response.text.trim();
+        const data = JSON.parse(jsonText);
+        
+        // Transform the array {verse_number, text} into the Verse interface {[number]: string}
+        const verseMap: Verse = {};
+        if (data.verses && Array.isArray(data.verses)) {
+            data.verses.forEach((v: any) => {
+                verseMap[v.verse_number] = v.text;
+            });
+            return verseMap;
+        }
+        
+        return null;
+
+    } catch (error) {
+        console.error("Error fetching Bible chapter:", error);
+        return null;
+    }
+}

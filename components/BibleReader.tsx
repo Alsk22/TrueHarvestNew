@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { BIBLE_DATA, BIBLE_BOOK_GROUPS_EN, BIBLE_BOOK_GROUPS_TE } from '../services/constants';
+import { BIBLE_DATA, BIBLE_BOOK_GROUPS_EN, BIBLE_BOOK_GROUPS_TE, BOOK_METADATA_MAP } from '../services/constants';
+import { getBibleChapter } from '../services/geminiService';
 import type { Page, BibleLanguage, EnglishVersion, Verse, BibleBook } from '../types';
 import HomeIcon from './icons/HomeIcon';
 import BookmarkIcon from './icons/BookmarkIcon';
@@ -18,6 +19,7 @@ const BIBLE_READER_PREFS_KEY = 'trueHarvestBibleReaderPrefs';
 const BIBLE_BOOKMARKS_KEY = 'trueHarvestBibleBookmarks';
 const BIBLE_HIGHLIGHTS_KEY = 'trueHarvestBibleHighlights';
 const BIBLE_NOTES_KEY = 'trueHarvestBibleNotes';
+const FETCHED_CHAPTERS_CACHE_KEY = 'trueHarvestBibleFetchedCache';
 
 interface BibleReaderProps {
     setCurrentPage: (page: Page) => void;
@@ -29,6 +31,10 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const [version, setVersion] = useState<EnglishVersion>('KJV');
     const [book, setBook] = useState('Genesis');
     const [chapter, setChapter] = useState(1);
+
+    // State for dynamic content
+    const [fetchedContent, setFetchedContent] = useState<Record<string, Verse>>({});
+    const [isLoadingContent, setIsLoadingContent] = useState(false);
 
     // State for user interactions
     const [selectedVerses, setSelectedVerses] = useState<Set<number>>(new Set());
@@ -66,6 +72,11 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
             const storedNotes = localStorage.getItem(BIBLE_NOTES_KEY);
             if (storedNotes) setNotes(JSON.parse(storedNotes));
+            
+            // Load cached fetched chapters
+            const storedCache = localStorage.getItem(FETCHED_CHAPTERS_CACHE_KEY);
+            if (storedCache) setFetchedContent(JSON.parse(storedCache));
+
         } catch (error) {
             console.error("Error loading user data from localStorage:", error);
         }
@@ -77,6 +88,15 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         };
     }, [isSpeechSupported]);
     
+    // Save fetched content to local storage periodically or on change
+    useEffect(() => {
+        try {
+             localStorage.setItem(FETCHED_CHAPTERS_CACHE_KEY, JSON.stringify(fetchedContent));
+        } catch (e) {
+            console.warn("LocalStorage full, cannot save fetched chapters cache");
+        }
+    }, [fetchedContent]);
+
     // Effect to load speech synthesis voices
     useEffect(() => {
         if (!isSpeechSupported) return;
@@ -118,32 +138,64 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         setIsPaused(false);
         setCurrentVerseSpeaking(null);
     }, [language, version, book, chapter, isSpeechSupported]);
+
+    // Data Resolution Logic
+    // 1. Check constants (BIBLE_DATA)
+    // 2. Check fetched cache
+    // 3. Fetch from API
     
-    // Memoized values for current Bible data based on selections
-    const currentBookData: BibleBook | undefined = useMemo(() => {
+    const staticBookData: BibleBook | undefined = useMemo(() => {
         return language === 'english' ? BIBLE_DATA.english[version] : BIBLE_DATA.telugu;
     }, [language, version]);
 
-    const currentBookList = useMemo(() => Object.keys(currentBookData || {}), [currentBookData]);
-    const currentChapterList = useMemo(() => Object.keys(currentBookData?.[book] || {}).map(Number), [currentBookData, book]);
-    const currentChapterContent: Verse | undefined = useMemo(() => currentBookData?.[book]?.[chapter], [currentBookData, book, chapter]);
+    const staticChapterContent: Verse | undefined = useMemo(() => staticBookData?.[book]?.[chapter], [staticBookData, book, chapter]);
+
+    // Helper key for cache
+    const contentKey = `${language}-${version}-${book}-${chapter}`;
+    
+    // Determine the content to display
+    const currentChapterContent: Verse | undefined = staticChapterContent || fetchedContent[contentKey];
+
+    // Effect to trigger fetch if content is missing
+    useEffect(() => {
+        if (!staticChapterContent && !fetchedContent[contentKey] && !isLoadingContent) {
+            const fetchData = async () => {
+                setIsLoadingContent(true);
+                // Use the English book name for better API reliability, especially when language is Telugu
+                const meta = BOOK_METADATA_MAP[book];
+                const bookNameForApi = meta ? meta.en : book;
+                
+                const data = await getBibleChapter(language, bookNameForApi, chapter, version);
+                if (data) {
+                    setFetchedContent(prev => ({ ...prev, [contentKey]: data }));
+                }
+                setIsLoadingContent(false);
+            };
+            fetchData();
+        }
+    }, [staticChapterContent, fetchedContent, contentKey, language, book, chapter, version]);
+
+
+    // Metadata for dropdowns
+    const bookGroups = language === 'english' ? BIBLE_BOOK_GROUPS_EN : BIBLE_BOOK_GROUPS_TE;
+    const currentBookMetadata = BOOK_METADATA_MAP[book];
+    const maxChapters = currentBookMetadata ? currentBookMetadata.chapters : 50; // Default fallback
+    const currentChapterList = Array.from({ length: maxChapters }, (_, i) => i + 1);
+
 
     // Handlers for changing selections
     const handleLanguageChange = (lang: BibleLanguage) => {
         setLanguage(lang);
-        const newBookData = lang === 'english' ? BIBLE_DATA.english[version] : BIBLE_DATA.telugu;
-        const firstBook = Object.keys(newBookData)[0];
-        setBook(firstBook);
-        setChapter(1);
+        // Find the equivalent book name in the new language
+        const currentMeta = BOOK_METADATA_MAP[book];
+        const newBookName = lang === 'english' ? currentMeta?.en || 'Genesis' : currentMeta?.te || 'ఆదికాండము';
+        
+        setBook(newBookName);
         setSelectedVerses(new Set());
     };
 
     const handleVersionChange = (ver: EnglishVersion) => {
         setVersion(ver);
-        const newBookData = BIBLE_DATA.english[ver];
-        const firstBook = Object.keys(newBookData)[0];
-        setBook(firstBook);
-        setChapter(1);
         setSelectedVerses(new Set());
     };
     
@@ -246,15 +298,15 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                 const teluguVoice = voices.find(voice => voice.lang === 'te-IN');
                 if (teluguVoice) {
                     utterance.voice = teluguVoice;
-                } else {
-                    console.warn("Telugu (te-IN) voice not available. The browser will use a default voice which may not be accurate.");
                 }
             }
 
             utterance.onboundary = (event) => {
                 if (event.name === 'word') {
-                    // Fix: Replaced findLast with a compatible alternative for broader browser/environment support.
-                    const currentVerse = [...verseStartIndices].reverse().find(v => event.charIndex >= v.index);
+                     // Compatible findLast logic
+                    const reversed = [...verseStartIndices].reverse();
+                    const currentVerse = reversed.find(v => event.charIndex >= v.index);
+                    
                     if (currentVerse) {
                         setCurrentVerseSpeaking(currentVerse.verse);
                     }
@@ -269,9 +321,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             };
 
             utterance.onerror = (event) => {
-                // The 'interrupted' error is expected when we manually cancel speech,
-                // for example, when changing chapters or starting a new read-aloud.
-                // We can safely ignore it to prevent incorrect state changes.
                 if (event.error === 'interrupted') {
                     return;
                 }
@@ -292,8 +341,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
     // UI Styles
     const selectClasses = "w-full pl-3 pr-8 py-2 text-sm bg-slate-800 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition appearance-none";
-    const bookGroups = language === 'english' ? BIBLE_BOOK_GROUPS_EN : BIBLE_BOOK_GROUPS_TE;
-
+    
     const getReadAloudButtonContent = () => {
         if (isReading && !isPaused) {
             return { icon: <PauseIcon className="h-4 w-4" />, text: 'Pause' };
@@ -315,9 +363,14 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         <h1 className="text-3xl font-serif font-bold text-white tracking-tight">Bible Reader</h1>
                     </div>
                     <div className="flex items-center space-x-2">
+                         {!currentChapterContent && isLoadingContent && (
+                            <span className="text-xs text-amber-400 animate-pulse font-semibold px-2">
+                                AI Fetching...
+                            </span>
+                        )}
                         <button
                             onClick={handleReadAloudToggle}
-                            disabled={!isSpeechSupported}
+                            disabled={!isSpeechSupported || !currentChapterContent}
                             className="flex items-center space-x-2 px-3 py-1.5 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             aria-label={readAloudText}
                             title={isSpeechSupported ? readAloudText : "Speech synthesis not supported by your browser"}
@@ -359,7 +412,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         <select value={book} onChange={(e) => handleBookChange(e.target.value)} className={selectClasses}>
                             {Object.entries(bookGroups).map(([groupName, books]) => (
                                 <optgroup key={groupName} label={groupName}>
-                                    {books.filter(b => currentBookList.includes(b)).map(b => <option key={b} value={b}>{b}</option>)}
+                                    {books.map(b => <option key={b} value={b}>{b}</option>)}
                                 </optgroup>
                             ))}
                         </select>
@@ -375,9 +428,17 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             </div>
 
             {/* Bible Content */}
-            <main className="p-6 md:p-8 text-slate-200 text-lg leading-relaxed">
-                {currentChapterContent ? (
-                    Object.entries(currentChapterContent).map(([verseNum, verseText]) => {
+            <main className="p-6 md:p-8 text-slate-200 text-lg leading-relaxed min-h-[300px]">
+                {isLoadingContent ? (
+                     <div className="flex flex-col justify-center items-center h-48 space-y-4">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-400"></div>
+                        <p className="text-slate-400 italic">Retrieving chapter content using AI...</p>
+                        <p className="text-xs text-slate-500">This may take a moment.</p>
+                    </div>
+                ) : currentChapterContent ? (
+                    Object.entries(currentChapterContent)
+                        .sort(([a], [b]) => Number(a) - Number(b))
+                        .map(([verseNum, verseText]) => {
                         const verseNumber = Number(verseNum);
                         const ref = getVerseRef(verseNumber);
                         const isSelected = selectedVerses.has(verseNumber);
@@ -409,7 +470,12 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         );
                     })
                 ) : (
-                    <p className="text-center text-slate-400 italic">Could not load chapter. Please check your selections.</p>
+                    <div className="text-center py-12">
+                         <div className="bg-slate-800/50 p-6 rounded-xl inline-block">
+                            <p className="text-slate-300 italic mb-4">Could not load chapter content.</p>
+                            <button onClick={() => window.location.reload()} className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-md transition-colors">Retry</button>
+                        </div>
+                    </div>
                 )}
             </main>
 
