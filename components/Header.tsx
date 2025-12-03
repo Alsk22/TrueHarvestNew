@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import type { Page, User } from '../types';
 import HomeIcon from './icons/HomeIcon';
@@ -51,17 +52,26 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
     setIsMenuOpen(false);
   };
 
-  const navItems = [
+  // Base items visible to everyone (Guest & User)
+  let navItems = [
     { page: 'home' as Page, icon: <HomeIcon />, label: 'Home' },
     { page: 'verse' as Page, icon: <InspirationIcon />, label: 'Verse' },
     { page: 'bible' as Page, icon: <BibleIcon />, label: 'Bible' },
-    { page: 'songs' as Page, icon: <MusicIcon />, label: 'Songs' },
-    { page: 'events' as Page, icon: <CalendarIcon />, label: 'Events' },
-    { page: 'about' as Page, icon: <InfoIcon />, label: 'About' },
   ];
-  
+
+  // Items for any registered user (including Admin)
+  if (currentUser) {
+    navItems = [
+      ...navItems,
+      { page: 'songs' as Page, icon: <MusicIcon />, label: 'Songs' },
+      { page: 'events' as Page, icon: <CalendarIcon />, label: 'Events' },
+      { page: 'about' as Page, icon: <InfoIcon />, label: 'About' },
+    ];
+  }
+
+  // Admin-only items
   if (currentUser?.role === 'admin') {
-    navItems.push({ page: 'admin' as Page, icon: <UserIcon />, label: 'User Management' });
+    navItems.push({ page: 'admin' as Page, icon: <UserIcon />, label: 'Admin' });
   }
 
   return (
@@ -87,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
                 </NavLink>
               ))}
             </nav>
-            {currentUser && (
+            {currentUser ? (
                <div className="ml-6 pl-6 border-l border-slate-700 flex items-center space-x-4">
                   <div className="text-right">
                     <span className="text-sm text-slate-300 font-semibold">{currentUser.email}</span>
@@ -97,6 +107,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
                        <LogoutIcon className="h-6 w-6" />
                    </button>
                </div>
+            ) : (
+                <div className="ml-6 pl-6 border-l border-slate-700">
+                    <button 
+                        onClick={onLogout} // Reusing onLogout to trigger the login screen state reset
+                        className="px-4 py-2 text-sm font-bold text-slate-900 bg-amber-500 rounded-md hover:bg-amber-400 transition-colors"
+                    >
+                        Sign In
+                    </button>
+                </div>
             )}
           </div>
           <div className="lg:hidden">
@@ -136,7 +155,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
                 {item.label}
               </NavLink>
             ))}
-             {currentUser && (
+             {currentUser ? (
                <div className="px-4 pt-4 mt-2 border-t border-slate-700">
                    <div className="flex items-center justify-between">
                      <div>
@@ -149,6 +168,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
                       </button>
                    </div>
                </div>
+            ) : (
+                <div className="px-4 pt-4 mt-2 border-t border-slate-700">
+                    <button 
+                        onClick={() => { onLogout(); setIsMenuOpen(false); }}
+                        className="w-full py-3 text-center text-slate-900 bg-amber-500 rounded-md font-bold hover:bg-amber-400"
+                    >
+                        Sign In
+                    </button>
+                </div>
             )}
           </div>
         </div>

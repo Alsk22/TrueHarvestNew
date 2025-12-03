@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { VerseData, Verse } from '../types';
 
 // Fix: Switched to using a responseSchema for more robust JSON generation.
@@ -127,3 +127,31 @@ export const getBibleChapter = async (language: string, book: string, chapter: n
         return null;
     }
 }
+
+export const generateSpeech = async (text: string): Promise<string | null> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash-preview-tts",
+            contents: [{ parts: [{ text }] }],
+            config: {
+                responseModalities: [Modality.AUDIO],
+                speechConfig: {
+                    voiceConfig: {
+                        prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is generally good for clear reading
+                    },
+                },
+            },
+        });
+
+        // The API returns audio data in the first candidate's content part
+        const audioPart = response.candidates?.[0]?.content?.parts?.[0];
+        if (audioPart && audioPart.inlineData && audioPart.inlineData.data) {
+            return audioPart.inlineData.data; // This is the base64 string
+        }
+        return null;
+    } catch (error) {
+        console.error("Error generating speech:", error);
+        return null;
+    }
+};

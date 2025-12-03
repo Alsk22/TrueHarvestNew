@@ -1,7 +1,8 @@
+
 // Fix: Removed self-import which caused conflicts with local type declarations.
 
 export type BibleLanguage = 'english' | 'telugu';
-export type EnglishVersion = 'KJV' | 'NKJV' | 'ESV';
+export type EnglishVersion = 'KJV' | 'NKJV' | 'ESV' | 'NASB';
 
 export interface Verse {
   [verseNumber: number]: string;
@@ -19,6 +20,7 @@ export interface EnglishBible {
   KJV: BibleBook;
   NKJV: BibleBook;
   ESV: BibleBook;
+  NASB: BibleBook;
 }
 
 export interface BibleData {
@@ -80,4 +82,5 @@ export type UserRole = 'admin' | 'user';
 export interface User {
   email: string;
   role: UserRole;
+  password?: string; // Added password for auth simulation
 }

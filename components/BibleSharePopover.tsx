@@ -1,3 +1,4 @@
+
 import React from 'react';
 import FacebookIcon from './icons/FacebookIcon';
 import TwitterIcon from './icons/TwitterIcon';
@@ -5,15 +6,17 @@ import WhatsappIcon from './icons/WhatsappIcon';
 import CopyIcon from './icons/CopyIcon';
 import GmailIcon from './icons/GmailIcon';
 import ThreadsIcon from './icons/ThreadsIcon';
+import LinkIcon from './icons/LinkIcon';
 
 interface BibleSharePopoverProps {
   verses: { num: number; text: string }[];
   book: string;
   chapter: number;
+  version: string;
   onClose: () => void;
 }
 
-const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, chapter, onClose }) => {
+const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, chapter, version, onClose }) => {
   // Format the reference string (e.g., John 3:16 or John 3:16-18)
   const formatReference = (): string => {
     if (verses.length === 0) return `${book} ${chapter}`;
@@ -23,18 +26,32 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
     return `${book} ${chapter}:${sortedNums[0]}-${sortedNums[sortedNums.length - 1]}`;
   };
 
+  const generateDeepLink = (): string => {
+     const params = new URLSearchParams();
+     params.set('page', 'bible');
+     params.set('book', book);
+     params.set('chapter', chapter.toString());
+     params.set('version', version);
+     if (verses.length > 0) {
+         params.set('verses', verses.map(v => v.num).sort((a, b) => a - b).join(','));
+     }
+     return `${window.location.origin}/?${params.toString()}`;
+  };
+
   const reference = formatReference();
   const verseText = verses.map(v => `[${v.num}] ${v.text}`).join('\n');
-  const shareText = `${verseText}\n\n- ${reference}`;
-  const appUrl = "https://trueharvest.app";
+  const shareLink = generateDeepLink();
+  
+  // Share text includes the link for platforms that support it well
+  const shareText = `${verseText}\n\n- ${reference}\n${shareLink}`;
   const encodedShareText = encodeURIComponent(shareText);
-  const encodedAppUrl = encodeURIComponent(appUrl);
+  const encodedShareLink = encodeURIComponent(shareLink);
 
   const shareOptions = [
     {
       name: 'Facebook',
       icon: <FacebookIcon className="h-6 w-6" />,
-      action: () => handleSocialShare(`https://www.facebook.com/sharer/sharer.php?u=${encodedAppUrl}&quote=${encodedShareText}`),
+      action: () => handleSocialShare(`https://www.facebook.com/sharer/sharer.php?u=${encodedShareLink}&quote=${encodeURIComponent(verseText + '\n-' + reference)}`),
       className: 'text-blue-500 hover:bg-slate-700'
     },
     {
@@ -68,13 +85,23 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
     onClose();
   };
 
-  const handleCopy = () => {
+  const handleCopyText = () => {
     navigator.clipboard.writeText(shareText).then(() => {
-      alert('Verse copied to clipboard!');
+      alert('Verse text copied to clipboard!');
       onClose();
     }).catch(err => {
         console.error('Failed to copy text: ', err);
         alert('Failed to copy verse.');
+    });
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareLink).then(() => {
+        alert('Link copied to clipboard!');
+        onClose();
+    }).catch(err => {
+        console.error('Failed to copy link:', err);
+        alert('Failed to copy link.');
     });
   };
 
@@ -95,12 +122,21 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
             </button>
           ))}
           <div className="border-t border-slate-700 my-1"></div>
+          
           <button
-            onClick={handleCopy}
+            onClick={handleCopyLink}
+            className="w-full flex items-center space-x-3 p-2 rounded-md transition-colors duration-200 text-amber-400 hover:bg-slate-700"
+          >
+            <LinkIcon className="h-6 w-6" />
+            <span className="font-semibold text-sm">Copy Link</span>
+          </button>
+          
+          <button
+            onClick={handleCopyText}
             className="w-full flex items-center space-x-3 p-2 rounded-md transition-colors duration-200 text-slate-400 hover:bg-slate-700"
           >
             <CopyIcon className="h-6 w-6" />
-            <span className="font-semibold text-sm text-slate-200">Copy</span>
+            <span className="font-semibold text-sm text-slate-200">Copy Text</span>
           </button>
         </div>
     </div>

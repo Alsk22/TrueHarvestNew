@@ -1,9 +1,9 @@
+
 import type { BibleData, SongData, Event, User } from '../types';
 
 export const USERS: User[] = [
-  { email: 'admin@trueharvest.app', role: 'admin' },
-  { email: 'user1@gmail.com', role: 'user' },
-  { email: 'user2@gmail.com', role: 'user' },
+  { email: 'admin@trueharvest.app', role: 'admin', password: 'admin' },
+  { email: 'user@gmail.com', role: 'user', password: 'user' },
 ];
 
 interface BookMetadata {
@@ -134,6 +134,7 @@ export const BIBLE_DATA: BibleData = {
     KJV: {},
     NKJV: {},
     ESV: {},
+    NASB: {},
   },
   telugu: {}
 };

@@ -1,18 +1,19 @@
+
 import React, { useState } from 'react';
-import type { Page } from '../types';
+import type { Page, User } from '../types';
 import BibleIcon from './icons/BibleIcon';
 import MusicIcon from './icons/MusicIcon';
 import CalendarIcon from './icons/CalendarIcon';
 import InspirationIcon from './icons/InspirationIcon';
 import InfoIcon from './icons/InfoIcon';
+import UserIcon from './icons/UserIcon';
 import Logo from './Logo';
 
 interface HomePageProps {
   setCurrentPage: (page: Page) => void;
+  currentUser: User | null;
 }
 
-// Fix: Updated the `icon` prop type to be more specific (`React.ReactElement<{ className?: string }>`).
-// This allows `React.cloneElement` to correctly type-check the `className` prop, resolving the error.
 const NavCard: React.FC<{ 
   title: string; 
   description: string; 
@@ -51,7 +52,7 @@ const NavCard: React.FC<{
 );
 
 
-const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
+const HomePage: React.FC<HomePageProps> = ({ setCurrentPage, currentUser }) => {
   const [borderStyle, setBorderStyle] = useState('solid');
   const [borderWidth, setBorderWidth] = useState(2);
   const [borderColor, setBorderColor] = useState('#334155'); // slate-700
@@ -63,6 +64,9 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
     borderWidth: `${borderWidth}px`,
     borderColor: borderColor
   };
+
+  const isRegistered = !!currentUser;
+  const isAdmin = currentUser?.role === 'admin';
 
   return (
     <div className="space-y-16">
@@ -80,29 +84,32 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
         </p>
       </section>
 
-      <section className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-700 max-w-4xl mx-auto mb-12">
-          <h3 className="text-2xl font-serif text-amber-300 mb-4 text-center">Customize Card Borders</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-              <div>
-                  <label htmlFor="border-style" className="block text-sm font-medium text-slate-300 mb-2">Style</label>
-                  <select id="border-style" value={borderStyle} onChange={(e) => setBorderStyle(e.target.value)} className={selectClasses}>
-                      <option value="solid">Solid</option>
-                      <option value="dashed">Dashed</option>
-                      <option value="dotted">Dotted</option>
-                      <option value="double">Double</option>
-                      <option value="none">None</option>
-                  </select>
+      {/* Admin Control Panel - Only visible to Admins */}
+      {isAdmin && (
+          <section className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl border border-slate-700 max-w-4xl mx-auto mb-12">
+              <h3 className="text-2xl font-serif text-amber-300 mb-4 text-center">Customize Interface</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                  <div>
+                      <label htmlFor="border-style" className="block text-sm font-medium text-slate-300 mb-2">Style</label>
+                      <select id="border-style" value={borderStyle} onChange={(e) => setBorderStyle(e.target.value)} className={selectClasses}>
+                          <option value="solid">Solid</option>
+                          <option value="dashed">Dashed</option>
+                          <option value="dotted">Dotted</option>
+                          <option value="double">Double</option>
+                          <option value="none">None</option>
+                      </select>
+                  </div>
+                  <div>
+                      <label htmlFor="border-width" className="block text-sm font-medium text-slate-300 mb-2">Width: {borderWidth}px</label>
+                      <input id="border-width" type="range" min="0" max="10" value={borderWidth} onChange={(e) => setBorderWidth(Number(e.target.value))} className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500" />
+                  </div>
+                  <div>
+                      <label htmlFor="border-color" className="block text-sm font-medium text-slate-300 mb-2">Color</label>
+                      <input id="border-color" type="color" value={borderColor} onChange={(e) => setBorderColor(e.target.value)} className="w-full h-11 p-1 bg-slate-700 border border-slate-600 rounded-md cursor-pointer" />
+                  </div>
               </div>
-              <div>
-                  <label htmlFor="border-width" className="block text-sm font-medium text-slate-300 mb-2">Width: {borderWidth}px</label>
-                  <input id="border-width" type="range" min="0" max="10" value={borderWidth} onChange={(e) => setBorderWidth(Number(e.target.value))} className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500" />
-              </div>
-              <div>
-                  <label htmlFor="border-color" className="block text-sm font-medium text-slate-300 mb-2">Color</label>
-                  <input id="border-color" type="color" value={borderColor} onChange={(e) => setBorderColor(e.target.value)} className="w-full h-11 p-1 bg-slate-700 border border-slate-600 rounded-md cursor-pointer" />
-              </div>
-          </div>
-      </section>
+          </section>
+      )}
 
       <section>
         <h2 className="text-center text-3xl font-serif text-slate-300 mb-10 tracking-wider">Explore Our Sanctuary</h2>
@@ -123,30 +130,48 @@ const HomePage: React.FC<HomePageProps> = ({ setCurrentPage }) => {
             imageUrl="https://images.unsplash.com/photo-1506462945848-ac8ea624570a?q=80&w=2670&auto=format&fit=crop"
             style={customCardStyle}
           />
-          <NavCard 
-            title="Worship Songs"
-            description="Listen to a curated library of praise, worship, and classic hymns."
-            icon={<MusicIcon />}
-            onClick={() => setCurrentPage('songs')}
-            imageUrl="https://images.unsplash.com/photo-1517230878791-4d28214057c2?q=80&w=2670&auto=format&fit=crop"
-            style={customCardStyle}
-          />
-          <NavCard 
-            title="Community Events"
-            description="Find and join upcoming services, studies, and gatherings."
-            icon={<CalendarIcon />}
-            onClick={() => setCurrentPage('events')}
-            imageUrl="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2669&auto=format&fit=crop"
-            style={customCardStyle}
-          />
-           <NavCard 
-            title="About Us"
-            description="Learn about our mission, vision, and the heart behind this community."
-            icon={<InfoIcon />}
-            onClick={() => setCurrentPage('about')}
-            imageUrl="https://images.unsplash.com/photo-1563004943-579545585144?q=80&w=2574&auto=format&fit=crop"
-            style={customCardStyle}
-          />
+          
+          {/* Registered Users (Including Admins) */}
+          {isRegistered && (
+            <>
+              <NavCard 
+                title="Worship Songs"
+                description="Listen to a curated library of praise, worship, and classic hymns."
+                icon={<MusicIcon />}
+                onClick={() => setCurrentPage('songs')}
+                imageUrl="https://images.unsplash.com/photo-1517230878791-4d28214057c2?q=80&w=2670&auto=format&fit=crop"
+                style={customCardStyle}
+              />
+              <NavCard 
+                title="Community Events"
+                description="Find and join upcoming services, studies, and gatherings."
+                icon={<CalendarIcon />}
+                onClick={() => setCurrentPage('events')}
+                imageUrl="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2669&auto=format&fit=crop"
+                style={customCardStyle}
+              />
+              <NavCard 
+                title="About Us"
+                description="Learn about our mission, vision, and the heart behind this community."
+                icon={<InfoIcon />}
+                onClick={() => setCurrentPage('about')}
+                imageUrl="https://images.unsplash.com/photo-1563004943-579545585144?q=80&w=2574&auto=format&fit=crop"
+                style={customCardStyle}
+              />
+            </>
+          )}
+
+          {/* Admin Only */}
+          {isAdmin && (
+              <NavCard 
+                title="User Management"
+                description="Admin Dashboard for managing community users."
+                icon={<UserIcon />}
+                onClick={() => setCurrentPage('admin')}
+                imageUrl="https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=2670&auto=format&fit=crop"
+                style={customCardStyle}
+              />
+          )}
         </div>
       </section>
     </div>
