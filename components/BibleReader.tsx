@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { BIBLE_BOOK_GROUPS_EN, BOOK_METADATA_MAP } from '../services/constants';
 import { getBibleChapter, generateSpeech } from '../services/geminiService';
 import type { Page, BibleLanguage, EnglishVersion, Verse } from '../types';
@@ -86,6 +87,7 @@ const VerseRow = React.memo(({
     return (
         <div 
             id={`verse-${verseNum}`}
+            data-verse={verseNum}
             onClick={(e) => onSelect(e, verseNum)}
             className={`
                 group relative rounded-lg border transition-all duration-200 cursor-text mb-3
@@ -173,6 +175,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const [selectionMode, setSelectionMode] = useState<'verse' | 'text' | null>(null);
     const [toolbarPosition, setToolbarPosition] = useState<ToolbarPosition | null>(null);
     const [selectedTextContent, setSelectedTextContent] = useState<string>('');
+    const [contextVerseNum, setContextVerseNum] = useState<number | null>(null);
 
     const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
     const [highlights, setHighlights] = useState<Set<string>>(new Set());
@@ -192,7 +195,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
     // Load initial state from local storage and session storage
     useEffect(() => {
-        // 1. Check for navigation intent from Bible Plans (Session Storage)
         const navIntent = sessionStorage.getItem('trueHarvestBibleNav');
         if (navIntent) {
             try {
@@ -202,15 +204,14 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                 sessionStorage.removeItem('trueHarvestBibleNav');
             } catch (e) { console.error("Failed to parse nav intent", e); }
         } else {
-             // 2. Otherwise load last read position
             const prefs = localStorage.getItem(BIBLE_READER_PREFS_KEY);
             if (prefs) {
-                const { language, version, book, chapter, isParallelMode } = JSON.parse(prefs);
-                setLanguage(language);
-                setVersion(version);
-                setBook(book);
-                setChapter(chapter);
-                setIsParallelMode(isParallelMode);
+                const { language: l, version: v, book: b, chapter: c, isParallelMode: p } = JSON.parse(prefs);
+                setLanguage(l);
+                setVersion(v);
+                setBook(b);
+                setChapter(c);
+                setIsParallelMode(p);
             }
         }
 
@@ -237,62 +238,75 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         const handleMouseUp = () => {
             const selection = window.getSelection();
             
-            // If we have a valid text selection
             if (selection && !selection.isCollapsed && selection.toString().trim().length > 0) {
-                // Ensure the selection is within our Bible Reader content
-                const anchorNode = selection.anchorNode;
-                if (anchorNode && anchorNode.parentElement?.closest('.bible-content-area')) {
+                let anchorNode = selection.anchorNode;
+                // Cast to HTMLElement for type safety in traversal
+                let current = (anchorNode instanceof Element ? anchorNode : anchorNode?.parentElement) as HTMLElement | null;
+                let verseNode: HTMLElement | null = null;
+                
+                while(current) {
+                    if (current.id && current.id.startsWith('verse-')) {
+                        verseNode = current;
+                        break;
+                    }
+                    if (current.classList.contains('bible-content-area')) break;
+                    current = current.parentElement;
+                }
+
+                if (verseNode) {
                     const range = selection.getRangeAt(0);
                     const rect = range.getBoundingClientRect();
                     
-                    // Clear row selection if text is selected to avoid confusion
                     setSelectedVerses(new Set()); 
                     setSelectionMode('text');
                     setSelectedTextContent(selection.toString());
                     
-                    // Calculate position
-                    const toolbarHeight = 60;
-                    const showBelow = rect.top < toolbarHeight + 20;
+                    const vNum = parseInt(verseNode.getAttribute('data-verse') || '0');
+                    setContextVerseNum(vNum || null);
+                    
+                    const toolbarHeight = 50;
+                    let top = rect.top - toolbarHeight - 10;
+                    let showBelow = false;
+
+                    if (top < 80) { 
+                        top = rect.bottom + 10;
+                        showBelow = true;
+                    }
 
                     setToolbarPosition({
-                        top: showBelow ? rect.bottom + 10 : rect.top - 10,
+                        top,
                         left: rect.left + (rect.width / 2),
                         showBelow
                     });
                 }
             } else {
-                // If clicked without selection (and not handled by verse click), clear text mode
-                // Note: Verse Click handler handles its own clearing/setting
                 if (selectionMode === 'text' && (!selection || selection.isCollapsed)) {
                      setSelectionMode(null);
                      setToolbarPosition(null);
+                     setContextVerseNum(null);
                 }
             }
         };
 
-        // We listen on the document, but verify target in logic
         document.addEventListener('mouseup', handleMouseUp);
         return () => document.removeEventListener('mouseup', handleMouseUp);
     }, [selectionMode]);
 
 
-    // Derived State
     const bookMetadata = useMemo(() => BOOK_METADATA_MAP[book] || BOOK_METADATA_MAP['Genesis'], [book]);
     const maxChapters = bookMetadata.chapters;
-    const currentChapterKey = (lang: string) => `${lang}-${book}-${chapter}-${lang === 'english' ? version : 'BSI'}`;
+    const currentChapterKey = useCallback((lang: string) => `${lang}-${book}-${chapter}-${lang === 'english' ? version : 'BSI'}`, [book, chapter, version]);
     
-    // Determine the list of verses to display
     const englishContent = fetchedContent[currentChapterKey('english')];
     const secondLangContent = fetchedContent[currentChapterKey(language)];
     
     const verseList = useMemo(() => {
         const content = englishContent || secondLangContent;
-        if (!content) return Array.from({ length: 5 }, (_, i) => i + 1); // Skeleton placeholder count
+        if (!content) return Array.from({ length: 5 }, (_, i) => i + 1); 
         return Object.keys(content).map(Number).sort((a, b) => a - b);
     }, [englishContent, secondLangContent]);
 
 
-    // Data Fetching Logic (Single & Parallel)
     const fetchChapterData = useCallback(async (lang: BibleLanguage, b: string, c: number, v: string) => {
         const key = `${lang}-${b}-${c}-${lang === 'english' ? v : 'BSI'}`;
         if (fetchedContent[key]) return;
@@ -320,6 +334,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             if (language !== 'english') {
                 await fetchChapterData(language, book, chapter, version);
             }
+            // Preload next chapter
             if (chapter < maxChapters) {
                 fetchChapterData('english', book, chapter + 1, version);
                 if (language !== 'english') {
@@ -331,7 +346,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         load();
     }, [book, chapter, version, language, fetchChapterData, maxChapters]);
 
-    // --- Audio Logic ---
     useEffect(() => {
         if (autoPageTurn && !isLoadingContent && verseList.length > 0) {
             setAutoPageTurn(false);
@@ -363,7 +377,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         try {
             setCurrentReadingVerse(verseNum);
             
-            // Generate Speech
             const text = content[verseNum];
             
             if (language === 'english') {
@@ -382,7 +395,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                  return;
             }
 
-            // AI Audio for Telugu/Tamil
             const base64Audio = await generateSpeech(text);
             if (!base64Audio) throw new Error("Audio generation failed");
 
@@ -439,7 +451,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             }
             audioContextRef.current.resume().then(() => {
                 const startVerse = selectedVerses.size > 0 
-                    ? Array.from(selectedVerses).sort((a: number, b: number) => a - b)[0] 
+                    ? (Array.from(selectedVerses) as number[]).sort((a, b) => a - b)[0] 
                     : 1;
                 startReadingSession(startVerse);
             });
@@ -455,27 +467,29 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         }
     };
 
-
-    // --- Interaction Handlers ---
-
-    const handleVerseClick = (e: React.MouseEvent, verseNum: number) => {
-        // If user is actually selecting text (dragging), do not trigger verse selection
+    const handleVerseClick = useCallback((e: React.MouseEvent, verseNum: number) => {
         const selection = window.getSelection();
         if (selection && selection.toString().trim().length > 0) return;
 
-        e.stopPropagation(); // Stop bubbling
+        e.stopPropagation();
         
-        // Switch to verse selection mode
         setSelectionMode('verse');
         setSelectedTextContent('');
+        setContextVerseNum(verseNum);
 
-        // Calculate Position for Toolbar (Relative to clicked verse)
         const rect = e.currentTarget.getBoundingClientRect();
-        const toolbarHeight = 60; 
-        const showBelow = rect.top < toolbarHeight + 20;
+        const toolbarHeight = 50; 
+        
+        let top = rect.top - toolbarHeight - 10;
+        let showBelow = false;
+        
+        if (top < 80) {
+            top = rect.bottom + 10;
+            showBelow = true;
+        }
         
         setToolbarPosition({
-            top: showBelow ? rect.bottom + 10 : rect.top - 10,
+            top,
             left: rect.left + (rect.width / 2),
             showBelow
         });
@@ -484,7 +498,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             const newSet = new Set(prev);
             if (newSet.has(verseNum)) {
                 newSet.delete(verseNum);
-                // If we deselected the last one, close toolbar
                 if (newSet.size === 0) {
                     setToolbarPosition(null);
                     setSelectionMode(null);
@@ -494,36 +507,44 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             }
             return newSet;
         });
-    };
+    }, []);
 
-    const clearSelection = () => {
+    const clearSelection = useCallback(() => {
         setSelectedVerses(new Set());
         setSelectionMode(null);
         setToolbarPosition(null);
         setSelectedTextContent('');
+        setContextVerseNum(null);
+        setShowSharePopover(false);
         if (window.getSelection) {
             window.getSelection()?.removeAllRanges();
         }
-    };
+    }, []);
 
-    const getRefString = (vSet: Set<number>) => {
+    const getRefString = useCallback((vSet: Set<number>) => {
         const sorted = Array.from(vSet).sort((a: number, b: number) => a - b);
         if (sorted.length === 0) return `${book} ${chapter}`;
         if (sorted.length === 1) return `${book} ${chapter}:${sorted[0]}`;
         return `${book} ${chapter}:${sorted[0]}-${sorted[sorted.length-1]}`;
-    };
+    }, [book, chapter]);
 
-    const getSelectedText = () => {
+    const getSelectedText = useCallback(() => {
         if (selectionMode === 'text') return selectedTextContent;
         
         const key = currentChapterKey(language);
         const content = fetchedContent[key] || fetchedContent[currentChapterKey('english')];
         if (!content) return "";
-        return Array.from(selectedVerses).sort((a: number, b: number) => a - b).map(v => `[${v}] ${content[v]}`).join('\n');
-    };
+        return (Array.from(selectedVerses) as number[]).sort((a, b) => a - b).map(v => `[${v}] ${content[v]}`).join('\n');
+    }, [selectionMode, selectedTextContent, language, fetchedContent, currentChapterKey, selectedVerses]);
 
     const toggleBookmark = () => {
-        const ref = getRefString(selectedVerses);
+        const targetVerses = selectionMode === 'verse' && selectedVerses.size > 0 
+            ? selectedVerses 
+            : (contextVerseNum ? new Set([contextVerseNum]) : new Set<number>());
+            
+        if (targetVerses.size === 0) return;
+
+        const ref = getRefString(targetVerses);
         setBookmarks(prev => {
             const next = new Set(prev);
             if (next.has(ref)) next.delete(ref);
@@ -535,9 +556,13 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     };
 
     const toggleHighlight = () => {
+        const targetVerses = selectionMode === 'verse' && selectedVerses.size > 0 
+            ? selectedVerses 
+            : (contextVerseNum ? new Set([contextVerseNum]) : new Set<number>());
+
         setHighlights(prev => {
             const next = new Set(prev);
-            selectedVerses.forEach(v => {
+            targetVerses.forEach(v => {
                 const ref = `${book} ${chapter}:${v}`;
                 if (next.has(ref)) next.delete(ref);
                 else next.add(ref);
@@ -548,9 +573,18 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         clearSelection();
     };
 
+    const handleNoteClick = () => {
+        const targetVerses = selectionMode === 'verse' && selectedVerses.size > 0 
+            ? selectedVerses 
+            : (contextVerseNum ? new Set([contextVerseNum]) : new Set<number>());
+            
+        if (targetVerses.size > 0) {
+            setNoteModalVerseRef(getRefString(targetVerses));
+        }
+    };
+
     const handleCopy = () => {
         const text = getSelectedText();
-        // Add reference only if verse mode, otherwise just copy text
         const clipboardText = selectionMode === 'verse' 
             ? `${text}\n\n${getRefString(selectedVerses)} (${version})`
             : text;
@@ -573,14 +607,136 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         }
     };
 
+    // Prepare share data outside JSX to avoid complex ternary syntax errors
+    const versesForShare = useMemo(() => {
+        if (selectionMode === 'verse') {
+            const sorted = (Array.from(selectedVerses) as number[]).sort((a, b) => a - b);
+            const key = currentChapterKey(language);
+            const content = fetchedContent[key] || fetchedContent[currentChapterKey('english')];
+            return sorted.map(v => ({
+                num: v,
+                text: content?.[v] || ''
+            }));
+        } else if (contextVerseNum) {
+            return [{
+                num: contextVerseNum,
+                text: getSelectedText()
+            }];
+        }
+        return [];
+    }, [selectionMode, selectedVerses, contextVerseNum, fetchedContent, currentChapterKey, language, getSelectedText]);
+
+    const toolbar = selectionMode && toolbarPosition ? (
+        <div 
+            className="fixed z-[9999] animate-fadeInUp flex items-center justify-center pointer-events-none"
+            style={{
+                top: toolbarPosition.top,
+                left: toolbarPosition.left,
+                transform: 'translateX(-50%)'
+            }}
+        >
+            <div className="pointer-events-auto bg-slate-900/95 backdrop-blur-xl border border-slate-600/50 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-full px-4 py-2 flex items-center space-x-2 sm:space-x-4">
+                
+                {selectionMode === 'text' && (
+                    <>
+                        <button onClick={handleCopy} className="flex flex-col items-center group px-2" title="Copy Selected Text">
+                            <CopyIcon className="h-5 w-5 text-slate-400 group-hover:text-white transition-colors" />
+                            <span className="text-[10px] text-slate-500 mt-1">Copy</span>
+                        </button>
+                        
+                        <div className="w-px h-6 bg-slate-700"></div>
+
+                        {contextVerseNum && (
+                            <>
+                                <button onClick={toggleBookmark} className="flex flex-col items-center group" title="Bookmark Verse">
+                                    <BookmarkIcon filled={bookmarks.has(getRefString(new Set([contextVerseNum])))} className="h-5 w-5 text-slate-400 group-hover:text-red-400 transition-colors" />
+                                </button>
+
+                                <button onClick={toggleHighlight} className="flex flex-col items-center group" title="Highlight Verse">
+                                    <HighlightIcon filled={highlights.has(`${book} ${chapter}:${contextVerseNum}`)} className="h-5 w-5 text-slate-400 group-hover:text-yellow-400 transition-colors" />
+                                </button>
+
+                                <button onClick={handleNoteClick} className="flex flex-col items-center group" title="Add Note to Verse">
+                                    <NoteIcon className="h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                                </button>
+                            </>
+                        )}
+
+                        <div className="w-px h-6 bg-slate-700"></div>
+
+                        <button onClick={() => setShowSummaryModal(true)} className="flex flex-col items-center group px-2" title="Explain Selection">
+                            <SparklesIcon className="h-5 w-5 text-amber-500 group-hover:text-amber-300 transition-colors" />
+                            <span className="text-[10px] text-amber-500 mt-1">Explain</span>
+                        </button>
+
+                        <button onClick={() => setShowSharePopover(true)} className="flex flex-col items-center group" title="Share Selection">
+                            <ShareIcon className="h-5 w-5 text-slate-400 group-hover:text-green-400 transition-colors" />
+                        </button>
+                    </>
+                )}
+
+                {selectionMode === 'verse' && (
+                    <>
+                        <span className="text-xs font-bold text-slate-300 border-r border-slate-700 pr-3 mr-1 hidden sm:block">
+                            {selectedVerses.size} Selected
+                        </span>
+                        
+                        <button onClick={handleCopy} className="flex flex-col items-center group" title="Copy Text">
+                            <CopyIcon className="h-5 w-5 text-slate-400 group-hover:text-white transition-colors" />
+                        </button>
+
+                        <button onClick={toggleBookmark} className="flex flex-col items-center group" title="Bookmark">
+                            <BookmarkIcon filled={bookmarks.has(getRefString(selectedVerses))} className="h-5 w-5 text-slate-400 group-hover:text-red-400 transition-colors" />
+                        </button>
+
+                        <button onClick={toggleHighlight} className="flex flex-col items-center group" title="Highlight">
+                            <HighlightIcon filled className="h-5 w-5 text-slate-400 group-hover:text-yellow-400 transition-colors" />
+                        </button>
+
+                        <button onClick={handleNoteClick} className="flex flex-col items-center group" title="Add Note">
+                            <NoteIcon className="h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
+                        </button>
+                        
+                        <button onClick={() => setShowSummaryModal(true)} className="flex flex-col items-center group" title="AI Summary">
+                            <SparklesIcon className="h-5 w-5 text-amber-500 group-hover:text-amber-300 transition-colors" />
+                        </button>
+
+                        <button onClick={() => setShowSharePopover(true)} className="flex flex-col items-center group" title="Share">
+                            <ShareIcon className="h-5 w-5 text-slate-400 group-hover:text-green-400 transition-colors" />
+                        </button>
+                    </>
+                )}
+
+                <div className="w-px h-6 bg-slate-700 mx-1"></div>
+
+                <button onClick={clearSelection} className="flex flex-col items-center group" title="Close">
+                    <XIcon className="h-5 w-5 text-slate-500 group-hover:text-red-500 transition-colors" />
+                </button>
+            </div>
+
+            <div 
+                className={`absolute left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent ${toolbarPosition.showBelow ? 'border-b-[8px] border-b-slate-900/95 -top-2' : 'border-t-[8px] border-t-slate-900/95 -bottom-2'}`}
+            ></div>
+            
+            {showSharePopover && (
+                <BibleSharePopover
+                    verses={versesForShare}
+                    book={book}
+                    chapter={chapter}
+                    version={version}
+                    onClose={() => setShowSharePopover(false)}
+                    position={toolbarPosition.showBelow ? 'bottom' : 'top'}
+                />
+            )}
+        </div>
+    ) : null;
+
 
     return (
         <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-3xl shadow-2xl min-h-[80vh] flex flex-col relative overflow-hidden">
             
-            {/* --- Sticky Header --- */}
             <div className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-lg border-b border-slate-800 shadow-lg">
                 <div className="flex flex-col md:flex-row items-center justify-between p-4 gap-4">
-                    {/* Navigation Controls */}
                     <div className="flex flex-wrap items-center justify-center gap-3 w-full md:w-auto">
                         <select 
                             value={book} 
@@ -634,7 +790,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         </select>
                     </div>
 
-                     {/* Toolbar Controls */}
                      <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                         <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
                             {(['english', 'telugu', 'tamil'] as const).map(l => (
@@ -676,23 +831,17 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                 </div>
             </div>
 
-            {/* --- Content Area --- */}
             <div className="flex-grow p-4 md:p-8 overflow-y-auto bible-content-area" onScroll={() => {
-                // Hide toolbar on scroll to prevent misalignment
                 if (toolbarPosition && selectionMode === 'text') {
-                    // Optional: could update position on scroll, but hiding is cleaner UX for text selection
-                    // For verse selection, we might want to keep it? Let's just close text selection on scroll.
                     if (selectionMode === 'text') clearSelection();
                 }
             }}>
                 <div className="max-w-4xl mx-auto">
-                    {/* Chapter Title */}
                     <div className="text-center mb-10 mt-4">
                         <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2">{bookMetadata[language === 'english' ? 'en' : language === 'telugu' ? 'te' : 'ta']} {chapter}</h2>
                         <p className="text-slate-500 text-sm font-bold tracking-widest uppercase">{version} • {language}</p>
                     </div>
 
-                    {/* Verses List */}
                     <div className="space-y-1">
                         {isLoadingContent && !englishContent && !secondLangContent ? (
                              Array.from({ length: 6 }).map((_, i) => (
@@ -726,7 +875,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         )}
                     </div>
                      
-                    {/* Footer Nav */}
                     <div className="flex justify-between mt-12 pt-8 border-t border-slate-800">
                         <button onClick={handlePrevChapter} disabled={chapter <= 1} className="flex items-center text-slate-400 hover:text-white disabled:opacity-30 transition-colors">
                             <ChevronDownIcon className="h-5 w-5 rotate-90 mr-2" /> Previous Chapter
@@ -741,97 +889,8 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                 </div>
             </div>
 
-            {/* --- Contextual Toolbar (Near Selection) --- */}
-            {selectionMode && toolbarPosition && (
-                <div 
-                    className="fixed z-50 animate-fadeInUp flex items-center justify-center pointer-events-none"
-                    style={{
-                        top: toolbarPosition.showBelow ? toolbarPosition.top : undefined,
-                        bottom: !toolbarPosition.showBelow ? (window.innerHeight - toolbarPosition.top) : undefined,
-                        left: toolbarPosition.left,
-                        transform: 'translateX(-50%)'
-                    }}
-                >
-                    <div className="pointer-events-auto bg-slate-900/95 backdrop-blur-xl border border-slate-600/50 shadow-[0_0_30px_rgba(0,0,0,0.5)] rounded-full px-4 py-2 flex items-center space-x-2 sm:space-x-4">
-                        
-                        {/* --- Text Selection Mode Actions --- */}
-                        {selectionMode === 'text' && (
-                            <>
-                                <button onClick={handleCopy} className="flex flex-col items-center group px-2" title="Copy Selected Text">
-                                    <CopyIcon className="h-5 w-5 text-slate-400 group-hover:text-white transition-colors" />
-                                    <span className="text-[10px] text-slate-500 mt-1">Copy</span>
-                                </button>
-                                <div className="w-px h-6 bg-slate-700"></div>
-                                <button onClick={() => setShowSummaryModal(true)} className="flex flex-col items-center group px-2" title="Explain Selection">
-                                    <SparklesIcon className="h-5 w-5 text-amber-500 group-hover:text-amber-300 transition-colors" />
-                                    <span className="text-[10px] text-amber-500 mt-1">Explain</span>
-                                </button>
-                            </>
-                        )}
+            {typeof document !== 'undefined' && toolbar && createPortal(toolbar, document.body)}
 
-                        {/* --- Verse Selection Mode Actions --- */}
-                        {selectionMode === 'verse' && (
-                            <>
-                                <span className="text-xs font-bold text-slate-300 border-r border-slate-700 pr-3 mr-1 hidden sm:block">
-                                    {selectedVerses.size} Selected
-                                </span>
-                                
-                                <button onClick={handleCopy} className="flex flex-col items-center group" title="Copy Text">
-                                    <CopyIcon className="h-5 w-5 text-slate-400 group-hover:text-white transition-colors" />
-                                </button>
-
-                                <button onClick={toggleBookmark} className="flex flex-col items-center group" title="Bookmark">
-                                    <BookmarkIcon filled={bookmarks.has(getRefString(selectedVerses))} className="h-5 w-5 text-slate-400 group-hover:text-red-400 transition-colors" />
-                                </button>
-
-                                <button onClick={toggleHighlight} className="flex flex-col items-center group" title="Highlight">
-                                    <HighlightIcon filled className="h-5 w-5 text-slate-400 group-hover:text-yellow-400 transition-colors" />
-                                </button>
-
-                                <button onClick={() => setNoteModalVerseRef(getRefString(selectedVerses))} className="flex flex-col items-center group" title="Add Note">
-                                    <NoteIcon className="h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
-                                </button>
-                                
-                                <button onClick={() => setShowSummaryModal(true)} className="flex flex-col items-center group" title="AI Summary">
-                                    <SparklesIcon className="h-5 w-5 text-amber-500 group-hover:text-amber-300 transition-colors" />
-                                </button>
-
-                                <button onClick={() => setShowSharePopover(true)} className="flex flex-col items-center group" title="Share">
-                                    <ShareIcon className="h-5 w-5 text-slate-400 group-hover:text-green-400 transition-colors" />
-                                </button>
-                            </>
-                        )}
-
-                        <div className="w-px h-6 bg-slate-700 mx-1"></div>
-
-                        <button onClick={clearSelection} className="flex flex-col items-center group" title="Close">
-                            <XIcon className="h-5 w-5 text-slate-500 group-hover:text-red-500 transition-colors" />
-                        </button>
-                    </div>
-
-                    {/* Arrow for popover feel */}
-                    <div 
-                        className={`absolute left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent ${toolbarPosition.showBelow ? 'border-b-[8px] border-b-slate-900/95 -top-2' : 'border-t-[8px] border-t-slate-900/95 -bottom-2'}`}
-                    ></div>
-                    
-                    {/* Popovers */}
-                    {showSharePopover && selectionMode === 'verse' && (
-                        <BibleSharePopover
-                            verses={Array.from(selectedVerses).map(v => ({ 
-                                num: v, 
-                                text: fetchedContent[currentChapterKey(language)]?.[v] || fetchedContent[currentChapterKey('english')]?.[v] || ''
-                            }))}
-                            book={book}
-                            chapter={chapter}
-                            version={version}
-                            onClose={() => setShowSharePopover(false)}
-                            position={toolbarPosition.showBelow ? 'bottom' : 'top'}
-                        />
-                    )}
-                </div>
-            )}
-
-            {/* Modals */}
             {noteModalVerseRef && (
                 <NoteModal
                     verseRef={noteModalVerseRef}

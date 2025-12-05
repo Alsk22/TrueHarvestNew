@@ -1,3 +1,4 @@
+
 import React from 'react';
 import FacebookIcon from './icons/FacebookIcon';
 import TwitterIcon from './icons/TwitterIcon';
@@ -6,6 +7,8 @@ import CopyIcon from './icons/CopyIcon';
 import GmailIcon from './icons/GmailIcon';
 import ThreadsIcon from './icons/ThreadsIcon';
 import LinkIcon from './icons/LinkIcon';
+import InstagramIcon from './icons/InstagramIcon';
+import SnapchatIcon from './icons/SnapchatIcon';
 
 interface BibleSharePopoverProps {
   verses: { num: number; text: string }[];
@@ -47,6 +50,37 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
   const encodedShareText = encodeURIComponent(shareText);
   const encodedShareLink = encodeURIComponent(shareLink);
 
+  const handleSocialShare = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    onClose();
+  };
+
+  const handleCopyText = (alertUser = true) => {
+    navigator.clipboard.writeText(shareText).then(() => {
+      if (alertUser) alert('Verse text copied to clipboard!');
+      onClose();
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy verse.');
+    });
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareLink).then(() => {
+        alert('Link copied to clipboard!');
+        onClose();
+    }).catch(err => {
+        console.error('Failed to copy link:', err);
+        alert('Failed to copy link.');
+    });
+  };
+
+  const handleCopyForApp = (appName: string) => {
+      handleCopyText(false);
+      alert(`Text copied! You can now paste it into ${appName}.`);
+      onClose();
+  }
+
   const shareOptions = [
     {
       name: 'Facebook',
@@ -72,6 +106,18 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
       action: () => handleSocialShare(`https://www.threads.net/share?text=${encodedShareText}`),
       className: 'text-slate-300 hover:bg-slate-700'
     },
+    {
+      name: 'Instagram',
+      icon: <InstagramIcon className="h-6 w-6" />,
+      action: () => handleCopyForApp('Instagram'),
+      className: 'text-pink-500 hover:bg-slate-700'
+    },
+    {
+      name: 'Snapchat',
+      icon: <SnapchatIcon className="h-6 w-6" />,
+      action: () => handleCopyForApp('Snapchat'),
+      className: 'text-yellow-400 hover:bg-slate-700'
+    },
      {
       name: 'Email',
       icon: <GmailIcon className="h-6 w-6" />,
@@ -80,38 +126,13 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
     }
   ];
 
-  const handleSocialShare = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
-    onClose();
-  };
-
-  const handleCopyText = () => {
-    navigator.clipboard.writeText(shareText).then(() => {
-      alert('Verse text copied to clipboard!');
-      onClose();
-    }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        alert('Failed to copy verse.');
-    });
-  };
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(shareLink).then(() => {
-        alert('Link copied to clipboard!');
-        onClose();
-    }).catch(err => {
-        console.error('Failed to copy link:', err);
-        alert('Failed to copy link.');
-    });
-  };
-
   const positionClasses = position === 'top'
     ? 'bottom-full mb-3'
     : 'top-full mt-3';
 
   return (
     <div 
-        className={`absolute right-0 ${positionClasses} w-48 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 p-2 animate-fadeInUp`}
+        className={`absolute right-0 ${positionClasses} w-48 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 p-2 animate-fadeInUp max-h-80 overflow-y-auto custom-scrollbar`}
         onClick={(e) => e.stopPropagation()}
     >
         <div className="space-y-1">
@@ -136,7 +157,7 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
           </button>
           
           <button
-            onClick={handleCopyText}
+            onClick={() => handleCopyText(true)}
             className="w-full flex items-center space-x-3 p-2 rounded-md transition-colors duration-200 text-slate-400 hover:bg-slate-700"
           >
             <CopyIcon className="h-6 w-6" />
