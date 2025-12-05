@@ -34,27 +34,48 @@ const EventCard: React.FC<{ event: Event }> = ({ event }) => {
   };
 
   return (
-    <div className="flex items-start space-x-4 p-5 bg-slate-800/70 rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-slate-700">
-      <div className="flex-shrink-0">
-        <div className="bg-amber-500 text-white rounded-lg p-3 text-center w-24 shadow-lg">
-          <p className="text-md font-bold uppercase">{eventDate.toLocaleString('default', { month: 'short' })}</p>
-          <p className="text-4xl font-bold tracking-tight">{eventDate.getDate()}</p>
-          <p className="text-sm font-semibold">{eventDate.getFullYear()}</p>
+    <div className="group relative flex flex-col md:flex-row items-stretch bg-slate-900/40 backdrop-blur-md rounded-2xl overflow-hidden border border-slate-700/50 hover:border-amber-500/30 transition-all duration-300 shadow-lg hover:shadow-amber-900/10">
+      
+      {/* Date Badge (Ticket Stub Look) */}
+      <div className="md:w-32 bg-gradient-to-b from-slate-800 to-slate-900 flex flex-col items-center justify-center p-4 border-b md:border-b-0 md:border-r border-dashed border-slate-600 relative">
+        <div className="text-amber-500 font-bold uppercase text-sm tracking-widest mb-1">{eventDate.toLocaleString('default', { month: 'short' })}</div>
+        <div className="text-4xl font-serif font-bold text-white mb-1">{eventDate.getDate()}</div>
+        <div className="text-slate-400 text-xs font-semibold">{eventDate.getFullYear()}</div>
+        
+        {/* Decorative Circles for Ticket effect */}
+        <div className="absolute -top-3 -right-3 w-6 h-6 bg-slate-950 rounded-full hidden md:block"></div>
+        <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-slate-950 rounded-full hidden md:block"></div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-grow p-6 flex flex-col justify-center relative">
+         <div className="absolute top-0 right-0 p-4">
+             <button
+                onClick={handleShare}
+                className="p-2 rounded-full text-slate-500 hover:text-amber-400 hover:bg-slate-800 transition-colors"
+                aria-label="Share event"
+            >
+                <ShareIcon className="h-5 w-5" />
+            </button>
+         </div>
+
+        <h3 className="text-2xl font-bold font-serif text-white mb-2 group-hover:text-amber-200 transition-colors">{event.title}</h3>
+        
+        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300 mb-4">
+             <span className="flex items-center space-x-1 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50">
+                <span className="text-amber-500">⏰</span>
+                <span>{formattedTime}</span>
+             </span>
+             <span className="flex items-center space-x-1 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700/50">
+                <span className="text-amber-500">📍</span>
+                <span className="font-semibold">{event.city}</span>
+             </span>
         </div>
+        
+        <p className="text-slate-400 leading-relaxed text-sm border-t border-slate-800 pt-4 mt-auto">
+            {event.description}
+        </p>
       </div>
-      <div className="flex-grow">
-        <h3 className="text-xl font-bold font-serif text-white">{event.title}</h3>
-        <p className="text-md text-slate-300 font-semibold">{formattedTime}</p>
-        <p className="text-sm text-slate-400 mt-1">Location: <span className="font-bold text-slate-300">{event.city}</span></p>
-        <p className="text-md text-slate-200 mt-3">{event.description}</p>
-      </div>
-       <button
-          onClick={handleShare}
-          className="p-2 rounded-full text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
-          aria-label="Share event"
-      >
-          <ShareIcon className="h-5 w-5" />
-      </button>
     </div>
   );
 };
@@ -85,40 +106,54 @@ const EventsCalendar: React.FC<EventsCalendarProps> = ({ setCurrentPage }) => {
     }, [selectedCity, sortedEvents]);
 
     return (
-        <div className="bg-slate-900/70 backdrop-blur-md border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 max-w-5xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
+        <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-3xl shadow-2xl p-6 md:p-10 max-w-5xl mx-auto relative overflow-hidden">
+             {/* Ambient Background Glow */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+            
+            <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center">
-                    <div className="text-amber-400"><CalendarIcon /></div>
-                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-white ml-4 tracking-tight">Upcoming Events</h1>
+                    <div className="p-3 bg-slate-800/50 rounded-2xl border border-slate-700 text-amber-400 shadow-inner">
+                        <CalendarIcon className="h-8 w-8" />
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-serif font-bold text-white ml-5 tracking-tight">Upcoming Events</h1>
                 </div>
                 <button
                     onClick={() => setCurrentPage('home')}
-                    className="flex items-center space-x-2 px-4 py-2 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300"
+                    className="flex items-center space-x-2 px-5 py-2.5 rounded-full text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700 hover:text-white transition-colors duration-300 group"
                     aria-label="Back to Home"
                 >
-                    <HomeIcon className="h-5 w-5" />
+                    <HomeIcon className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
                     <span className="font-semibold text-sm hidden md:block">Home</span>
                 </button>
             </div>
 
-            <div className="mb-8">
-                <label htmlFor="city-filter" className="block text-md font-medium text-slate-300 mb-2">Filter by city:</label>
-                <select
-                    id="city-filter"
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    className="w-full md:w-1/2 lg:w-1/3 pl-3 pr-10 py-2.5 text-base bg-slate-800/80 border border-slate-600 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition"
-                >
-                    {cities.map(city => <option key={city} value={city}>{city}</option>)}
-                </select>
+            <div className="mb-10 p-1 bg-slate-800/50 rounded-xl inline-flex flex-col w-full md:w-auto">
+                <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-widest">Filter by Location</div>
+                <div className="relative">
+                    <select
+                        id="city-filter"
+                        value={selectedCity}
+                        onChange={(e) => setSelectedCity(e.target.value)}
+                        className="w-full md:w-64 pl-4 pr-10 py-3 text-base bg-slate-900 border border-slate-700 text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition appearance-none cursor-pointer"
+                    >
+                        {cities.map(city => <option key={city} value={city}>{city}</option>)}
+                    </select>
+                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </div>
+                </div>
             </div>
 
             <div className="space-y-6">
                 {filteredEvents.length > 0 ? (
                     filteredEvents.map(event => <EventCard key={event.id} event={event} />)
                 ) : (
-                    <div className="text-center py-10">
-                        <p className="text-slate-400 italic text-lg">No events scheduled for this location.</p>
+                    <div className="text-center py-20 bg-slate-900/30 rounded-2xl border border-dashed border-slate-700">
+                        <div className="inline-block p-4 bg-slate-800/50 rounded-full text-slate-500 mb-4">
+                            <CalendarIcon className="h-8 w-8" />
+                        </div>
+                        <p className="text-slate-400 text-lg">No events scheduled for this location yet.</p>
+                        <p className="text-slate-500 text-sm mt-2">Check back soon or select another city.</p>
                     </div>
                 )}
             </div>

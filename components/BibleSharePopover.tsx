@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FacebookIcon from './icons/FacebookIcon';
 import TwitterIcon from './icons/TwitterIcon';
@@ -14,9 +13,10 @@ interface BibleSharePopoverProps {
   chapter: number;
   version: string;
   onClose: () => void;
+  position?: 'top' | 'bottom';
 }
 
-const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, chapter, version, onClose }) => {
+const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, chapter, version, onClose, position = 'top' }) => {
   // Format the reference string (e.g., John 3:16 or John 3:16-18)
   const formatReference = (): string => {
     if (verses.length === 0) return `${book} ${chapter}`;
@@ -105,9 +105,13 @@ const BibleSharePopover: React.FC<BibleSharePopoverProps> = ({ verses, book, cha
     });
   };
 
+  const positionClasses = position === 'top'
+    ? 'bottom-full mb-3'
+    : 'top-full mt-3';
+
   return (
     <div 
-        className="absolute right-0 bottom-full mb-3 w-48 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 p-2 animate-fadeInUp"
+        className={`absolute right-0 ${positionClasses} w-48 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-50 p-2 animate-fadeInUp`}
         onClick={(e) => e.stopPropagation()}
     >
         <div className="space-y-1">

@@ -77,11 +77,21 @@ export const getBibleChapter = async (language: string, book: string, chapter: n
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
-        // Use a more specific prompt to ensure quality, especially for Telugu.
-        const prompt = `Provide the full text of the Bible chapter: ${book} Chapter ${chapter} in ${language} language.
-        ${language === 'telugu' ? 'Please use the standard spoken/written Telugu version (similar to Bible Society of India OV).' : ''}
-        ${language === 'english' ? 'Use ' + version + ' version.' : ''}
-        Ensure you provide EVERY verse in the chapter accurately. Do not summarize or omit any verses.`;
+        // Use a STRICT prompt to act as a database retrieval system.
+        // We explicitly command it NOT to paraphrase.
+        const prompt = `ROLE: You are a strict, verbatim Bible Database.
+TASK: Retrieve the exact text for ${book} Chapter ${chapter}.
+LANGUAGE: ${language}.
+VERSION_RULES:
+- If language is 'english', use exactly the ${version} version.
+- If language is 'telugu', use the standard "Bible Society of India (BSI)" / "O.V. (Old Version)" text. Do NOT use modern spoken dialects.
+- If language is 'tamil', use the standard "BSI / O.V." version.
+
+OUTPUT RULES:
+- Provide every single verse. Do not skip any.
+- Do not summarize.
+- Do not add commentary.
+- Return ONLY the JSON.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
@@ -111,7 +121,6 @@ export const getBibleChapter = async (language: string, book: string, chapter: n
         const jsonText = response.text.trim();
         const data = JSON.parse(jsonText);
         
-        // Transform the array {verse_number, text} into the Verse interface {[number]: string}
         const verseMap: Verse = {};
         if (data.verses && Array.isArray(data.verses)) {
             data.verses.forEach((v: any) => {
@@ -138,20 +147,136 @@ export const generateSpeech = async (text: string): Promise<string | null> => {
                 responseModalities: [Modality.AUDIO],
                 speechConfig: {
                     voiceConfig: {
-                        prebuiltVoiceConfig: { voiceName: 'Kore' }, // 'Kore' is generally good for clear reading
+                        prebuiltVoiceConfig: { voiceName: 'Kore' }, 
                     },
                 },
             },
         });
 
-        // The API returns audio data in the first candidate's content part
         const audioPart = response.candidates?.[0]?.content?.parts?.[0];
         if (audioPart && audioPart.inlineData && audioPart.inlineData.data) {
-            return audioPart.inlineData.data; // This is the base64 string
+            return audioPart.inlineData.data; 
         }
         return null;
     } catch (error) {
         console.error("Error generating speech:", error);
         return null;
+    }
+};
+
+export const generateBibleStudy = async (query: string): Promise<string> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: `You are a helpful and knowledgeable Bible study assistant. The user is asking about: "${query}".
+            Provide a concise but deep theological insight, historical context (if applicable), and practical application.
+            Keep the tone encouraging and faith-building. Limit response to 200 words.`,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error generating Bible study:", error);
+        return "Sorry, I couldn't generate the study notes at this moment. Please try again.";
+    }
+};
+
+export const generateVerseSummary = async (verseText: string, reference: string): Promise<string> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: `Provide a very short, clear summary (max 3 sentences) of the following Bible verse for a quick understanding. 
+            Verse: "${verseText}" (${reference})
+            Focus on the core meaning and immediate application.`,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error generating verse summary:", error);
+        return "Unable to generate summary at this time.";
+    }
+};
+
+export const generateCaseStudy = async (topic: string): Promise<any> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        
+        const prompt = `Create a detailed biblical case study on: "${topic}".
+        
+        Structure the response as valid JSON with the following fields:
+        - title: The name of the character or event.
+        - scripture_reference: Key Bible passages (e.g., "1 Samuel 17, Psalm 23").
+        - background: Who/What/Where/When (Context).
+        - key_events: An array of strings listing 3-5 major plot points.
+        - significance: Why this matters in the Bible's redemptive story.
+        - lessons: An array of strings listing 3 practical lessons for modern believers.
+        - reflection_question: A thought-provoking question for the user.`;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                 responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        title: { type: Type.STRING },
+                        scripture_reference: { type: Type.STRING },
+                        background: { type: Type.STRING },
+                        key_events: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        significance: { type: Type.STRING },
+                        lessons: { type: Type.ARRAY, items: { type: Type.STRING } },
+                        reflection_question: { type: Type.STRING }
+                    },
+                    required: ["title", "scripture_reference", "background", "key_events", "significance", "lessons", "reflection_question"]
+                }
+            },
+        });
+        
+        return JSON.parse(response.text);
+    } catch (error) {
+        console.error("Error generating case study:", error);
+        throw error;
+    }
+};
+
+export const generateVerseImage = async (verse: string, reference: string, style: string): Promise<string | null> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        
+        const prompt = `Create a stunning, high-quality, 4K resolution visual representation of the following Bible verse.
+        
+        VERSE: "${verse}"
+        REFERENCE: ${reference}
+        STYLE: ${style}
+        
+        GUIDELINES:
+        - The image should be majestic, inspiring, and respectful of the biblical context.
+        - Do NOT include any text, letters, or words inside the image itself.
+        - Focus on the visual imagery described in the verse (e.g., light, creation, nature, historical setting, emotion).
+        - If the verse is abstract, use symbolic imagery (e.g., light breaking through clouds for 'hope').
+        `;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: { parts: [{ text: prompt }] },
+            config: {
+                // responseMimeType: "image/png" is not supported for nano banana series, we just parse the response
+            },
+        });
+
+        // Iterate through parts to find the image
+        if (response.candidates?.[0]?.content?.parts) {
+            for (const part of response.candidates[0].content.parts) {
+                if (part.inlineData && part.inlineData.data) {
+                    const base64EncodeString: string = part.inlineData.data;
+                    return `data:image/png;base64,${base64EncodeString}`;
+                }
+            }
+        }
+        
+        return null;
+    } catch (error) {
+        console.error("Error generating verse image:", error);
+        throw error;
     }
 };

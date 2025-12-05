@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -8,8 +9,13 @@ import EventsCalendar from './components/EventsCalendar';
 import VerseOfTheDayPage from './components/VerseOfTheDayPage';
 import AboutPage from './components/AboutPage';
 import LoginPage from './components/LoginPage';
-import AdminDashboard from './components/AdminDashboard';
-import type { Page, User } from './types';
+import WelcomePage from './components/WelcomePage';
+import UserProfileComponent from './components/UserProfile';
+import BiblePlans from './components/BiblePlans';
+import BibleStudy from './components/BibleStudy';
+import VerseImageGenerator from './components/VerseImageGenerator';
+import CaseStudies from './components/CaseStudies';
+import type { Page, User, UserProfile } from './types';
 import { USERS } from './services/constants';
 
 const App: React.FC = () => {
@@ -17,6 +23,7 @@ const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [isGuestMode, setIsGuestMode] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   // Effect to load users and session from storage on initial load
   useEffect(() => {
@@ -34,6 +41,7 @@ const App: React.FC = () => {
         const storedSession = localStorage.getItem('trueHarvestSession') || sessionStorage.getItem('trueHarvestSession');
         if (storedSession) {
             setCurrentUser(JSON.parse(storedSession));
+            setShowWelcome(false); // Skip welcome if logged in
         }
     } catch (error) {
         console.error("Error loading initial state:", error);
@@ -45,15 +53,12 @@ const App: React.FC = () => {
     const user = users.find(u => u.email === email);
     
     if (user) {
-        // Allow login if password matches OR if it's a google-auth simulation (bypassing password check for linked accounts)
-        // If the user has a password set, and we are trying to login via Google ('google-auth'), we allow it.
-        if (password && password !== 'google-auth' && user.password && user.password !== password) {
+        if (password && user.password && user.password !== password) {
             return { success: false, message: "Incorrect password." };
         }
         
         setCurrentUser(user);
         
-        // Handle Session Persistence
         if (rememberMe) {
             localStorage.setItem('trueHarvestSession', JSON.stringify(user));
             sessionStorage.removeItem('trueHarvestSession');
@@ -70,7 +75,7 @@ const App: React.FC = () => {
     return { success: false, message: "User not found. Please register." };
   };
 
-  const handleRegister = (email: string, password?: string, rememberMe: boolean = true): { success: boolean; message: string } => {
+  const handleRegister = (email: string, password?: string, rememberMe: boolean = true, profileData?: Partial<UserProfile>): { success: boolean; message: string } => {
       if (users.some(u => u.email === email)) {
           return { success: false, message: "User already exists. Please login." };
       }
@@ -78,7 +83,14 @@ const App: React.FC = () => {
       const newUser: User = { 
           email, 
           role: 'user', 
-          password: password || 'google-auth' 
+          password: password,
+          profile: {
+              displayName: profileData?.displayName || email.split('@')[0],
+              notificationsEnabled: profileData?.notificationsEnabled || false,
+              streak: 0,
+              versesRead: 0,
+              bio: profileData?.bio || ''
+          }
       };
       
       const updatedUsers = [...users, newUser];
@@ -108,6 +120,7 @@ const App: React.FC = () => {
     sessionStorage.removeItem('trueHarvestSession');
     setIsGuestMode(false);
     setCurrentPage('home');
+    setShowWelcome(true);
   };
 
   const handleGuestAccess = () => {
@@ -119,12 +132,11 @@ const App: React.FC = () => {
       setUsers(updatedUsers);
       localStorage.setItem('trueHarvestUsers', JSON.stringify(updatedUsers));
       
-      // If the current user was modified (e.g., role changed), update session
+      // If the current user was modified, update session
       if (currentUser) {
           const updatedCurrentUser = updatedUsers.find(u => u.email === currentUser.email);
           if (updatedCurrentUser) {
               setCurrentUser(updatedCurrentUser);
-              // Update whichever storage is currently in use
               if (localStorage.getItem('trueHarvestSession')) {
                   localStorage.setItem('trueHarvestSession', JSON.stringify(updatedCurrentUser));
               }
@@ -135,23 +147,38 @@ const App: React.FC = () => {
       }
   };
 
-  // Determine view based on auth state
+  const handleUpdateProfile = (updatedUser: User) => {
+      const updatedUsers = users.map(u => u.email === updatedUser.email ? updatedUser : u);
+      handleUpdateUsers(updatedUsers);
+  };
+
+  // View Routing Logic
   if (!currentUser && !isGuestMode) {
-    return (
+      if (showWelcome) {
+          return <WelcomePage onEnter={() => setShowWelcome(false)} />;
+      }
+      return (
         <LoginPage 
             onLogin={handleLogin} 
             onRegister={handleRegister}
-            onGuestAccess={handleGuestAccess} 
+            onGuestAccess={handleGuestAccess}
+            onBack={() => setShowWelcome(true)}
         />
     );
   }
 
+  // Permission Logic
+  const canAccessFullContent = !!currentUser; // Only registered users access everything
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-amber-500/30 selection:text-amber-200 flex flex-col">
-      {/* Background with overlay */}
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500/30 selection:text-amber-200 flex flex-col relative overflow-x-hidden">
+      {/* Premium Ambient Background */}
       <div className="fixed inset-0 z-[-1]">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1507692049790-de58293a469d?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center opacity-10 blur-sm mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-900/90 via-slate-900/80 to-slate-900/95"></div>
+        <div className="absolute inset-0 bg-slate-950"></div>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-900/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950/90"></div>
       </div>
 
       <Header 
@@ -161,7 +188,9 @@ const App: React.FC = () => {
         onLogout={handleLogout}
       />
 
-      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
+      <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn relative z-10">
+        
+        {/* Publicly Accessible Pages (Guest + User) */}
         {currentPage === 'home' && (
           <HomePage setCurrentPage={setCurrentPage} currentUser={currentUser} />
         )}
@@ -171,34 +200,46 @@ const App: React.FC = () => {
         {currentPage === 'bible' && (
           <BibleReader setCurrentPage={setCurrentPage} />
         )}
-        {currentPage === 'songs' && (
-          <SongLibrary setCurrentPage={setCurrentPage} />
-        )}
-        {currentPage === 'events' && (
-           <EventsCalendar setCurrentPage={setCurrentPage} />
-        )}
-        {currentPage === 'about' && (
-           <AboutPage setCurrentPage={setCurrentPage} />
-        )}
-        {currentPage === 'admin' && currentUser?.role === 'admin' && (
-            <AdminDashboard 
-                users={users} 
-                setUsers={handleUpdateUsers} 
-                setCurrentPage={setCurrentPage}
-            />
-        )}
-        {/* Access Control Fallback */}
-        {currentPage === 'admin' && currentUser?.role !== 'admin' && (
-             <div className="flex flex-col items-center justify-center py-20 bg-slate-800/50 rounded-xl border border-slate-700/50">
-                 <h2 className="text-3xl font-bold text-red-400 mb-4 font-serif">Access Restricted</h2>
-                 <p className="text-slate-300 mb-6">You do not have permission to view the administrative dashboard.</p>
-                 <button 
-                    onClick={() => setCurrentPage('home')} 
-                    className="px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-md text-white transition-colors"
-                >
-                    Return Home
-                </button>
-             </div>
+
+        {/* Restricted Pages (User Only) */}
+        {canAccessFullContent ? (
+            <>
+                {currentPage === 'create' && <VerseImageGenerator setCurrentPage={setCurrentPage} />}
+                {currentPage === 'songs' && <SongLibrary setCurrentPage={setCurrentPage} />}
+                {currentPage === 'events' && <EventsCalendar setCurrentPage={setCurrentPage} />}
+                {currentPage === 'about' && <AboutPage setCurrentPage={setCurrentPage} />}
+                {currentPage === 'plans' && <BiblePlans setCurrentPage={setCurrentPage} />}
+                {currentPage === 'casestudies' && <CaseStudies setCurrentPage={setCurrentPage} />}
+                {currentPage === 'study' && <BibleStudy setCurrentPage={setCurrentPage} />}
+                {currentPage === 'profile' && currentUser && (
+                    <UserProfileComponent 
+                            user={currentUser} 
+                            onUpdateUser={handleUpdateProfile} 
+                            setCurrentPage={setCurrentPage}
+                    />
+                )}
+            </>
+        ) : (
+            // Access Denied View for Guests clicking restricted links directly (edge case)
+            !['home', 'verse', 'bible'].includes(currentPage) && (
+                <div className="flex flex-col items-center justify-center py-20 bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-2xl">
+                     <div className="bg-slate-700/50 p-4 rounded-full mb-4">
+                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                         </svg>
+                     </div>
+                     <h2 className="text-3xl font-bold text-white mb-2 font-serif">Member Exclusive</h2>
+                     <p className="text-slate-400 mb-6 text-center max-w-md px-4">
+                         Join the True Harvest community to access Songs, Events, Bible Study, Case Studies, and more.
+                     </p>
+                     <button 
+                        onClick={() => handleLogout()} // Log out to go to login screen
+                        className="px-6 py-3 bg-amber-500 hover:bg-amber-400 rounded-lg text-slate-900 font-bold transition-colors"
+                    >
+                        Create Account
+                    </button>
+                 </div>
+            )
         )}
       </main>
 

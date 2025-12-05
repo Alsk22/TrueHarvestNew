@@ -26,14 +26,19 @@ const VideoGenerator: React.FC = () => {
 
     useEffect(() => {
         const checkApiKey = async () => {
-            if (await window.aistudio.hasSelectedApiKey()) {
+            // Check if we are in the AI Studio environment
+            if (typeof window !== 'undefined' && (window as any).aistudio) {
+                if (await (window as any).aistudio.hasSelectedApiKey()) {
+                    setApiKeySelected(true);
+                }
+            } else {
+                // In production/Cloud Run, assume the API key is configured via environment variables
                 setApiKeySelected(true);
             }
         };
         checkApiKey();
     }, []);
     
-    // Fix: The type `NodeJS.Timeout` is not available in browser environments. Refactored to correctly handle the interval and resolve the type error.
     useEffect(() => {
         if (isLoading) {
             let messageIndex = 0;
@@ -48,8 +53,10 @@ const VideoGenerator: React.FC = () => {
     }, [isLoading]);
 
     const handleSelectKey = async () => {
-        await window.aistudio.openSelectKey();
-        setApiKeySelected(true); // Assume success to avoid race condition
+        if ((window as any).aistudio) {
+            await (window as any).aistudio.openSelectKey();
+            setApiKeySelected(true); // Assume success to avoid race condition
+        }
     };
     
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +123,10 @@ const VideoGenerator: React.FC = () => {
             let errorMessage = err.message || "An unexpected error occurred.";
             if (errorMessage.includes("Requested entity was not found.")) {
                 errorMessage = "API Key error. The selected key may be invalid or missing permissions. Please try selecting a different API key.";
-                setApiKeySelected(false); // Reset key state
+                // Only reset key state if we are in an environment that allows re-selection
+                if ((window as any).aistudio) {
+                    setApiKeySelected(false); 
+                }
             }
             setError(errorMessage);
         } finally {

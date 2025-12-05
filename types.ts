@@ -1,7 +1,7 @@
 
 // Fix: Removed self-import which caused conflicts with local type declarations.
 
-export type BibleLanguage = 'english' | 'telugu';
+export type BibleLanguage = 'english' | 'telugu' | 'tamil';
 export type EnglishVersion = 'KJV' | 'NKJV' | 'ESV' | 'NASB';
 
 export interface Verse {
@@ -26,9 +26,10 @@ export interface EnglishBible {
 export interface BibleData {
   english: EnglishBible;
   telugu: BibleBook;
+  tamil: BibleBook;
 }
 
-export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin';
+export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin' | 'profile' | 'plans' | 'create' | 'casestudies' | 'study';
 
 export interface VerseContent {
   verse: string;
@@ -79,8 +80,38 @@ export interface Event {
 
 export type UserRole = 'admin' | 'user';
 
+export interface UserProfile {
+    displayName?: string;
+    bio?: string;
+    notificationsEnabled: boolean;
+    streak: number;
+    versesRead: number;
+}
+
 export interface User {
   email: string;
   role: UserRole;
-  password?: string; // Added password for auth simulation
+  password?: string;
+  profile?: UserProfile;
+}
+
+export interface BiblePlanDay {
+    day: number;
+    reference: string; // e.g., "Genesis 1-3"
+    completed: boolean;
+}
+
+export interface BiblePlan {
+    id: string;
+    title: string;
+    description: string;
+    days: number;
+    schedule: BiblePlanDay[];
+    imageUrl: string;
+}
+
+export interface UserPlanProgress {
+    planId: string;
+    startDate: string;
+    completedDays: number[]; // Array of day numbers
 }

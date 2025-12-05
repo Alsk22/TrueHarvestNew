@@ -1,3 +1,4 @@
+
 import React from 'react';
 import FacebookIcon from './icons/FacebookIcon';
 import TwitterIcon from './icons/TwitterIcon';
@@ -13,7 +14,8 @@ interface SharePopoverProps {
 
 const SharePopover: React.FC<SharePopoverProps> = ({ verseText, reference, onClose, position = 'top' }) => {
   const shareText = `"${verseText}" - ${reference}`;
-  const appUrl = "https://trueharvest.app"; 
+  // Updated to the new domain
+  const appUrl = "https://trueharvest.world"; 
   const encodedShareText = encodeURIComponent(shareText);
   const encodedAppUrl = encodeURIComponent(appUrl);
 
