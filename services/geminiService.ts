@@ -188,21 +188,34 @@ export const generateBibleStudy = async (query: string): Promise<string> => {
     }
 };
 
-export const generateVerseSummary = async (verseText: string, reference: string, language: string = 'english'): Promise<string> => {
+export const generateVerseSummary = async (verseText: string, reference: string, language: string = 'english'): Promise<{ key_word: string, summary: string } | null> => {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Provide a very short, clear summary (max 3 sentences) of the following Bible verse for a quick understanding. 
-            Verse: "${verseText}" (${reference})
-            Focus on the core meaning and immediate application.
+            contents: `Analyze this Bible verse: "${verseText}" (${reference}).
             
-            IMPORTANT: RESPOND IN ${language.toUpperCase()} LANGUAGE ONLY.`,
+            1. key_word: A single, powerful word (in ${language}) representing the core takeaway or lesson (e.g., "Faith", "Forgiveness", "Creation").
+            2. summary: A concise explanation (max 3 sentences) in ${language}.`,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        key_word: { type: Type.STRING },
+                        summary: { type: Type.STRING }
+                    },
+                    required: ["key_word", "summary"]
+                }
+            },
         });
-        return response.text || "Summary unavailable.";
+        
+        const text = response.text;
+        if (!text) return null;
+        return JSON.parse(text);
     } catch (error) {
         console.error("Error generating verse summary:", error);
-        return "Unable to generate summary at this time.";
+        return null;
     }
 };
 
