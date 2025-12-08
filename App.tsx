@@ -17,6 +17,7 @@ import VerseImageGenerator from './components/VerseImageGenerator';
 import CaseStudies from './components/CaseStudies';
 import type { Page, User, UserProfile } from './types';
 import { USERS } from './services/constants';
+import Logo from './components/Logo';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -24,29 +25,42 @@ const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isGuestMode, setIsGuestMode] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
 
   // Effect to load users and session from storage on initial load
   useEffect(() => {
-    try {
-        // Load User Database
-        const storedUsers = localStorage.getItem('trueHarvestUsers');
-        if (storedUsers) {
-            setUsers(JSON.parse(storedUsers));
-        } else {
-            setUsers(USERS);
-            localStorage.setItem('trueHarvestUsers', JSON.stringify(USERS));
-        }
+    const initializeApp = async () => {
+        try {
+            // Load User Database
+            const storedUsers = localStorage.getItem('trueHarvestUsers');
+            if (storedUsers) {
+                setUsers(JSON.parse(storedUsers));
+            } else {
+                setUsers(USERS);
+                localStorage.setItem('trueHarvestUsers', JSON.stringify(USERS));
+            }
 
-        // Load Session (Check LocalStorage first for Remember Me, then SessionStorage)
-        const storedSession = localStorage.getItem('trueHarvestSession') || sessionStorage.getItem('trueHarvestSession');
-        if (storedSession) {
-            setCurrentUser(JSON.parse(storedSession));
-            setShowWelcome(false); // Skip welcome if logged in
+            // Load Session (Check LocalStorage first for Remember Me, then SessionStorage)
+            const storedSession = localStorage.getItem('trueHarvestSession') || sessionStorage.getItem('trueHarvestSession');
+            if (storedSession) {
+                const sessionUser = JSON.parse(storedSession);
+                // Verify user still exists in database (optional security measure, but good for data consistency)
+                // We use the loaded users from local storage if available, or the constant USERS if not.
+                // However, state 'users' might not be updated yet in this closure, so we check storedUsers directly or trust the session.
+                // For simplicity and performance, we trust the valid session object.
+                setCurrentUser(sessionUser);
+                setShowWelcome(false); // Skip welcome if logged in
+            }
+        } catch (error) {
+            console.error("Error loading initial state:", error);
+            setUsers(USERS);
+        } finally {
+            // Simulate a slight delay for smooth aesthetic or just finish immediately
+            setIsSessionLoading(false);
         }
-    } catch (error) {
-        console.error("Error loading initial state:", error);
-        setUsers(USERS);
-    }
+    };
+
+    initializeApp();
   }, []);
 
   const handleLogin = (email: string, password?: string, rememberMe: boolean = true): { success: boolean; message: string } => {
@@ -152,7 +166,26 @@ const App: React.FC = () => {
       handleUpdateUsers(updatedUsers);
   };
 
-  // View Routing Logic
+  // 1. Session Loading State
+  if (isSessionLoading) {
+      return (
+          <div className="min-h-screen flex items-center justify-center bg-slate-950">
+              <div className="flex flex-col items-center">
+                  <div className="relative mb-6">
+                      <div className="absolute inset-0 bg-amber-500 blur-xl opacity-20 rounded-full animate-pulse"></div>
+                      <Logo svgClassName="w-16 h-16 text-amber-400 relative z-10" showText={false} />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-amber-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+              </div>
+          </div>
+      );
+  }
+
+  // 2. View Routing Logic
   if (!currentUser && !isGuestMode) {
       if (showWelcome) {
           return <WelcomePage onEnter={() => setShowWelcome(false)} />;

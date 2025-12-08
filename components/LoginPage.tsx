@@ -38,7 +38,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onRegister, onGuestAcces
     
     // Domain Check
     if (!email.toLowerCase().endsWith(REQUIRED_DOMAIN)) {
-        setError(`Access restricted. Email must end with ${REQUIRED_DOMAIN}`);
+        setError(`Access restricted. Please use your official ${REQUIRED_DOMAIN} email.`);
         return;
     }
 
@@ -94,12 +94,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onRegister, onGuestAcces
        </button>
 
       <div className="w-full max-w-md bg-slate-900/40 backdrop-blur-xl border border-slate-700/50 rounded-3xl shadow-2xl p-8 md:p-10 relative z-10 animate-fadeInUp">
-        <div className="mb-8 flex flex-col items-center">
+        <div className="mb-8 flex flex-col items-center text-center">
             <Logo svgClassName="w-16 h-16 text-amber-400 mb-4" showText={false} />
             <h1 className="text-3xl font-serif font-bold text-white tracking-wide">
-                Sanctuary Login
+                Community Login
             </h1>
-            <p className="text-slate-400 text-sm mt-2">Access requires a valid community ID.</p>
+            <div className="mt-3 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
+                <p className="text-amber-400 text-xs font-bold tracking-wider">OFFICIAL MEMBERS ONLY</p>
+            </div>
         </div>
 
         {/* Custom Tabs */}
@@ -163,7 +165,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onRegister, onGuestAcces
 
           <div>
             <label htmlFor="email" className="block text-left text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-              Email Address ({REQUIRED_DOMAIN})
+              Official Email Address
             </label>
             <div className="relative">
                 <input
@@ -182,9 +184,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onRegister, onGuestAcces
                 placeholder={`name${REQUIRED_DOMAIN}`}
                 />
             </div>
-            {activeTab === 'signup' && (
-                 <p className="text-[10px] text-slate-500 mt-1 text-right">Must end in {REQUIRED_DOMAIN}</p>
-            )}
+            {/* Domain Hint */}
+            <div className="flex justify-end mt-1">
+                 <span className={`text-[10px] transition-colors ${email && !email.toLowerCase().endsWith(REQUIRED_DOMAIN) ? 'text-red-400 font-bold' : 'text-slate-500'}`}>
+                    Required: {REQUIRED_DOMAIN}
+                 </span>
+            </div>
           </div>
           
            <div>
@@ -229,7 +234,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onRegister, onGuestAcces
           </button>
 
           <div className="pt-4 border-t border-slate-800">
-                <p className="text-center text-xs text-slate-500 mb-3">Limited access for visitors</p>
+                <p className="text-center text-xs text-slate-500 mb-3">Not a member yet?</p>
                 <button
                     type="button"
                     onClick={onGuestAccess}
