@@ -11,6 +11,7 @@ import LogoutIcon from './icons/LogoutIcon';
 import CreateIcon from './icons/CreateIcon';
 import BookOpenIcon from './icons/BookOpenIcon';
 import SearchIcon from './icons/SearchIcon';
+import GraphIcon from './icons/GraphIcon';
 import Logo from './Logo';
 
 interface HeaderProps {
@@ -87,6 +88,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
       { page: 'create' as Page, icon: <CreateIcon />, label: 'Create' },
       { page: 'events' as Page, icon: <CalendarIcon />, label: 'Events' },
       { page: 'study' as Page, icon: <SearchIcon />, label: 'Query' },
+      { page: 'introspection' as Page, icon: <GraphIcon />, label: 'Introspect' },
     ];
     
     // Admin Link

@@ -16,6 +16,7 @@ import BibleStudy from './components/BibleStudy';
 import VerseImageGenerator from './components/VerseImageGenerator';
 import CaseStudies from './components/CaseStudies';
 import AdminDashboard from './components/AdminDashboard';
+import IntrospectionPage from './components/IntrospectionPage';
 import type { Page, User, UserProfile } from './types';
 import { USERS } from './services/constants';
 import Logo from './components/Logo';
@@ -297,6 +298,7 @@ const App: React.FC = () => {
                 {currentPage === 'plans' && <BiblePlans setCurrentPage={setCurrentPage} />}
                 {currentPage === 'casestudies' && <CaseStudies setCurrentPage={setCurrentPage} />}
                 {currentPage === 'study' && <BibleStudy setCurrentPage={setCurrentPage} />}
+                {currentPage === 'introspection' && <IntrospectionPage setCurrentPage={setCurrentPage} />}
                 
                 {currentPage === 'profile' && currentUser && (
                     <UserProfileComponent 

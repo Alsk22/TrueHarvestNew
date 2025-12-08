@@ -29,7 +29,7 @@ export interface BibleData {
   tamil: BibleBook;
 }
 
-export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin' | 'profile' | 'plans' | 'create' | 'casestudies' | 'study';
+export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin' | 'profile' | 'plans' | 'create' | 'casestudies' | 'study' | 'introspection';
 
 export interface VerseContent {
   verse: string;
@@ -116,4 +116,13 @@ export interface UserPlanProgress {
     planId: string;
     startDate: string;
     completedDays: number[]; // Array of day numbers
+}
+
+export interface DailyLog {
+    date: string; // YYYY-MM-DD
+    readBible: boolean;
+    readVerse: boolean;
+    prayed: boolean;
+    worship: boolean;
+    peaceScore: number; // 1-10
 }
