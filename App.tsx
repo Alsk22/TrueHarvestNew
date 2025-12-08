@@ -15,9 +15,11 @@ import BiblePlans from './components/BiblePlans';
 import BibleStudy from './components/BibleStudy';
 import VerseImageGenerator from './components/VerseImageGenerator';
 import CaseStudies from './components/CaseStudies';
+import AdminDashboard from './components/AdminDashboard';
 import type { Page, User, UserProfile } from './types';
 import { USERS } from './services/constants';
 import Logo from './components/Logo';
+import { getVerseOfTheDay } from './services/geminiService';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -44,10 +46,6 @@ const App: React.FC = () => {
             const storedSession = localStorage.getItem('trueHarvestSession') || sessionStorage.getItem('trueHarvestSession');
             if (storedSession) {
                 const sessionUser = JSON.parse(storedSession);
-                // Verify user still exists in database (optional security measure, but good for data consistency)
-                // We use the loaded users from local storage if available, or the constant USERS if not.
-                // However, state 'users' might not be updated yet in this closure, so we check storedUsers directly or trust the session.
-                // For simplicity and performance, we trust the valid session object.
                 setCurrentUser(sessionUser);
                 setShowWelcome(false); // Skip welcome if logged in
             }
@@ -63,6 +61,58 @@ const App: React.FC = () => {
     initializeApp();
   }, []);
 
+  // Daily Notification Logic
+  useEffect(() => {
+      const checkDailyNotification = async () => {
+          if (!currentUser || !currentUser.profile?.notificationsEnabled) return;
+
+          const lastDate = currentUser.profile.lastNotificationDate;
+          const today = new Date().toDateString();
+
+          // If last notification wasn't today
+          if (lastDate !== today) {
+              // Check browser permission
+              if (Notification.permission === 'granted') {
+                  try {
+                      // Fetch verse for notification
+                      const verseData = await getVerseOfTheDay();
+                      const verse = verseData.english;
+                      
+                      // Trigger Notification
+                      const notif = new Notification("True Harvest: Daily Verse", {
+                          body: `"${verse.verse}" - ${verse.reference}`,
+                          icon: '/vite.svg', // Fallback icon
+                          tag: 'daily-verse'
+                      });
+                      
+                      notif.onclick = () => {
+                          window.focus();
+                          setCurrentPage('verse');
+                      };
+
+                      // Update user's lastNotificationDate to today
+                      const updatedProfile = { 
+                          ...currentUser.profile, 
+                          lastNotificationDate: today 
+                      };
+                      const updatedUser = { ...currentUser, profile: updatedProfile };
+                      
+                      // Update State & Storage handled by helper
+                      handleUpdateProfile(updatedUser);
+
+                  } catch (e) {
+                      console.error("Failed to send notification:", e);
+                  }
+              }
+          }
+      };
+
+      if (!isSessionLoading && currentUser) {
+          checkDailyNotification();
+      }
+  }, [currentUser, isSessionLoading]);
+
+
   const handleLogin = (email: string, password?: string, rememberMe: boolean = true): { success: boolean; message: string } => {
     const user = users.find(u => u.email === email);
     
@@ -72,6 +122,7 @@ const App: React.FC = () => {
         }
         
         setCurrentUser(user);
+        setShowWelcome(false); // Ensure welcome screen is hidden
         
         if (rememberMe) {
             localStorage.setItem('trueHarvestSession', JSON.stringify(user));
@@ -103,7 +154,8 @@ const App: React.FC = () => {
               notificationsEnabled: profileData?.notificationsEnabled || false,
               streak: 0,
               versesRead: 0,
-              bio: profileData?.bio || ''
+              bio: profileData?.bio || '',
+              avatar: profileData?.avatar || 'bg-slate-700'
           }
       };
       
@@ -113,6 +165,7 @@ const App: React.FC = () => {
       
       // Auto login after registration
       setCurrentUser(newUser);
+      setShowWelcome(false); // Ensure welcome screen is hidden
       
       if (rememberMe) {
           localStorage.setItem('trueHarvestSession', JSON.stringify(newUser));
@@ -244,11 +297,21 @@ const App: React.FC = () => {
                 {currentPage === 'plans' && <BiblePlans setCurrentPage={setCurrentPage} />}
                 {currentPage === 'casestudies' && <CaseStudies setCurrentPage={setCurrentPage} />}
                 {currentPage === 'study' && <BibleStudy setCurrentPage={setCurrentPage} />}
+                
                 {currentPage === 'profile' && currentUser && (
                     <UserProfileComponent 
                             user={currentUser} 
                             onUpdateUser={handleUpdateProfile} 
                             setCurrentPage={setCurrentPage}
+                    />
+                )}
+
+                {/* Admin Dashboard */}
+                {currentPage === 'admin' && currentUser?.role === 'admin' && (
+                    <AdminDashboard 
+                        users={users} 
+                        setUsers={handleUpdateUsers} 
+                        setCurrentPage={setCurrentPage} 
                     />
                 )}
             </>

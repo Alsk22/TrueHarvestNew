@@ -88,6 +88,15 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
       { page: 'events' as Page, icon: <CalendarIcon />, label: 'Events' },
       { page: 'study' as Page, icon: <SearchIcon />, label: 'Query' },
     ];
+    
+    // Admin Link
+    if (currentUser.role === 'admin') {
+        navItems.push({ 
+            page: 'admin' as Page, 
+            icon: <UserIcon />, 
+            label: 'Admin' 
+        });
+    }
   }
 
   return (
@@ -130,7 +139,9 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
                       >
                          <div className="text-right hidden xl:block mr-3">
                             <span className="block text-sm text-slate-300 font-medium group-hover:text-white transition-colors">{currentUser.profile?.displayName || currentUser.email.split('@')[0]}</span>
-                            <span className="block text-[10px] text-amber-400 uppercase tracking-widest font-bold">Member</span>
+                            <span className="block text-[10px] text-amber-400 uppercase tracking-widest font-bold">
+                                {currentUser.role === 'admin' ? 'Administrator' : 'Member'}
+                            </span>
                          </div>
                          <div className="h-10 w-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-400 group-hover:border-amber-400/50 transition-all">
                              <UserIcon className="h-5 w-5" />
@@ -208,7 +219,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
                        </div>
                        <div className="text-left">
                          <p className="text-base font-medium text-white">{currentUser.profile?.displayName || currentUser.email}</p>
-                         <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">Member</p>
+                         <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">{currentUser.role === 'admin' ? 'Admin' : 'Member'}</p>
                        </div>
                      </button>
                       <button 

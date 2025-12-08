@@ -86,6 +86,8 @@ export interface UserProfile {
     notificationsEnabled: boolean;
     streak: number;
     versesRead: number;
+    avatar?: string; // Color code or emoji
+    lastNotificationDate?: string; // ISO Date string
 }
 
 export interface User {

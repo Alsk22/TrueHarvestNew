@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { User, Page } from '../types';
 import UserIcon from './icons/UserIcon';
 import HomeIcon from './icons/HomeIcon';
@@ -15,7 +15,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateUser, setCurren
     const [displayName, setDisplayName] = useState(user.profile?.displayName || '');
     const [bio, setBio] = useState(user.profile?.bio || '');
     const [notificationsEnabled, setNotificationsEnabled] = useState(user.profile?.notificationsEnabled || false);
+    const [avatar, setAvatar] = useState(user.profile?.avatar || 'bg-slate-700');
     const [isSaved, setIsSaved] = useState(false);
+
+    const avatarOptions = [
+        'bg-slate-700', 'bg-amber-500', 'bg-blue-500', 'bg-green-500', 
+        'bg-red-500', 'bg-purple-500', 'bg-pink-500', 'bg-teal-500'
+    ];
 
     const handleSave = () => {
         const updatedProfile = {
@@ -23,8 +29,10 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateUser, setCurren
             displayName,
             bio,
             notificationsEnabled,
+            avatar,
             streak: user.profile?.streak || 0,
-            versesRead: user.profile?.versesRead || 0
+            versesRead: user.profile?.versesRead || 0,
+            lastNotificationDate: user.profile?.lastNotificationDate // Preserve this
         };
 
         onUpdateUser({ ...user, profile: updatedProfile });
@@ -34,9 +42,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateUser, setCurren
         if (notificationsEnabled) {
              Notification.requestPermission().then(permission => {
                 if (permission === 'granted') {
-                    new Notification("True Harvest", {
-                        body: "Daily verse notifications are now enabled! We will remind you to read the Word."
-                    });
+                    // We don't send a test notification immediately anymore, 
+                    // we just confirm permission is granted for the daily check.
                 }
             });
         }
@@ -67,24 +74,41 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateUser, setCurren
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-                {/* Stats Column */}
-                <div className="md:col-span-1 space-y-4">
-                    <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 text-center">
-                        <div className="text-4xl font-bold text-amber-400 font-serif mb-1">{user.profile?.streak || 0}</div>
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Day Streak</div>
+                {/* Stats & Avatar Column */}
+                <div className="md:col-span-1 space-y-6">
+                    {/* Avatar Preview */}
+                    <div className="flex flex-col items-center">
+                        <div className={`w-32 h-32 rounded-full ${avatar} flex items-center justify-center text-4xl font-serif font-bold text-white border-4 border-slate-800 shadow-xl`}>
+                            {displayName.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                        </div>
+                        <p className="mt-3 text-slate-400 text-sm font-medium">{user.role.toUpperCase()} Account</p>
                     </div>
-                    <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 text-center">
-                        <div className="text-4xl font-bold text-blue-400 font-serif mb-1">{user.profile?.versesRead || 0}</div>
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Verses Read</div>
+
+                    <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50 text-center">
+                        <div className="text-3xl font-bold text-amber-400 font-serif mb-1">{user.profile?.streak || 0}</div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Day Streak</div>
                     </div>
-                    <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 text-center">
-                        <div className="text-lg font-bold text-slate-300 mb-1">{user.role.toUpperCase()}</div>
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Account Role</div>
+                    <div className="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50 text-center">
+                        <div className="text-3xl font-bold text-blue-400 font-serif mb-1">{user.profile?.versesRead || 0}</div>
+                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Verses Read</div>
                     </div>
                 </div>
 
                 {/* Edit Form */}
                 <div className="md:col-span-2 space-y-6">
+                    <div>
+                        <label className="block text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Choose Avatar Color</label>
+                        <div className="flex flex-wrap gap-3">
+                            {avatarOptions.map(color => (
+                                <button
+                                    key={color}
+                                    onClick={() => setAvatar(color)}
+                                    className={`w-8 h-8 rounded-full ${color} transition-transform hover:scale-110 focus:outline-none ring-2 ring-offset-2 ring-offset-slate-900 ${avatar === color ? 'ring-white' : 'ring-transparent'}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Display Name</label>
                         <input
@@ -115,20 +139,25 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdateUser, setCurren
                         />
                     </div>
                     
-                    <div className="flex items-center justify-between bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
-                        <div>
-                            <h3 className="font-bold text-white">Daily Verse Notifications</h3>
-                            <p className="text-sm text-slate-400">Get inspired with a new verse every morning.</p>
+                    <div className="bg-slate-800/30 p-5 rounded-xl border border-slate-700/50">
+                        <div className="flex items-center justify-between mb-2">
+                            <div>
+                                <h3 className="font-bold text-white text-lg">Daily Verse Alerts</h3>
+                                <p className="text-sm text-slate-400">Receive a browser notification when you visit the app.</p>
+                            </div>
+                             <label className="relative inline-flex items-center cursor-pointer">
+                                <input 
+                                    type="checkbox" 
+                                    className="sr-only peer"
+                                    checked={notificationsEnabled}
+                                    onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                                />
+                                <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                            </label>
                         </div>
-                         <label className="relative inline-flex items-center cursor-pointer">
-                            <input 
-                                type="checkbox" 
-                                className="sr-only peer"
-                                checked={notificationsEnabled}
-                                onChange={(e) => setNotificationsEnabled(e.target.checked)}
-                            />
-                            <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                        </label>
+                        <p className="text-xs text-slate-500 italic">
+                            * Note: Since this is a web app, notifications are checked and sent when you open the application each day.
+                        </p>
                     </div>
 
                     <div className="pt-4 flex items-center space-x-4">

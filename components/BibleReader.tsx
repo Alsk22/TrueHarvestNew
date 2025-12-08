@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { BIBLE_BOOK_GROUPS_EN, BOOK_METADATA_MAP } from '../services/constants';
+import { BIBLE_BOOK_GROUPS_EN, BOOK_METADATA_MAP, BIBLE_METADATA } from '../services/constants';
 import { getBibleChapter, generateSpeech } from '../services/geminiService';
 import type { Page, BibleLanguage, EnglishVersion, Verse } from '../types';
 import HomeIcon from './icons/HomeIcon';
@@ -295,6 +295,8 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
     const bookMetadata = useMemo(() => BOOK_METADATA_MAP[book] || BOOK_METADATA_MAP['Genesis'], [book]);
     const maxChapters = bookMetadata.chapters;
+    const currentBookIndex = useMemo(() => BIBLE_METADATA.findIndex(b => b.en === book), [book]);
+
     const currentChapterKey = useCallback((lang: string) => `${lang}-${book}-${chapter}-${lang === 'english' ? version : 'BSI'}`, [book, chapter, version]);
     
     const englishContent = fetchedContent[currentChapterKey('english')];
@@ -516,6 +518,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         setSelectedTextContent('');
         setContextVerseNum(null);
         setShowSharePopover(false);
+        setShowSummaryModal(false);
         if (window.getSelection) {
             window.getSelection()?.removeAllRanges();
         }
@@ -596,16 +599,27 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const handleNextChapter = () => {
         if (chapter < maxChapters) {
             setChapter(c => c + 1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (currentBookIndex !== -1 && currentBookIndex < BIBLE_METADATA.length - 1) {
+            setBook(BIBLE_METADATA[currentBookIndex + 1].en);
+            setChapter(1);
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handlePrevChapter = () => {
         if (chapter > 1) {
             setChapter(c => c - 1);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (currentBookIndex > 0) {
+            const prevBook = BIBLE_METADATA[currentBookIndex - 1];
+            setBook(prevBook.en);
+            setChapter(prevBook.chapters);
         }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    // Disabled logic
+    const isPrevDisabled = currentBookIndex === 0 && chapter === 1;
+    const isNextDisabled = currentBookIndex === BIBLE_METADATA.length - 1 && chapter === maxChapters;
 
     // Prepare share data outside JSX to avoid complex ternary syntax errors
     const versesForShare = useMemo(() => {
@@ -664,12 +678,20 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
                         <div className="w-px h-6 bg-slate-700"></div>
 
-                        <button onClick={() => setShowSummaryModal(true)} className="flex flex-col items-center group px-2" title="Explain Selection">
+                        <button 
+                            onClick={() => { setShowSummaryModal(true); setShowSharePopover(false); }} 
+                            className="flex flex-col items-center group px-2" 
+                            title="Explain Selection"
+                        >
                             <SparklesIcon className="h-5 w-5 text-amber-500 group-hover:text-amber-300 transition-colors" />
                             <span className="text-[10px] text-amber-500 mt-1">Explain</span>
                         </button>
 
-                        <button onClick={() => setShowSharePopover(true)} className="flex flex-col items-center group" title="Share Selection">
+                        <button 
+                            onClick={() => { setShowSharePopover(true); setShowSummaryModal(false); }} 
+                            className="flex flex-col items-center group" 
+                            title="Share Selection"
+                        >
                             <ShareIcon className="h-5 w-5 text-slate-400 group-hover:text-green-400 transition-colors" />
                         </button>
                     </>
@@ -697,11 +719,19 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                             <NoteIcon className="h-5 w-5 text-slate-400 group-hover:text-blue-400 transition-colors" />
                         </button>
                         
-                        <button onClick={() => setShowSummaryModal(true)} className="flex flex-col items-center group" title="AI Summary">
+                        <button 
+                            onClick={() => { setShowSummaryModal(true); setShowSharePopover(false); }} 
+                            className="flex flex-col items-center group" 
+                            title="AI Summary"
+                        >
                             <SparklesIcon className="h-5 w-5 text-amber-500 group-hover:text-amber-300 transition-colors" />
                         </button>
 
-                        <button onClick={() => setShowSharePopover(true)} className="flex flex-col items-center group" title="Share">
+                        <button 
+                            onClick={() => { setShowSharePopover(true); setShowSummaryModal(false); }} 
+                            className="flex flex-col items-center group" 
+                            title="Share"
+                        >
                             <ShareIcon className="h-5 w-5 text-slate-400 group-hover:text-green-400 transition-colors" />
                         </button>
                     </>
@@ -725,6 +755,16 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                     chapter={chapter}
                     version={version}
                     onClose={() => setShowSharePopover(false)}
+                    position={toolbarPosition.showBelow ? 'bottom' : 'top'}
+                />
+            )}
+
+            {showSummaryModal && (
+                <VerseSummaryModal 
+                    verseText={getSelectedText()}
+                    reference={selectionMode === 'verse' ? getRefString(selectedVerses) : (contextVerseNum ? `${book} ${chapter}:${contextVerseNum}` : `${book} ${chapter} (Excerpt)`)}
+                    language={language}
+                    onClose={() => setShowSummaryModal(false)}
                     position={toolbarPosition.showBelow ? 'bottom' : 'top'}
                 />
             )}
@@ -755,7 +795,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         <div className="flex items-center bg-slate-800 rounded-lg border border-slate-700">
                              <button 
                                 onClick={handlePrevChapter} 
-                                disabled={chapter <= 1}
+                                disabled={isPrevDisabled}
                                 className="p-2 text-slate-400 hover:text-white disabled:opacity-30"
                              >
                                 <ChevronDownIcon className="h-4 w-4 rotate-90" />
@@ -771,7 +811,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                             </select>
                             <button 
                                 onClick={handleNextChapter} 
-                                disabled={chapter >= maxChapters}
+                                disabled={isNextDisabled}
                                 className="p-2 text-slate-400 hover:text-white disabled:opacity-30"
                             >
                                 <ChevronDownIcon className="h-4 w-4 -rotate-90" />
@@ -876,10 +916,10 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                     </div>
                      
                     <div className="flex justify-between mt-12 pt-8 border-t border-slate-800">
-                        <button onClick={handlePrevChapter} disabled={chapter <= 1} className="flex items-center text-slate-400 hover:text-white disabled:opacity-30 transition-colors">
+                        <button onClick={handlePrevChapter} disabled={isPrevDisabled} className="flex items-center text-slate-400 hover:text-white disabled:opacity-30 transition-colors">
                             <ChevronDownIcon className="h-5 w-5 rotate-90 mr-2" /> Previous Chapter
                         </button>
-                        <button onClick={handleNextChapter} disabled={chapter >= maxChapters} className="flex items-center text-slate-400 hover:text-white disabled:opacity-30 transition-colors">
+                        <button onClick={handleNextChapter} disabled={isNextDisabled} className="flex items-center text-slate-400 hover:text-white disabled:opacity-30 transition-colors">
                             Next Chapter <ChevronDownIcon className="h-5 w-5 -rotate-90 ml-2" />
                         </button>
                     </div>
@@ -907,15 +947,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                     onClose={() => setNoteModalVerseRef(null)}
                 />
             )}
-            
-            {showSummaryModal && (
-                <VerseSummaryModal 
-                    verseText={getSelectedText()}
-                    reference={selectionMode === 'verse' ? getRefString(selectedVerses) : `${book} ${chapter} (Excerpt)`}
-                    onClose={() => { setShowSummaryModal(false); clearSelection(); }}
-                />
-            )}
-
         </div>
     );
 };

@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Type, Modality } from "@google/genai";
 import type { VerseData, Verse } from '../types';
 
@@ -37,8 +38,10 @@ export const getVerseOfTheDay = async (): Promise<VerseData> => {
             },
         });
 
-        const jsonText = response.text.trim();
-        const data = JSON.parse(jsonText);
+        const jsonText = response.text;
+        if (!jsonText) throw new Error("No text returned from API");
+
+        const data = JSON.parse(jsonText.trim());
         
         return data as VerseData;
     } catch (error) {
@@ -118,8 +121,13 @@ OUTPUT RULES:
             },
         });
 
-        const jsonText = response.text.trim();
-        const data = JSON.parse(jsonText);
+        const jsonText = response.text;
+        if (!jsonText) {
+            console.error("Gemini API returned no text for chapter generation.");
+            return null;
+        }
+
+        const data = JSON.parse(jsonText.trim());
         
         const verseMap: Verse = {};
         if (data.verses && Array.isArray(data.verses)) {
@@ -173,23 +181,25 @@ export const generateBibleStudy = async (query: string): Promise<string> => {
             Provide a concise but deep theological insight, historical context (if applicable), and practical application.
             Keep the tone encouraging and faith-building. Limit response to 200 words.`,
         });
-        return response.text;
+        return response.text || "No insights available at the moment.";
     } catch (error) {
         console.error("Error generating Bible study:", error);
         return "Sorry, I couldn't generate the study notes at this moment. Please try again.";
     }
 };
 
-export const generateVerseSummary = async (verseText: string, reference: string): Promise<string> => {
+export const generateVerseSummary = async (verseText: string, reference: string, language: string = 'english'): Promise<string> => {
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: `Provide a very short, clear summary (max 3 sentences) of the following Bible verse for a quick understanding. 
             Verse: "${verseText}" (${reference})
-            Focus on the core meaning and immediate application.`,
+            Focus on the core meaning and immediate application.
+            
+            IMPORTANT: RESPOND IN ${language.toUpperCase()} LANGUAGE ONLY.`,
         });
-        return response.text;
+        return response.text || "Summary unavailable.";
     } catch (error) {
         console.error("Error generating verse summary:", error);
         return "Unable to generate summary at this time.";
@@ -232,7 +242,10 @@ export const generateCaseStudy = async (topic: string): Promise<any> => {
             },
         });
         
-        return JSON.parse(response.text);
+        const text = response.text;
+        if (!text) throw new Error("No text returned from API");
+
+        return JSON.parse(text);
     } catch (error) {
         console.error("Error generating case study:", error);
         throw error;

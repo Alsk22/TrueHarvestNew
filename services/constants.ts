@@ -3,7 +3,7 @@ import type { BibleData, SongData, Event, User, BiblePlan } from '../types';
 
 export const USERS: User[] = [
   { 
-      email: 'member@trueharvest.world', 
+      email: 'member@gmail.com', 
       role: 'user', 
       password: 'password123',
       profile: {
@@ -11,7 +11,21 @@ export const USERS: User[] = [
           bio: 'Seeking God daily in the harvest.',
           notificationsEnabled: true,
           streak: 12,
-          versesRead: 150
+          versesRead: 150,
+          avatar: 'bg-blue-500'
+      } 
+  },
+  { 
+      email: 'admin@trueharvest.world', 
+      role: 'admin', 
+      password: 'harvest2024',
+      profile: {
+          displayName: 'Community Admin',
+          bio: 'Shepherd of the digital flock.',
+          notificationsEnabled: true,
+          streak: 365,
+          versesRead: 5000,
+          avatar: 'bg-amber-500'
       } 
   },
 ];
