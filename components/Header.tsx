@@ -12,6 +12,8 @@ import CreateIcon from './icons/CreateIcon';
 import BookOpenIcon from './icons/BookOpenIcon';
 import SearchIcon from './icons/SearchIcon';
 import GraphIcon from './icons/GraphIcon';
+import LeafIcon from './icons/LeafIcon';
+import InfoIcon from './icons/InfoIcon';
 import Logo from './Logo';
 
 interface HeaderProps {
@@ -76,6 +78,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
     { page: 'home' as Page, icon: <HomeIcon />, label: 'Home' },
     { page: 'verse' as Page, icon: <InspirationIcon />, label: 'Verse' },
     { page: 'bible' as Page, icon: <BibleIcon />, label: 'Bible' },
+    { page: 'about' as Page, icon: <InfoIcon />, label: 'About' },
   ];
 
   // Items for registered users only
@@ -83,7 +86,8 @@ const Header: React.FC<HeaderProps> = ({ currentPage, setCurrentPage, currentUse
     navItems = [
       ...navItems,
       { page: 'plans' as Page, icon: <CalendarIcon />, label: 'Plans' },
-      { page: 'casestudies' as Page, icon: <BookOpenIcon />, label: 'Case Studies' },
+      { page: 'botanica' as Page, icon: <LeafIcon />, label: 'Botanica' },
+      { page: 'casestudies' as Page, icon: <BookOpenIcon />, label: 'Study' },
       { page: 'songs' as Page, icon: <MusicIcon />, label: 'Songs' },
       { page: 'create' as Page, icon: <CreateIcon />, label: 'Create' },
       { page: 'events' as Page, icon: <CalendarIcon />, label: 'Events' },

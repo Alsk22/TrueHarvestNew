@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type, Modality } from "@google/genai";
-import type { VerseData, Verse } from '../types';
+import type { VerseData, Verse, CharacterProfile } from '../types';
 
 // Fix: Switched to using a responseSchema for more robust JSON generation.
 // This ensures the API returns a predictable structure and simplifies the prompt.
@@ -23,7 +23,15 @@ export const getVerseOfTheDay = async (): Promise<VerseData> => {
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: `Provide a Bible verse of the day suitable for someone new to the Bible, in English, Telugu, and Tamil.`,
+            contents: `Provide a Bible verse of the day suitable for someone new to the Bible, in English, Telugu, and Tamil.
+            
+            CRITICAL FOR TELUGU: 
+            - Retrieve the exact text from the "Telugu Bible OV (BSI)" (as found on wordproject.org).
+            - Use Grandhika Bhasha (Classical).
+            - Example: Use "సృజించెను" (Created), NOT "చేసాడు" (Did/Made).
+            
+            CRITICAL FOR TAMIL: 
+            - Use the exact "Tamil Bible OV (BSI)" text.`,
             config: {
                 responseMimeType: "application/json",
                 responseSchema: {
@@ -77,29 +85,76 @@ export const getVerseOfTheDay = async (): Promise<VerseData> => {
 };
 
 export const getBibleChapter = async (language: string, book: string, chapter: number, version: string = 'KJV'): Promise<Verse | null> => {
+    
+    // --- STRATEGY 1: STATIC DB LOOKUP (The Recommended Solution) ---
+    // This looks for a file at /bible/{language}/{book}/{chapter}.json
+    // Example: /bible/telugu/Genesis/1.json
+    try {
+        const safeBook = book.replace(/\s+/g, '_'); // Replace spaces with underscores
+        const staticUrl = `/bible/${language.toLowerCase()}/${safeBook}/${chapter}.json`;
+        
+        console.log(`Attempting to fetch static bible content from: ${staticUrl}`);
+        
+        const response = await fetch(staticUrl);
+        if (response.ok) {
+            const data = await response.json();
+            // Validate basic structure
+            if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+                console.log("Found static content!");
+                return data as Verse;
+            }
+        }
+    } catch (e) {
+        // Silently fail on static fetch and proceed to AI
+        console.log("Static content not found, falling back to Gemini AI.");
+    }
+
+    // --- STRATEGY 2: AI GENERATION (Fallback) ---
     try {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         // Use a STRICT prompt to act as a database retrieval system.
-        // We explicitly command it NOT to paraphrase.
-        const prompt = `ROLE: You are a strict, verbatim Bible Database.
-TASK: Retrieve the exact text for ${book} Chapter ${chapter}.
+        let languageInstruction = "";
+        
+        if (language === 'telugu') {
+            languageInstruction = `
+            STRICT MODE: TELUGU BIBLE OV (BSI).
+            SOURCE MATERIAL: Match the text found on 'wordproject.org/bibles/tel'.
+            
+            RULES:
+            1. DO NOT TRANSLATE. You must RECALL the exact stored text of the Telugu Bible Old Version.
+            2. USE "Grandhika Bhasha" (Classical Literary Telugu).
+            3. IGNORE modern spoken Telugu (Vyavaharika).
+            
+            STYLE CHECK:
+            - CORRECT: "ఆదియందు దేవుడు భూమ్యాకాశములను సృజించెను" (Gen 1:1)
+            - INCORRECT: "మొదట్లో దేవుడు ఆకాశాన్ని భూమిని సృష్టించాడు" (Modern/Translated)
+            - CORRECT: "వాక్యము దేవుడై యుండెను" (John 1:1)
+            - INCORRECT: "మాట దేవునిగా ఉంది" (Translated)
+            
+            If you deviate from the 'Grandhika' style, the user will reject the response.
+            `;
+        } else if (language === 'tamil') {
+            languageInstruction = `CRITICAL FOR TAMIL: Use the "Tamil Bible OV (BSI)" (பரிசுத்த வேதாகமம்). Do not translate from English. Recite the standard text.`;
+        } else {
+            languageInstruction = `Use exactly the ${version} version.`;
+        }
+
+        const prompt = `ROLE: You are a strict Bible Database.
+TASK: Retrieve verses for ${book} Chapter ${chapter}.
 LANGUAGE: ${language}.
-VERSION_RULES:
-- If language is 'english', use exactly the ${version} version.
-- If language is 'telugu', use the standard "Bible Society of India (BSI)" / "O.V. (Old Version)" text. Do NOT use modern spoken dialects.
-- If language is 'tamil', use the standard "BSI / O.V." version.
+${languageInstruction}
 
 OUTPUT RULES:
-- Provide every single verse. Do not skip any.
+- Provide every single verse number and text.
 - Do not summarize.
-- Do not add commentary.
 - Return ONLY the JSON.`;
 
         const response = await ai.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
+                temperature: 0, // CRITICAL: Sets creativity to 0 for maximum accuracy
                 responseMimeType: "application/json",
                 responseSchema: {
                     type: Type.OBJECT,
@@ -303,6 +358,56 @@ export const generateVerseImage = async (verse: string, reference: string, style
         return null;
     } catch (error) {
         console.error("Error generating verse image:", error);
+        throw error;
+    }
+};
+
+export const getCharacterProfile = async (characterName: string, language: string = 'english'): Promise<CharacterProfile> => {
+    try {
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        
+        const prompt = `Create a "Garden Profile" for the biblical character "${characterName}". 
+        
+        TARGET LANGUAGE: ${language}
+        
+        INSTRUCTIONS:
+        - Provide the response strictly in ${language}. 
+        - Use a garden metaphor to describe their life.
+        - tagline: A short, inspiring 1-sentence description/title of who they are (e.g., "The Pioneer of Faith, Called to Be the Father of Many Nations").
+        - plant_type: A title like "The Called Journeyer" or "The Weeping Prophet".
+        - origin: A short phrase describing their background like "The Father of Promise".
+        - key_fruit: A short phrase describing their main legacy like "The Blessed Patriarch".
+        - growth_story: A detailed paragraph describing their spiritual journey and life.
+        - thorns: Their main struggle or failure.
+        - scripture_ref: Key reference (e.g., Genesis 12-25).`;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        name: { type: Type.STRING },
+                        tagline: { type: Type.STRING },
+                        plant_type: { type: Type.STRING, description: "Main Title (Circle 1)" },
+                        origin: { type: Type.STRING, description: "Background Title (Circle 2)" },
+                        key_fruit: { type: Type.STRING, description: "Legacy Title (Circle 3)" },
+                        growth_story: { type: Type.STRING, description: "Main bio text" },
+                        thorns: { type: Type.STRING },
+                        scripture_ref: { type: Type.STRING }
+                    },
+                    required: ["name", "tagline", "plant_type", "origin", "growth_story", "key_fruit", "thorns", "scripture_ref"]
+                }
+            },
+        });
+
+        const jsonText = response.text;
+        if (!jsonText) throw new Error("No text returned from API");
+        return JSON.parse(jsonText.trim()) as CharacterProfile;
+    } catch (error) {
+        console.error("Error generating character profile:", error);
         throw error;
     }
 };

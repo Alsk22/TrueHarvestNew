@@ -14,9 +14,11 @@ import UserProfileComponent from './components/UserProfile';
 import BiblePlans from './components/BiblePlans';
 import BibleStudy from './components/BibleStudy';
 import VerseImageGenerator from './components/VerseImageGenerator';
+import VideoGenerator from './components/VideoGenerator';
 import CaseStudies from './components/CaseStudies';
 import AdminDashboard from './components/AdminDashboard';
 import IntrospectionPage from './components/IntrospectionPage';
+import Botanica from './components/Botanica';
 import type { Page, User, UserProfile } from './types';
 import { USERS } from './services/constants';
 import Logo from './components/Logo';
@@ -287,14 +289,16 @@ const App: React.FC = () => {
         {currentPage === 'bible' && (
           <BibleReader setCurrentPage={setCurrentPage} />
         )}
+        {currentPage === 'about' && <AboutPage setCurrentPage={setCurrentPage} />}
 
         {/* Restricted Pages (User Only) */}
         {canAccessFullContent ? (
             <>
+                {currentPage === 'botanica' && <Botanica setCurrentPage={setCurrentPage} />}
                 {currentPage === 'create' && <VerseImageGenerator setCurrentPage={setCurrentPage} />}
+                {currentPage === 'video' && <VideoGenerator />}
                 {currentPage === 'songs' && <SongLibrary setCurrentPage={setCurrentPage} />}
                 {currentPage === 'events' && <EventsCalendar setCurrentPage={setCurrentPage} />}
-                {currentPage === 'about' && <AboutPage setCurrentPage={setCurrentPage} />}
                 {currentPage === 'plans' && <BiblePlans setCurrentPage={setCurrentPage} />}
                 {currentPage === 'casestudies' && <CaseStudies setCurrentPage={setCurrentPage} />}
                 {currentPage === 'study' && <BibleStudy setCurrentPage={setCurrentPage} />}
@@ -319,7 +323,7 @@ const App: React.FC = () => {
             </>
         ) : (
             // Access Denied View for Guests clicking restricted links directly (edge case)
-            !['home', 'verse', 'bible'].includes(currentPage) && (
+            !['home', 'verse', 'bible', 'about'].includes(currentPage) && (
                 <div className="flex flex-col items-center justify-center py-20 bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-2xl">
                      <div className="bg-slate-700/50 p-4 rounded-full mb-4">
                          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -341,7 +345,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <Footer />
+      <Footer setCurrentPage={setCurrentPage} />
     </div>
   );
 };

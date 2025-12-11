@@ -41,7 +41,45 @@ const AboutPage: React.FC<AboutPageProps> = ({ setCurrentPage }) => {
             </div>
         </div>
         
-        <div className="text-lg text-slate-300 leading-relaxed space-y-10">
+        <div className="text-lg text-slate-300 leading-relaxed space-y-12">
+            
+            {/* Source of Truth - Moved to TOP for visibility */}
+            <div className="bg-gradient-to-br from-slate-950 to-slate-900 p-8 rounded-2xl border-2 border-amber-500/30 shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-amber-200"></div>
+                <h2 className="text-3xl font-serif font-bold text-white mb-6 flex items-center">
+                    <span className="text-amber-400 mr-3">✝</span>
+                    Source of Truth & Data Integrity
+                </h2>
+                <div className="space-y-6">
+                    <p className="text-white text-lg leading-relaxed">
+                        <strong>The Holy Bible is the sole and final authority for this community.</strong> We strictly adhere to the conviction that Scripture is the inspired Word of God.
+                    </p>
+                    <ul className="space-y-4">
+                        <li className="flex items-start">
+                            <CheckIcon className="h-6 w-6 text-amber-400 mt-1 mr-3 flex-shrink-0" />
+                            <span>
+                                <strong className="text-amber-100 block mb-1">Authentic Scripture Retrieval</strong>
+                                All Bible verses displayed in this app are retrieved verbatim from standard, recognized translations (KJV, NKJV, ESV, etc.). We do not alter, modify, or summarize the Word of God.
+                            </span>
+                        </li>
+                        <li className="flex items-start">
+                            <CheckIcon className="h-6 w-6 text-amber-400 mt-1 mr-3 flex-shrink-0" />
+                            <span>
+                                <strong className="text-amber-100 block mb-1">Zero-Creativity AI Configuration</strong>
+                                This application uses Google Gemini Artificial Intelligence strictly as a <em>database retrieval tool</em>. We have configured the AI with a "Temperature of 0" (Zero Creativity). This forces the system to fetch exact text rather than generate creative or hallucinated responses when displaying chapters.
+                            </span>
+                        </li>
+                        <li className="flex items-start">
+                            <CheckIcon className="h-6 w-6 text-amber-400 mt-1 mr-3 flex-shrink-0" />
+                            <span>
+                                <strong className="text-amber-100 block mb-1">Human Verification Encouraged</strong>
+                                While we strive for 100% accuracy, technology is a tool, not a replacement for the physical Word. We encourage all users to verify verses and insights with their physical Bible.
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
             <div className="bg-slate-800/40 p-6 rounded-2xl border border-slate-700/30">
                 <p className="first-letter:text-5xl first-letter:font-serif first-letter:text-amber-400 first-letter:float-left first-letter:mr-3 first-letter:mt-[-10px]">
                 True Harvest was born from a simple yet profound vision: to create a welcoming digital space where Christians from all walks of life can gather to grow in their faith. In a world that's constantly moving, we believe it's more important than ever to have a sanctuary—a place to pause, reflect, and connect with God and with a community of believers.
@@ -50,24 +88,14 @@ const AboutPage: React.FC<AboutPageProps> = ({ setCurrentPage }) => {
             
             <div>
                 <h2 className="text-3xl font-serif font-bold text-white mb-6 flex items-center">
-                    <span className="w-2 h-8 bg-amber-500 rounded-full mr-4"></span>
-                    Our Mission
-                </h2>
-                <p className="text-slate-400">
-                Our mission is to equip and encourage believers by providing accessible, high-quality spiritual resources. We aim to break down barriers of language and location, offering the timeless truth of the Bible, the soul-lifting power of worship music, and the strength of community fellowship to anyone, anywhere.
-                </p>
-            </div>
-            
-            <div>
-                <h2 className="text-3xl font-serif font-bold text-white mb-6 flex items-center">
-                    <span className="w-2 h-8 bg-amber-500 rounded-full mr-4"></span>
+                    <span className="w-2 h-8 bg-slate-600 rounded-full mr-4"></span>
                     What We Offer
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
                     {[
                         { title: "Multi-Lingual Bible", desc: "Explore God's Word in English, Telugu, & Tamil." },
                         { title: "Curated Worship", desc: "A rich library of praise songs and hymns." },
-                        { title: "Daily Inspiration", desc: "AI-powered Verse of the Day with deep insights." },
+                        { title: "Daily Inspiration", desc: "Verbatim Verse of the Day with practical application." },
                         { title: "Community Events", desc: "Connect with believers in your city." }
                     ].map((item, idx) => (
                         <div key={idx} className="flex items-start bg-slate-900/40 p-4 rounded-xl border border-slate-800 hover:border-amber-500/30 transition-colors">

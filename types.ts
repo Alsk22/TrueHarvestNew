@@ -29,7 +29,7 @@ export interface BibleData {
   tamil: BibleBook;
 }
 
-export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin' | 'profile' | 'plans' | 'create' | 'casestudies' | 'study' | 'introspection';
+export type Page = 'home' | 'verse' | 'bible' | 'songs' | 'events' | 'about' | 'admin' | 'profile' | 'plans' | 'create' | 'casestudies' | 'study' | 'introspection' | 'botanica' | 'video';
 
 export interface VerseContent {
   verse: string;
@@ -125,4 +125,15 @@ export interface DailyLog {
     prayed: boolean;
     worship: boolean;
     peaceScore: number; // 1-10
+}
+
+export interface CharacterProfile {
+    name: string;
+    tagline: string; // e.g., "The Pioneer of Faith"
+    plant_type: string; // Metaphorical plant name
+    origin: string; // Soil/Background
+    growth_story: string; // Brief bio
+    key_fruit: string; // Legacy/Achievements
+    thorns: string; // Struggles/Failures
+    scripture_ref: string; // Key verses
 }

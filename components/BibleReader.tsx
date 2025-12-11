@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { BIBLE_BOOK_GROUPS_EN, BOOK_METADATA_MAP, BIBLE_METADATA } from '../services/constants';
+import { BOOK_METADATA_MAP, BIBLE_METADATA } from '../services/constants';
 import { getBibleChapter, generateSpeech } from '../services/geminiService';
 import type { Page, BibleLanguage, EnglishVersion, Verse } from '../types';
 import HomeIcon from './icons/HomeIcon';
@@ -11,9 +11,7 @@ import NoteIcon from './icons/NoteIcon';
 import ShareIcon from './icons/ShareIcon';
 import SoundIcon from './icons/SoundIcon';
 import PauseIcon from './icons/PauseIcon';
-import ViewColumnsIcon from './icons/ViewColumnsIcon';
 import XIcon from './icons/XIcon';
-import InfoIcon from './icons/InfoIcon';
 import SparklesIcon from './icons/SparklesIcon';
 import CopyIcon from './icons/CopyIcon';
 import ChevronDownIcon from './icons/ChevronDownIcon';
@@ -30,33 +28,19 @@ const FETCHED_CHAPTERS_CACHE_KEY = 'trueHarvestBibleFetchedCache';
 
 // --- Sub-components for Performance ---
 
-const SkeletonVerseRow: React.FC<{ isParallelMode: boolean }> = ({ isParallelMode }) => (
+const SkeletonVerseRow: React.FC = () => (
     <div className="animate-pulse flex items-start p-4 border border-slate-700/50 rounded-lg bg-slate-800/30 mb-3">
         <div className="h-4 w-6 bg-slate-700 rounded mr-4 mt-1 opacity-50"></div>
-        <div className={`flex-1 ${isParallelMode ? 'flex flex-col md:grid md:grid-cols-[1fr_1px_1fr] gap-4' : 'space-y-2'}`}>
-            <div className="space-y-2">
-                 <div className="h-4 bg-slate-700 rounded w-3/4 opacity-60"></div>
-                 <div className="h-4 bg-slate-700 rounded w-5/6 opacity-50"></div>
-            </div>
-            {isParallelMode && (
-                <>
-                    <div className="hidden md:block w-px h-full bg-slate-700/50"></div>
-                    <div className="md:hidden w-full h-px bg-slate-700/50 my-1"></div>
-                    <div className="space-y-2">
-                        <div className="h-4 bg-slate-700 rounded w-2/3 opacity-60"></div>
-                        <div className="h-4 bg-slate-700 rounded w-4/5 opacity-50"></div>
-                    </div>
-                </>
-            )}
+        <div className="flex-1 space-y-2">
+             <div className="h-4 bg-slate-700 rounded w-3/4 opacity-60"></div>
+             <div className="h-4 bg-slate-700 rounded w-5/6 opacity-50"></div>
         </div>
     </div>
 );
 
 interface VerseRowProps {
     verseNum: number;
-    englishText: string | undefined;
-    secondLangText: string | undefined;
-    isParallelMode: boolean;
+    text: string | undefined;
     language: BibleLanguage;
     isSelected: boolean;
     isSpeaking: boolean;
@@ -69,9 +53,7 @@ interface VerseRowProps {
 // Memoized Row Component
 const VerseRow = React.memo(({
     verseNum,
-    englishText,
-    secondLangText,
-    isParallelMode,
+    text,
     language,
     isSelected,
     isSpeaking,
@@ -80,9 +62,6 @@ const VerseRow = React.memo(({
     hasNote,
     onSelect
 }: VerseRowProps) => {
-    
-    // Determine the text to show in single view
-    const mainText = language === 'english' ? englishText : secondLangText;
     
     return (
         <div 
@@ -109,39 +88,14 @@ const VerseRow = React.memo(({
                 </div>
             )}
 
-            {isParallelMode ? (
-                // --- Parallel View (English + Selected Language) ---
-                <div className="flex flex-col md:grid md:grid-cols-[3rem_1fr_1px_1fr] gap-4 p-4 items-start">
-                    {/* Verse Number */}
-                    <span className={`font-sans text-xs font-bold pt-1.5 opacity-60 select-none cursor-pointer ${isSelected ? 'text-amber-400' : 'text-slate-500'}`}>
-                        {verseNum}
-                    </span>
-                    
-                    {/* English Column (Always Left) */}
-                    <div className={`text-lg leading-relaxed text-slate-200 ${language === 'english' ? 'font-medium' : 'text-slate-300/90'}`}>
-                        {englishText || <div className="h-4 bg-slate-800 rounded w-3/4 animate-pulse"></div>}
-                    </div>
-                    
-                    {/* Divider (Desktop) / Separator (Mobile) */}
-                    <div className="hidden md:block w-px h-full bg-slate-700/50 self-stretch min-h-[2rem]"></div>
-                    <div className="md:hidden w-full h-px bg-slate-700/50 my-1"></div>
-                    
-                    {/* Second Language Column (Telugu or Tamil) */}
-                    <div className={`text-lg leading-relaxed text-slate-200 font-serif ${language !== 'english' ? 'font-medium' : 'text-slate-300/90'}`}>
-                        {secondLangText || <div className="h-4 bg-slate-800 rounded w-3/4 animate-pulse"></div>}
-                    </div>
-                </div>
-            ) : (
-                // --- Single View ---
-                <div className="flex gap-4 p-3 md:p-4 items-start">
-                        <span className={`flex-shrink-0 w-8 font-sans text-xs font-bold pt-1.5 opacity-60 text-right select-none cursor-pointer ${isSelected ? 'text-amber-400' : 'text-slate-500'}`}>
-                        {verseNum}
-                    </span>
-                    <p className="text-lg md:text-xl leading-relaxed text-slate-200 font-serif w-full">
-                        {mainText || <div className="space-y-2"><div className="h-4 bg-slate-800 rounded w-full animate-pulse"></div><div className="h-4 bg-slate-800 rounded w-2/3 animate-pulse"></div></div>}
-                    </p>
-                </div>
-            )}
+            <div className="flex gap-4 p-3 md:p-4 items-start">
+                <span className={`flex-shrink-0 w-8 font-sans text-xs font-bold pt-1.5 opacity-60 text-right select-none cursor-pointer ${isSelected ? 'text-amber-400' : 'text-slate-500'}`}>
+                    {verseNum}
+                </span>
+                <p className={`text-lg md:text-xl leading-relaxed text-slate-200 w-full ${language === 'english' ? 'font-serif' : 'font-serif'}`}>
+                    {text || <div className="space-y-2"><div className="h-4 bg-slate-800 rounded w-full animate-pulse"></div><div className="h-4 bg-slate-800 rounded w-2/3 animate-pulse"></div></div>}
+                </p>
+            </div>
         </div>
     );
 });
@@ -163,7 +117,6 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const [version, setVersion] = useState<EnglishVersion>('KJV');
     const [book, setBook] = useState('Genesis');
     const [chapter, setChapter] = useState(1);
-    const [isParallelMode, setIsParallelMode] = useState(false);
 
     // State for dynamic content
     const [fetchedContent, setFetchedContent] = useState<Record<string, Verse>>({});
@@ -206,12 +159,11 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         } else {
             const prefs = localStorage.getItem(BIBLE_READER_PREFS_KEY);
             if (prefs) {
-                const { language: l, version: v, book: b, chapter: c, isParallelMode: p } = JSON.parse(prefs);
-                setLanguage(l);
-                setVersion(v);
-                setBook(b);
-                setChapter(c);
-                setIsParallelMode(p);
+                const { language: l, version: v, book: b, chapter: c } = JSON.parse(prefs);
+                if (l) setLanguage(l);
+                if (v) setVersion(v);
+                if (b) setBook(b);
+                if (c) setChapter(c);
             }
         }
 
@@ -230,8 +182,8 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
     // Save preferences
     useEffect(() => {
-        localStorage.setItem(BIBLE_READER_PREFS_KEY, JSON.stringify({ language, version, book, chapter, isParallelMode }));
-    }, [language, version, book, chapter, isParallelMode]);
+        localStorage.setItem(BIBLE_READER_PREFS_KEY, JSON.stringify({ language, version, book, chapter }));
+    }, [language, version, book, chapter]);
 
     // Handle Global Text Selection (Drag to select)
     useEffect(() => {
@@ -299,14 +251,13 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
 
     const currentChapterKey = useCallback((lang: string) => `${lang}-${book}-${chapter}-${lang === 'english' ? version : 'BSI'}`, [book, chapter, version]);
     
-    const englishContent = fetchedContent[currentChapterKey('english')];
-    const secondLangContent = fetchedContent[currentChapterKey(language)];
+    // We only care about content for the CURRENT language
+    const currentContent = fetchedContent[currentChapterKey(language)];
     
     const verseList = useMemo(() => {
-        const content = englishContent || secondLangContent;
-        if (!content) return Array.from({ length: 5 }, (_, i) => i + 1); 
-        return Object.keys(content).map(Number).sort((a, b) => a - b);
-    }, [englishContent, secondLangContent]);
+        if (!currentContent) return Array.from({ length: 5 }, (_, i) => i + 1); 
+        return Object.keys(currentContent).map(Number).sort((a, b) => a - b);
+    }, [currentContent]);
 
 
     const fetchChapterData = useCallback(async (lang: BibleLanguage, b: string, c: number, v: string) => {
@@ -332,16 +283,11 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     useEffect(() => {
         const load = async () => {
             setIsLoadingContent(true);
-            await fetchChapterData('english', book, chapter, version);
-            if (language !== 'english') {
-                await fetchChapterData(language, book, chapter, version);
-            }
-            // Preload next chapter
+            await fetchChapterData(language, book, chapter, version);
+            
+            // Preload next chapter for same language
             if (chapter < maxChapters) {
-                fetchChapterData('english', book, chapter + 1, version);
-                if (language !== 'english') {
-                    fetchChapterData(language, book, chapter + 1, version);
-                }
+                fetchChapterData(language, book, chapter + 1, version);
             }
             setIsLoadingContent(false);
         };
@@ -535,7 +481,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
         if (selectionMode === 'text') return selectedTextContent;
         
         const key = currentChapterKey(language);
-        const content = fetchedContent[key] || fetchedContent[currentChapterKey('english')];
+        const content = fetchedContent[key];
         if (!content) return "";
         return (Array.from(selectedVerses) as number[]).sort((a, b) => a - b).map(v => `[${v}] ${content[v]}`).join('\n');
     }, [selectionMode, selectedTextContent, language, fetchedContent, currentChapterKey, selectedVerses]);
@@ -621,12 +567,12 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
     const isPrevDisabled = currentBookIndex === 0 && chapter === 1;
     const isNextDisabled = currentBookIndex === BIBLE_METADATA.length - 1 && chapter === maxChapters;
 
-    // Prepare share data outside JSX to avoid complex ternary syntax errors
+    // Prepare share data
     const versesForShare = useMemo(() => {
         if (selectionMode === 'verse') {
             const sorted = (Array.from(selectedVerses) as number[]).sort((a, b) => a - b);
             const key = currentChapterKey(language);
-            const content = fetchedContent[key] || fetchedContent[currentChapterKey('english')];
+            const content = fetchedContent[key];
             return sorted.map(v => ({
                 num: v,
                 text: content?.[v] || ''
@@ -777,33 +723,61 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
             
             <div className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-lg border-b border-slate-800 shadow-lg">
                 <div className="flex flex-col md:flex-row items-center justify-between p-4 gap-4">
-                    <div className="flex flex-wrap items-center justify-center gap-3 w-full md:w-auto">
+                    
+                    {/* Navigation Controls */}
+                    <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        
+                        {/* 1. Language Dropdown (First prominent) */}
+                        <select 
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value as BibleLanguage)}
+                            className="bg-slate-800 text-amber-400 font-bold py-2.5 px-4 rounded-lg border border-slate-700 focus:ring-2 focus:ring-amber-500 outline-none uppercase text-sm tracking-wide"
+                        >
+                            <option value="english">English</option>
+                            <option value="telugu">Telugu</option>
+                            <option value="tamil">Tamil</option>
+                        </select>
+
+                        {/* 2. Version Dropdown (Only for English) */}
+                        {language === 'english' && (
+                            <select 
+                                value={version} 
+                                onChange={(e) => setVersion(e.target.value as EnglishVersion)}
+                                className="bg-slate-800 text-slate-300 text-sm font-bold py-2.5 px-3 rounded-lg border border-slate-700 outline-none"
+                            >
+                                <option value="KJV">KJV</option>
+                                <option value="NKJV">NKJV</option>
+                                <option value="ESV">ESV</option>
+                                <option value="NASB">NASB</option>
+                            </select>
+                        )}
+
+                        {/* 3. Book Selector (Flat List - Canonical Order) */}
                         <select 
                             value={book} 
                             onChange={(e) => { setBook(e.target.value); setChapter(1); }}
-                            className="bg-slate-800 text-white text-sm font-bold py-2 px-4 rounded-lg border border-slate-700 focus:ring-2 focus:ring-amber-500 outline-none"
+                            className="bg-slate-800 text-white text-sm font-bold py-2.5 px-4 rounded-lg border border-slate-700 focus:ring-2 focus:ring-amber-500 outline-none min-w-[120px]"
                         >
-                            {Object.keys(BIBLE_BOOK_GROUPS_EN).map(group => (
-                                <optgroup key={group} label={group}>
-                                    {BIBLE_BOOK_GROUPS_EN[group].map(b => (
-                                        <option key={b} value={b}>{bookMetadata.ta === b || bookMetadata.te === b ? bookMetadata.en : b}</option>
-                                    ))}
-                                </optgroup>
+                            {BIBLE_METADATA.map(b => (
+                                <option key={b.en} value={b.en}>
+                                    {language === 'english' ? b.en : (language === 'telugu' ? b.te : b.ta)}
+                                </option>
                             ))}
                         </select>
 
+                        {/* 4. Chapter Controls */}
                         <div className="flex items-center bg-slate-800 rounded-lg border border-slate-700">
                              <button 
                                 onClick={handlePrevChapter} 
                                 disabled={isPrevDisabled}
-                                className="p-2 text-slate-400 hover:text-white disabled:opacity-30"
+                                className="p-2.5 text-slate-400 hover:text-white disabled:opacity-30"
                              >
                                 <ChevronDownIcon className="h-4 w-4 rotate-90" />
                              </button>
                              <select 
                                 value={chapter} 
                                 onChange={(e) => setChapter(Number(e.target.value))}
-                                className="bg-transparent text-white font-bold py-2 px-2 text-center outline-none appearance-none"
+                                className="bg-transparent text-white font-bold py-2.5 px-2 text-center outline-none appearance-none min-w-[3rem]"
                             >
                                 {Array.from({ length: maxChapters }, (_, i) => i + 1).map(c => (
                                     <option key={c} value={c}>{c}</option>
@@ -812,61 +786,28 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                             <button 
                                 onClick={handleNextChapter} 
                                 disabled={isNextDisabled}
-                                className="p-2 text-slate-400 hover:text-white disabled:opacity-30"
-                            >
+                                className="p-2.5 text-slate-400 hover:text-white disabled:opacity-30"
+                             >
                                 <ChevronDownIcon className="h-4 w-4 -rotate-90" />
-                            </button>
+                             </button>
                         </div>
-
-                         <select 
-                            value={version} 
-                            onChange={(e) => setVersion(e.target.value as EnglishVersion)}
-                            className="bg-slate-800 text-amber-500 text-sm font-bold py-2 px-3 rounded-lg border border-slate-700 outline-none"
-                        >
-                            <option value="KJV">KJV</option>
-                            <option value="NKJV">NKJV</option>
-                            <option value="ESV">ESV</option>
-                            <option value="NASB">NASB</option>
-                        </select>
                     </div>
 
-                     <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                        <div className="flex bg-slate-800 rounded-lg p-1 border border-slate-700">
-                            {(['english', 'telugu', 'tamil'] as const).map(l => (
-                                <button
-                                    key={l}
-                                    onClick={() => setLanguage(l)}
-                                    className={`px-3 py-1.5 text-xs font-bold uppercase rounded-md transition-all ${
-                                        language === l ? 'bg-slate-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
-                                    }`}
-                                >
-                                    {l.slice(0,3)}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <button
-                                onClick={() => setIsParallelMode(!isParallelMode)}
-                                className={`p-2.5 rounded-lg border transition-all ${isParallelMode ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
-                                title="Toggle Parallel View"
-                            >
-                                <ViewColumnsIcon className="h-5 w-5" />
-                            </button>
-                             <button
-                                onClick={handleReadAloudToggle}
-                                className={`p-2.5 rounded-lg border transition-all ${isReadingAloud ? 'bg-sky-500/20 text-sky-400 border-sky-500/50 animate-pulse' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
-                                title={isReadingAloud ? "Stop Reading" : "Read Aloud"}
-                            >
-                                {isReadingAloud ? <PauseIcon className="h-5 w-5" /> : <SoundIcon className="h-5 w-5" />}
-                            </button>
-                            <button
-                                onClick={() => setCurrentPage('home')}
-                                className="p-2.5 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white hover:border-slate-500"
-                            >
-                                <HomeIcon className="h-5 w-5" />
-                            </button>
-                        </div>
+                     {/* Right Side Tools */}
+                     <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                         <button
+                            onClick={handleReadAloudToggle}
+                            className={`p-2.5 rounded-lg border transition-all ${isReadingAloud ? 'bg-sky-500/20 text-sky-400 border-sky-500/50 animate-pulse' : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'}`}
+                            title={isReadingAloud ? "Stop Reading" : "Read Aloud"}
+                        >
+                            {isReadingAloud ? <PauseIcon className="h-5 w-5" /> : <SoundIcon className="h-5 w-5" />}
+                        </button>
+                        <button
+                            onClick={() => setCurrentPage('home')}
+                            className="p-2.5 rounded-lg bg-slate-800 text-slate-400 border border-slate-700 hover:text-white hover:border-slate-500"
+                        >
+                            <HomeIcon className="h-5 w-5" />
+                        </button>
                      </div>
                 </div>
             </div>
@@ -879,29 +820,26 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-10 mt-4">
                         <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-2">{bookMetadata[language === 'english' ? 'en' : language === 'telugu' ? 'te' : 'ta']} {chapter}</h2>
-                        <p className="text-slate-500 text-sm font-bold tracking-widest uppercase">{version} • {language}</p>
+                        <p className="text-slate-500 text-sm font-bold tracking-widest uppercase">
+                            {language === 'english' ? version : `Target: ${language === 'telugu' ? 'Telugu OV (BSI)' : 'Tamil OV (BSI)'}`} • {language.toUpperCase()}
+                        </p>
                     </div>
 
                     <div className="space-y-1">
-                        {isLoadingContent && !englishContent && !secondLangContent ? (
+                        {isLoadingContent && !currentContent ? (
                              Array.from({ length: 6 }).map((_, i) => (
-                                <SkeletonVerseRow key={i} isParallelMode={isParallelMode} />
+                                <SkeletonVerseRow key={i} />
                              ))
                         ) : (
                              verseList.map(vNum => {
-                                 const keyEn = currentChapterKey('english');
-                                 const keyLang = currentChapterKey(language);
-                                 const enText = fetchedContent[keyEn]?.[vNum];
-                                 const langText = fetchedContent[keyLang]?.[vNum];
+                                 const text = currentContent?.[vNum];
                                  const ref = `${book} ${chapter}:${vNum}`;
                                  
                                  return (
                                      <VerseRow 
                                         key={vNum}
                                         verseNum={vNum}
-                                        englishText={enText}
-                                        secondLangText={langText}
-                                        isParallelMode={isParallelMode}
+                                        text={text}
                                         language={language}
                                         isSelected={selectedVerses.has(vNum)}
                                         isSpeaking={currentReadingVerse === vNum}
@@ -924,7 +862,7 @@ const BibleReader: React.FC<BibleReaderProps> = ({ setCurrentPage }) => {
                         </button>
                     </div>
                      <div className="text-center mt-8 pb-4 text-xs text-slate-600">
-                        AI-Generated Content. Please verify with a physical Bible for critical study.
+                        Content provided by AI retrieval. Please verify with a physical Bible for critical study.
                     </div>
                 </div>
             </div>
